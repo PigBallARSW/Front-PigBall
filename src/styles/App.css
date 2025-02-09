@@ -1,0 +1,63 @@
+body {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.card {
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  background-color: #1E1E1E !important;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.list-group-item {
+  padding: 1rem 1.5rem;
+  background-color: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.list-group-item:last-child {
+  border-bottom: none !important;
+}
+
+.sign-in-button {
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sign-in-button:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.text-muted {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
