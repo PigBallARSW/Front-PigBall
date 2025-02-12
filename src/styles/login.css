@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+.row {
+    margin: 0;
+}
+
+.col-md-6 {
+    padding: 0 !important;
+}
+
+.login-container{
+    padding: 0;
+    margin: 0;
+    position: relative;
+    background: repeating-linear-gradient(
+        90deg,
+        #3f854a 0%,  
+        #3f854a 10%,
+        #5bc46c 10%, 
+        #5bc46c 20%  
+    );
+
+}
+.field-login{
+    display: flex;
+    align-items: center;
+    border: 7px solid white; 
+    padding: 0;
+}
+.first{
+    border-right-width: 3.5px; 
+}
+.second{
+    border-left-width: 3.5px; 
+}
+.court{
+    display: flex;
+    align-items: center;
+    position:relative;
+    width: 250px;
+    height: 450px;
+    border: 7px solid white; 
+    margin: 0;
+    padding: 0;
+}
+.court-left{
+    border-left-width: 0px;
+}
+.court-right{
+    border-right-width: 0px;
+    margin-left: auto;
+}
+.court-mini{
+    width: 125px;
+    height: 225px;
+    border: 7px solid white; 
+    margin: 0;
+}
+.court-mini-left{
+    border-left-width: 0px;
+}
+.court-mini-right{
+    border-right-width: 0px;
+    margin-left: auto;
+}
+.field-circle{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 7px solid white;
+    z-index: 1;
+}
+.field-player{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    position: absolute;
+    border: 3px solid black;
+    z-index: 2;
+}
+.field-player-red{
+    background-color: red;
+}
+.field-player-blue{
+    background-color: #029ee7;
+}
+
+#a{
+    top: 80px;
+    left: 210px;
+}
+#b{
+    top: 180px;
+    left: 600px;
+}
+#c{
+    top: 400px;
+    left: 350px;
+}
+#d{
+    top: 150px;
+    right: 150px;
+}
+#e{
+    top: 260px;
+    right: 600px;
+}
+#f{
+    top: 350px;
+    right: 350px;
+}
+
+@keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.field-title {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 110px;
+    color: #1f3d1a;
+}
+.micro-button {
+    position: absolute;
+    top: 35%;
+    left: 40%;
+    width: 300px;
+    background-color: #b0deb8;
+    border: 2px solid #3c7c32;
+    z-index: 2;
+
+}
+
+
+
+
+

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './game.css'
+import '../styles/game.css';
 import { Client } from "@stomp/stompjs";
   
  

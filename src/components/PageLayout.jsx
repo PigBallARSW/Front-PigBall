@@ -4,35 +4,42 @@
  */
 
 import React from 'react';
-import Navbar from 'react-bootstrap/Navbar';
-
 import { useIsAuthenticated } from '@azure/msal-react';
 import { SignInButton } from './SignInButton';
 import { SignOutButton } from './SignOutButton';
-
+import '../styles/login.css';
+import { MicrosoftLoginButton } from './MicrosoftLoginButton';
 /**
  * Renders the navbar component with a sign-in or sign-out button depending on whether or not a user is authenticated
- * @param props
+ * 
  */
-export const PageLayout = (props) => {
-    const isAuthenticated = useIsAuthenticated();
+export const PageLayout = () => {
+    //const isAuthenticated = useIsAuthenticated();
 
     return (
-        <>
-            <Navbar bg="primary" variant="dark" className="navbarStyle">
-                <a className="navbar-brand" href="/">
-                    Microsoft Identity Platform
-                </a>
-                <div className="collapse navbar-collapse justify-content-end">
-                    {isAuthenticated ? <SignOutButton /> : <SignInButton />}
+        <div class="container-fluid vh-100 d-flex align-items-center justify-content-center login-container">
+            <h1 class="field-title">PIGBALL</h1>
+            <MicrosoftLoginButton />
+            <div class="row w-100 h-100 m-0">
+                <div class="col-md-6 text-white p-3 first field-login">
+                    <div class="court court-left">
+                        <div class="court-mini court-mini-left"></div>
+                        <div class="field-player field-player-red" id="a"> </div>
+                        <div class="field-player field-player-red" id="b"> </div>
+                        <div class="field-player field-player-red" id="c"> </div>
+                    </div>
                 </div>
-            </Navbar>
-            <h5>
-                <center>Welcome to the Microsoft Authentication Library For Javascript - React Quickstart</center>
-            </h5>
-            <br />
-            <br />
-            {props.children}
-        </>
+                <div class="col-md-6 text-white p-3 second field-login">
+                <div class="court court-right">
+                    <div class="court-mini court-mini-right"></div>
+                    <div class="field-player field-player-blue" id="d"> </div>
+                    <div class="field-player field-player-blue" id="e"> </div>
+                    <div class="field-player field-player-blue" id="f"> </div>
+                </div>
+                </div>
+            </div>
+            <div class="field-circle"> </div>
+        </div>
+
     );
 };
