@@ -62,11 +62,29 @@ const stompClient = new Client({
     console.log("Conectado al WebSocket STOMP");
     const div = document.getElementById("circleGame");
     // Suscribirse para recibir la nueva posición
-    stompClient.subscribe("/topic/position", (message) => {
-      const position = JSON.parse(message.body);
-      div.style.top = position.y + "px";
-      div.style.left = position.x + "px";
+    stompClient.subscribe("/topic/positions", (message) => {
+      var posiciones = JSON.parse(message.body);
+                // Actualiza las posiciones de los cuadrados en el frontend
+                actualizarPosiciones(posiciones);
     });
+    
+
+    function actualizarPosiciones(posiciones) {
+      for (var key in posiciones) {
+          if (posiciones.hasOwnProperty(key)) {
+              let divCircle = document.getElementById(key);
+              if (divCircle === null){
+                divCircle = document.createElement(div);
+                divCircle.className = "circleGame";
+                let div = document.getElementById("game");
+                div.appendChild(divCircle);
+              }
+              var posicion = posiciones[key];
+              divCircle.style.top = posicion.y + "px";
+              divCircle.style.left = posicion.x + "px"; 
+          }
+      }
+  }
   
     // Enviar estado de movimiento cada 50ms
     setInterval(() => {
@@ -82,7 +100,7 @@ const stompClient = new Client({
   stompClient.activate();
 
     return (
-        <div id = "circleGame">
+        <div id="game">
         </div>
     )
 }
