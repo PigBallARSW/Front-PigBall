@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/login.css';
+import { Routes, Route, BrowserRouter, useNavigate } from 'react-router-dom';
 
 export const MicrosoftLoginButton = () => {
     //const { instance } = useMsal();
-
-    /*const handleLogin = () => {
-        instance.loginPopup(loginRequest).catch(e => {
+    const history = useNavigate();
+    const handleLogin = () => {
+        /*instance.loginPopup(loginRequest).catch(e => {
             console.error(e);
-        });
-    };*/
+        });*/
+        history("/game");
+    };
 
     return (
         <Button
             className="shadow-sm micro-button"
+            onClick={handleLogin}
         >
             <svg width="20" height="20" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
                 <rect x="1" y="1" width="9" height="9" fill="#F25022"/>
