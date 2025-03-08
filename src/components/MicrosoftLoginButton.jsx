@@ -3,15 +3,13 @@ import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/login.css';
 import { Routes, Route, BrowserRouter, useNavigate } from 'react-router-dom';
+import { loginRequest } from '../authConfig';
 
 export const MicrosoftLoginButton = () => {
-    //const { instance } = useMsal();
-    const history = useNavigate();
-    const handleLogin = () => {
-        /*instance.loginPopup(loginRequest).catch(e => {
-            console.error(e);
-        });*/
-        history("/game");
+    const { instance } = useMsal();
+    const navigate = useNavigate(); 
+    const handleLogin = async () => {
+            instance.loginPopup(loginRequest).catch((e) => console.error(e));
     };
 
     return (
