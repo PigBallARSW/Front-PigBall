@@ -6,6 +6,8 @@ import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { loginRequest } from './authConfig';
 import { callMsGraph } from './graph';
 import { ProfileData } from './components/ProfileData';
+import { Game } from './components/Game';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 // Componente para el botón de Microsoft
 const MicrosoftLoginButton = () => {
@@ -116,8 +118,12 @@ const MainContent = () => {
 
 export default function App() {
     return (
-        <PageLayout>
-            <MainContent />
-        </PageLayout>
+    <BrowserRouter>
+        <Routes>
+              <Route path="/" element={<PageLayout />} />
+              <Route path="/game" element={<Game />} />
+        </Routes>
+    </BrowserRouter>
+        
     );
 }

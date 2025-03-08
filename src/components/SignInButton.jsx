@@ -14,8 +14,6 @@ export const SignInButton = () => {
 
     return (
         <Button
-            variant="secondary"
-            className="ml-auto"
             onClick={handleLogin}
         >
             Sign In
