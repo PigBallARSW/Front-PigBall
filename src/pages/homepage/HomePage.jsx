@@ -12,9 +12,14 @@ import { usePlayerStats } from "../../components/user/playerStats"
 import '../../styles/login.css';
 import Character from '../../components/homepage/Character';
 import Statistic from '../../components/homepage/Statistic';
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
   const playerStats = usePlayerStats();
+  const navigation = useNavigate();
+  const handleClick = () => {
+    navigation("/game")
+  }
   
   return (
     <ThemeProvider theme={Theme}>
@@ -79,6 +84,7 @@ export default function HomePage() {
                 transition: "all 0.2s ease",
                 border:"1px solid white"
               }}
+              onClick={handleClick}
             >
               PLAY NOW!
             </Button>

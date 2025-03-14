@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap');
 .field{
     background: repeating-linear-gradient(
-        90deg,
+        -45deg,
         transparent 0%, transparent 5%, #c2ebbd 5%, #c2ebbd 10%  
     ), url('../../public/images/cesped2.png');
     background-blend-mode: multiply; 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Grid, Typography, Button } from "@mui/material";
 import '../../styles/login.css';
 export const Court = () => {
@@ -9,11 +9,12 @@ export const Court = () => {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          position: "relative",
+          position: "absolute",
           width: "100vw",
           height: "100vh",
           overflow: "hidden", 
           boxSizing: "border-box",
+          zIndex: 1
         }}
         className="field"
       >
