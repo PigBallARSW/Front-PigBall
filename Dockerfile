@@ -1,5 +1,5 @@
-# Usar la imagen oficial de Node como base
-FROM node:20-alpine
+# Usar una imagen base de Node con más recursos (evita problemas de memoria)
+FROM node:20
 
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
@@ -8,13 +8,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar las dependencias
-RUN npm install
+RUN npm install 
 
 # Copiar el código de la aplicación
 COPY . .
 
-# Construir la aplicación para producción
-RUN npm run build
+# Construir la aplicación para producción con más memoria disponible
+RUN NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
 # Exponer el puerto en el que se ejecutará la aplicación
 EXPOSE 3000
