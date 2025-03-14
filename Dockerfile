@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Construir la aplicación para producción con más memoria disponible
-RUN NODE_OPTIONS="--max-old-space-size=1024" npm run build
+# RUN NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
 # Exponer el puerto en el que se ejecutará la aplicación
 EXPOSE 3000
