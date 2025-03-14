@@ -1,4 +1,5 @@
 import {SoccerField} from "../../components/game/SoccerField"
+import {Game} from "../../components/game/Game"
 
 export const MainGame = () => {
   return (
@@ -12,7 +13,7 @@ export const MainGame = () => {
           height: 100%;
         }
       `}</style>
-      <SoccerField />
+      <Game />
     </main>
   )
 }
