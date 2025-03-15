@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 
-export const SoccerField = () => {
+export const SoccerField = ({players}) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -15,18 +15,18 @@ export const SoccerField = () => {
       canvas.height = window.innerHeight
 
       const ctx = canvas.getContext("2d")
-      if (ctx) drawSoccerField(ctx, canvas.width, canvas.height)
+      if (ctx) drawSoccerField(ctx, canvas.width, canvas.height, players)
     }
 
     handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
-  }, [])
+  }, [players])
 
   return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full m-0 p-0 overflow-hiddenfixed top-0 left-0 w-full h-full m-0 p-0 overflow-hidden" />
 }
 
-function drawSoccerField(ctx, width, height) {
+function drawSoccerField(ctx, width, height, players) {
   const margin = Math.min(width, height) * 0.1
   const fieldWidth = width - margin * 2
   const fieldHeight = height - margin * 2
@@ -163,6 +163,16 @@ for (let i = -fieldWidth; i < fieldWidth; i += stripeWidth) {
   ctx.strokeRect(width - margin, goalY, goalWidth, goalHeight)
 
   ctx.stroke()
+
+  players.forEach(player => {
+    // Dibujar un círculo por cada jugador en su posición (x, y)
+    const playerRadius = 10; // Radio del círculo del jugador (puedes cambiarlo)
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, playerRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "red"; // Color del jugador
+    ctx.fill();
+    ctx.stroke();
+  });
 }
 
 

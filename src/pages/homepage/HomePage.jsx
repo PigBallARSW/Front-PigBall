@@ -5,10 +5,10 @@ import {
   Box
 } from "@mui/material"
 import Grid from '@mui/material/Grid2';
-import { ThemeProvider} from "@mui/material/styles"
-import {Theme} from "../../components/themes/Theme"
-import { Navbar } from "../../components/main/Navbar"
-import { usePlayerStats } from "../../components/user/playerStats"
+import { ThemeProvider} from "@mui/material/styles";
+import {Theme} from "../../components/themes/Theme";
+import { Navbar } from "../../components/main/Navbar";
+import { usePlayerStats } from "../../components/user/playerStats";
 import '../../styles/login.css';
 import Character from '../../components/homepage/Character';
 import Statistic from '../../components/homepage/Statistic';
