@@ -92,8 +92,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         })
         return
       }
-      const response = await createRoom(newRoom.name);
-      console.log(response);
+      await createRoom(newRoom.name);
       handleCloseCreateDialog()
     }
 

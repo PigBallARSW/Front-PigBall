@@ -4,7 +4,10 @@ const API = "https://localhost:8080/";
 export default async function createRoom(name){
     try{
         const response = await axios.post(API+"createGame"+name);
-        return response;
+        if(response){
+            alert(response.status);
+            return response;
+        }
     }catch(error){
         alert(error);
     }

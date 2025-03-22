@@ -117,7 +117,6 @@ export const Lobby = () => {
     }
     function hideForm () {
       setOpenCreateDialog(false);
-      console.log("holaa");
     }
   
   return (
