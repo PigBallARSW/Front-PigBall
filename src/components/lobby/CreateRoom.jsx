@@ -84,7 +84,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
       })
     }
   
-    const handleCreateRoom = () => {
+    const handleCreateRoom = async () => {
       if (newRoom.name.trim() === "") {
         setFormErrors({
           ...formErrors,
@@ -92,7 +92,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         })
         return
       }
-      const response = createRoom(newRoom.name);
+      const response = await createRoom(newRoom.name);
       console.log(response);
       handleCloseCreateDialog()
     }
