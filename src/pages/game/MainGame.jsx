@@ -67,15 +67,18 @@ export const MainGame = () => {
 
   // Conectar al STOMP broker al montar el componente
   useEffect(() => {
-    const playerName = playerStats.name;
+    let playerName = playerStats.name;
     console.log("Nombre del jugador:", playerName);
+    if (playerName === "Player") {
+      playerName = playerName + Math.floor(Math.random() * 1000);
+    }
     if (!playerName) {
       alert("Debe ingresar un nombre para conectarse.");
       return;
     }
 
     // Obtiene el broker URL desde la variable de entorno o usa un valor por defecto
-    const develop = "ws://localhost:8080/pigball";
+    const develop = "wss://localhost:8080/pigball";
     const brokerUrl = process.env.REACT_APP_API_GAME_URL || develop;
     console.log("Conectando al broker:", brokerUrl);
     const client = new Client({
@@ -84,14 +87,14 @@ export const MainGame = () => {
         console.log("Conectado:", frame);
 
         // Suscribirse a actualizaciones del juego
-        client.subscribe("/topic/play", (message) => {
+        client.subscribe("/topic/play/0", (message) => {
           const gameData = JSON.parse(message.body);
           // Actualizar las posiciones de los jugadores
           setPlayers(gameData.players);
         });
 
         // Suscribirse para saber cuando un jugador se une
-        client.subscribe("/topic/playerJoined", (message) => {
+        client.subscribe("/topic/players/0", (message) => {
           const playersList = JSON.parse(message.body);
           console.log("Lista de jugadores actualizada:", playersList);
           setPlayers(playersList);
@@ -100,25 +103,27 @@ export const MainGame = () => {
         // Enviar el nombre del jugador al backend
         console.log("Uniendo al jugador:", playerName);
         client.publish({
-          destination: "/app/join",
+          destination: "/app/join/0",
           body: JSON.stringify({
             name: playerName,
-            x: 0,
-            y: 0,
           }),
         });
 
         // Enviar el estado de movimiento periódicamente
-        setInterval(() => {
-          if (client.active) {
+        const intervalId = setInterval(() => {
+          if (client.active && client.connected) {
             client.publish({
-              destination: "/app/play",
+              destination: "/app/play/0",
               body: JSON.stringify({
                 player: playerName,
                 dx: movementState.current.right - movementState.current.left,
                 dy: movementState.current.down - movementState.current.up,
               }),
             });
+          }
+          else {
+            clearInterval(intervalId);
+            console.log("Desconectado del broker.");
           }
         }, 1000 / FRAME_RATE);
       },
