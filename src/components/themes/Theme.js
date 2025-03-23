@@ -3,16 +3,17 @@ import { ThemeProvider, createTheme } from "@mui/material/styles"
 export const Theme = createTheme({
   palette: {
     primary: {
-      main: "#adfbb9", 
+      main: "#1b5e20", 
       light: "#66bb6a",
       dark: "#1b5e20",
-      more: "#388e3c",
+      more: "#81c784",
       contrastText: "#ffffff",
     },
     secondary: {
       main: "#ffc107", // yellow
       light: "#fff350",
       dark: "#c79100",
+      more:"#fcf66c",
       contrastText: "#000000",
     },
     background: {
@@ -24,7 +25,7 @@ export const Theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: "#0A3D0A", // darker blue for navbar
+          backgroundColor: "#0a280a", 
         },
       },
     },
