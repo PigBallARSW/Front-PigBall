@@ -1,10 +1,14 @@
 import axios from "axios";
 
-const API = "https://localhost:8080";
+// Leer variables de entorno
 
-export async function createRoom(newRoom) {
+const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL;
+
+export async function createRoom(newRoom, playerName) {
+
     try {
-        const endpoint = `${API}/createGame/${newRoom.name}/default_user`;
+        const creatorName = playerName || "default";
+        const endpoint = `${API}/createGame/${newRoom.name}/${creatorName}`;
         const queryParams = `?maxPlayers=${newRoom.maxPlayers}&isPrivate=${newRoom.isPrivate}`;
         const response = await axios.post(endpoint + queryParams);
         console.log(response.status);

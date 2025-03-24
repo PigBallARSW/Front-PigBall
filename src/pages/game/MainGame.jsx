@@ -3,8 +3,11 @@ import { Client } from "@stomp/stompjs";
 
 import { usePlayerStats } from "../../components/user/playerStats";
 import { SoccerField } from "../../components/game/SoccerField";
+import { useParams } from "react-router-dom";
 
 export const MainGame = () => {
+  const { id } = useParams();
+
   const playerStats = usePlayerStats();
   const [players, setPlayers] = useState([]); // Estado de los jugadores
   const stompClient = useRef(null);
@@ -78,8 +81,7 @@ export const MainGame = () => {
     }
 
     // Obtiene el broker URL desde la variable de entorno o usa un valor por defecto
-    const develop = "wss://localhost:8080/pigball";
-    const brokerUrl = process.env.REACT_APP_API_GAME_URL || develop;
+    const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL;
     console.log("Conectando al broker:", brokerUrl);
     const client = new Client({
       brokerURL: brokerUrl,
@@ -87,14 +89,14 @@ export const MainGame = () => {
         console.log("Conectado:", frame);
 
         // Suscribirse a actualizaciones del juego
-        client.subscribe("/topic/play/0", (message) => {
+        client.subscribe("/topic/play/" + id, (message) => {
           const gameData = JSON.parse(message.body);
           // Actualizar las posiciones de los jugadores
           setPlayers(gameData.players);
         });
 
         // Suscribirse para saber cuando un jugador se une
-        client.subscribe("/topic/players/0", (message) => {
+        client.subscribe("/topic/players/" + id, (message) => {
           const playersList = JSON.parse(message.body);
           console.log("Lista de jugadores actualizada:", playersList);
           setPlayers(playersList);
@@ -103,7 +105,7 @@ export const MainGame = () => {
         // Enviar el nombre del jugador al backend
         console.log("Uniendo al jugador:", playerName);
         client.publish({
-          destination: "/app/join/0",
+          destination: "/app/join/"+ id,
           body: JSON.stringify({
             name: playerName,
           }),
@@ -113,7 +115,7 @@ export const MainGame = () => {
         const intervalId = setInterval(() => {
           if (client.active && client.connected) {
             client.publish({
-              destination: "/app/play/0",
+              destination: "/app/play/"+ id,
               body: JSON.stringify({
                 player: playerName,
                 dx: movementState.current.right - movementState.current.left,

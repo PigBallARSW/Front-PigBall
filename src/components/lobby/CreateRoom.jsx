@@ -26,8 +26,10 @@ import {
   Public,
 } from "@mui/icons-material"
 import {createRoom} from "../../APIServices/gameAPI"
+import { usePlayerStats } from "../../components/user/playerStats";
 
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
+    const playerStats = usePlayerStats();
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down("md"))
     const [newRoom, setNewRoom] = useState({
@@ -92,7 +94,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         })
         return
       }
-      await createRoom(newRoom);
+      await createRoom(newRoom, playerStats.name);
       handleCloseCreateDialog()
     }
 

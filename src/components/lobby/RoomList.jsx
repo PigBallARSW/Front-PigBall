@@ -1,5 +1,6 @@
 "use client"
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -87,6 +88,12 @@ export default function RoomList({ gameRooms }) {
         return <SportsSoccer fontSize="small" />
     }
   }
+
+  const navigate = useNavigate();
+
+  const joinGame = (roomId) => {
+    navigate(`/game/${roomId}`);
+  };
 
   return (
     <List sx={{
@@ -206,6 +213,7 @@ export default function RoomList({ gameRooms }) {
                     {room.isFavorite ? <Star /> : <StarBorder />}
                   </IconButton>
                   <Button
+                    onClick={() => joinGame(room.id)}
                     variant="contained"
                     size="small"
                     disabled={room.status === "Completa" || room.status === "En progreso"}
