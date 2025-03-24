@@ -25,7 +25,7 @@ import {
   Groups,
   Public,
 } from "@mui/icons-material"
-import createRoom from "../../APIServices/gameAPI"
+import {createRoom} from "../../APIServices/gameAPI"
 
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
     const theme = useTheme()
@@ -92,7 +92,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         })
         return
       }
-      await createRoom(newRoom.name);
+      await createRoom(newRoom);
       handleCloseCreateDialog()
     }
 
