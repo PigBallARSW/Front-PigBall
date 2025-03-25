@@ -8,9 +8,17 @@ export async function createRoom(newRoom, playerName) {
 
     try {
         const creatorName = playerName || "default";
-        const endpoint = `${API}/createGame/${newRoom.name}/${creatorName}`;
-        const queryParams = `?maxPlayers=${newRoom.maxPlayers}&isPrivate=${newRoom.isPrivate}`;
-        const response = await axios.post(endpoint + queryParams);
+        const endpoint = `${API}/createGame`;
+
+        const requestBody = {
+            gameName: newRoom.name,
+            creatorName: creatorName,
+            maxPlayers: newRoom.maxPlayers,
+            isPrivate: newRoom.isPrivate
+        };
+
+        const response = await axios.post(endpoint, requestBody);
+
         console.log(response.status);
         return response;
     } catch (error) {
