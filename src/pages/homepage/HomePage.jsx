@@ -5,11 +5,7 @@ import {
   Box
 } from "@mui/material"
 import Grid from '@mui/material/Grid2';
-import { ThemeProvider} from "@mui/material/styles";
-import {Theme} from "../../components/themes/Theme";
-import { Navbar } from "../../components/main/Navbar";
 import { usePlayerStats } from "../../components/user/playerStats";
-import '../../styles/login.css';
 import Character from '../../components/homepage/Character';
 import Statistic from '../../components/homepage/Statistic';
 import { useNavigate } from "react-router-dom";
@@ -18,21 +14,16 @@ export default function HomePage() {
   const playerStats = usePlayerStats();
   const navigation = useNavigate();
   const handleClick = () => {
-    navigation("/game")
+    navigation("/homepage/lobby")
   }
   
   return (
-    <ThemeProvider theme={Theme}>
       <Box
         sx={{
-          minHeight: "100vh",
           color: "white",
-          pb: 4,
+          pb: 3,
         }}
-        className="field"
       >
-      <Navbar />
-
         <Container maxWidth="lg" sx={{ mt: 4 }}>
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Typography
@@ -91,7 +82,6 @@ export default function HomePage() {
           </Box>
         </Container>
       </Box>
-    </ThemeProvider>
   )
 }
 

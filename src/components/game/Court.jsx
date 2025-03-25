@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Grid, Typography, Button } from "@mui/material";
-import '../../styles/login.css';
+import { Box } from "@mui/material";
 export const Court = () => {
     return(
         <Box
@@ -16,7 +15,6 @@ export const Court = () => {
           boxSizing: "border-box",
           zIndex: 1
         }}
-        className="field"
       >
         {/* Cancha */}
         <Box

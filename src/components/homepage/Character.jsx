@@ -10,7 +10,6 @@ import {
 import Grid from '@mui/material/Grid2';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
 import { User } from "../../components/user/User"
-import '../../styles/login.css';
 import { motion } from "framer-motion";
 
 
@@ -30,13 +29,13 @@ export default function Character({name}) {
               <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 3 }}>
                 <Box sx={{ position: "relative", mb: 3 }}>
                 <motion.div
-                animate={{ y: [0, -20, 0, -20, 0] }} // Hace dos saltos
+                animate={{ y: [0, -20, 0, -20, 0] }} 
                 transition={{
-                  duration: 1.5, // Duración total de los dos saltos
-                  times: [0, 0.2, 0.4, 0.6, 1], // Controla el ritmo del movimiento
-                  repeat: Infinity, // Repite la animación infinitamente
-                  repeatDelay: 3, // Pausa de 3 segundos antes de repetir
-                  ease: "easeInOut", // Hace que la animación sea más natural
+                  duration: 1.5, 
+                  times: [0, 0.2, 0.4, 0.6, 1], 
+                  repeat: Infinity, 
+                  repeatDelay: 3, 
+                  ease: "easeInOut", 
                 }}
               >
                 <User width={120} height={120} name={name} move={false} border={"white"} />
