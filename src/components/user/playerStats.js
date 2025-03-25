@@ -2,7 +2,7 @@ import { useMsal } from "@azure/msal-react";
 
 export const usePlayerStats = () => {
     const { accounts } = useMsal();
-    const playerName = accounts.length > 0 ? accounts[0].name : "Jugador 1"; 
+    const playerName = accounts.length > 0 ? accounts[0].name : "Player"; 
     return {
         name: playerName,
         matchesPlayed: 120,

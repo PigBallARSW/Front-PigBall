@@ -166,10 +166,16 @@ for (let i = -fieldWidth; i < fieldWidth; i += stripeWidth) {
 
   players.forEach(player => {
     // Dibujar un círculo por cada jugador en su posición (x, y)
-    const playerRadius = 10; // Radio del círculo del jugador (puedes cambiarlo)
+    const playerRadius = 20; // Radio del círculo del jugador (puedes cambiarlo)
     ctx.beginPath();
     ctx.arc(player.x, player.y, playerRadius, 0, Math.PI * 2);
-    ctx.fillStyle = "red"; // Color del jugador
+    if (player.team === 0){
+      ctx.fillStyle = "red"; // Color del jugador
+    }
+    else{
+      ctx.fillStyle = "blue"; // Color del jugador
+    }
+    
     ctx.fill();
     ctx.stroke();
   });

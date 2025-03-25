@@ -14,7 +14,7 @@ export default function App() {
             <Route path="/" element={<PageLayout />}>
                 <Route index element={<HomePage />} />
             </Route>
-            <Route path="/game" element={<MainGame />} />
+            <Route path="/game/:id" element={<MainGame />} />
             <Route path="/homepage" element={<Main />}>
                 <Route index element={<HomePage />} />
                 <Route path="lobby" element={<Lobby />} />
