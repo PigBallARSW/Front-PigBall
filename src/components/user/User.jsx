@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {Avatar} from "@mui/material"
-import '../../styles/game.css'
  
 export const User = ({width, height, name, move, border}) => {
   function stringAvatar(name) {
@@ -41,7 +40,6 @@ export const User = ({width, height, name, move, border}) => {
         alignItems: "center",
         justifyContent: "center"
       }}
-      className = {move ? 'circleGame' : '' }
     >
     </Avatar>
     )

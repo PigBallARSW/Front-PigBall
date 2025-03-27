@@ -17,7 +17,6 @@ import {
   CheckCircle as CheckCircleIcon,
   Star as StarIcon,
 } from "@mui/icons-material"
-import '../../styles/login.css';
 import { motion } from "framer-motion";
 import { useEffect, useState } from 'react';
 export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,winRate }) {

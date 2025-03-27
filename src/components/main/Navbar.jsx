@@ -1,31 +1,48 @@
 "use client"
-import { useState } from "react"
+
+import React, { useState, useEffect, useRef } from "react"
 import {
-  AppBar,
-  Toolbar,
+  Box,
   Typography,
   Button,
-  Box,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  ListItemSecondaryAction,
   Avatar,
-  Menu,
-  MenuItem,
+  IconButton,
   Paper,
   Divider,
-  useMediaQuery,
+  Chip,
+  TextField,
+  InputAdornment,
+  CircularProgress,
   useTheme,
-  Chip
+  useMediaQuery,
+  AppBar,
+  Toolbar,
+  Tooltip,
 } from "@mui/material"
-import FaceIcon from '@mui/icons-material/Face';
 import {
-  Logout as LogoutIcon,
-  Person as UserIcon,
-  Home as HomeIcon,
+  Add,
+  Refresh,
+  Search,
+  SportsSoccer,
+  Public,
+  Lock,
+  Star,
+  StarBorder,
+  People,
+  EmojiEvents,
+  AccessTime,
+  Home,
+  Logout,
 } from "@mui/icons-material"
+import { motion } from "framer-motion"
 import { useMsal } from "@azure/msal-react";
 import { usePlayerStats } from "../user/playerStats"
-import { User } from "../user/User"
 import { useNavigate } from "react-router-dom";
-import Photo from "../user/photo";
 
 export const Navbar = () => {
     const playerStats = usePlayerStats();
@@ -40,9 +57,6 @@ export const Navbar = () => {
       await instance.logoutPopup();
       navigation("/");
     };
-    const handleProfile = () =>{
-      navigation("/profile");
-    }
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -51,10 +65,11 @@ export const Navbar = () => {
         setAnchorEl(null)
 
     }
-    return (
-        <AppBar position="static">
-          <Toolbar>
-            <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
+    const handleGoHome = () => {
+      navigation("homepage");
+    }
+    /*
+    <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
               <Avatar sx={{ bgcolor: "secondary.main", width: 32, height: 32, mr: 1 }}>
                 <Typography variant="caption" sx={{ color: "primary.main", fontWeight: "bold" }}>
                   2D
@@ -64,52 +79,47 @@ export const Navbar = () => {
                 PIGBALL
               </Typography>
             </Box>
+    */
+    return (
+      <AppBar
+      position="static"
+      elevation={0}
+      sx={{
+        height: 40,
+        bgcolor: "#0e250f",
+      }}
+    >
+      <Toolbar variant="dense" sx={{ minHeight: 40, px: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <SportsSoccer sx={{ color: "white", fontSize: 20, mr: 1 }} />
+          <Typography
+            variant="subtitle2"
+            component="div"
+            sx={{
+              color: "white",
+              fontWeight: "bold",
+              display: { xs: "none", sm: "block" },
+            }}
+          >
+            PigBall
+          </Typography>
+        </Box>
 
-            {!isMobile && (
-              <Box sx={{ flexGrow: 1, display: "flex", gap: 1, justifyContent: "center" }}>
-                <Button color="inherit" startIcon={<HomeIcon />}>
-                  Home
-                </Button>
-              </Box>
-            )}
+        <Box sx={{ flexGrow: 1 }} />
 
-            <Box>
-              <Chip 
-                id="profile-button"
-                aria-controls={open ? "profile-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
-                color="primary"
-                sx={{
-                  "&:hover": { bgcolor: "primary.main" },
-                  px: 2,
-                }}
-                icon={<FaceIcon />} 
-                label={playerStats.name.split(' ')[0]} variant="outlined" />
-                
-              <Menu
-                id="profile-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                disableScrollLock={true}
-                slotProps={{
-                  "aria-labelledby": "profile-button",
-                }}
-              >
-                <MenuItem onClick={handleProfile}>
-                  <UserIcon fontSize="small" sx={{ mr: 1 }} />
-                  My profile
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
-                  <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
-                  Log Out
-                </MenuItem>
-              </Menu>
-            </Box>
-          </Toolbar>
-        </AppBar>
+        <Box sx={{ display: "flex" }}>
+          <Tooltip title="Ir al inicio">
+            <IconButton size="small" onClick={handleGoHome} sx={{ color: "white" }}>
+              <Home fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Cerrar sesión">
+            <IconButton size="small" onClick={handleLogout} sx={{ color: "white", ml: 1 }}>
+              <Logout fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Toolbar>
+    </AppBar>
     )
 }
