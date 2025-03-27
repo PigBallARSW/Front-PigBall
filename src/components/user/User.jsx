@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import {Avatar} from "@mui/material"
  
 export const User = ({width, height, name, move, border}) => {
   function stringAvatar(name) {
+    console.log(move);
     return {
       sx: {
         bgcolor: stringToColor(name),
@@ -44,3 +45,11 @@ export const User = ({width, height, name, move, border}) => {
     </Avatar>
     )
 }
+
+User.propTypes = {
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,  // Puede ser un número o una cadena
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, // Puede ser un número o una cadena
+  name: PropTypes.string.isRequired, // El nombre debe ser una cadena
+  move: PropTypes.any, // Aquí no se está utilizando, pero se asume que puede ser cualquier tipo
+  border: PropTypes.string.isRequired, // El borde debe ser una cadena
+};
