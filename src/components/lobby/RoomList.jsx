@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -19,53 +19,40 @@ import {
 import {
   SportsSoccer,
   Lock,
-  Star,
-  StarBorder,
   People,
   EmojiEvents,
   AccessTime,
 } from "@mui/icons-material"
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import LoginIcon from '@mui/icons-material/Login';
 import { motion } from "framer-motion"
 
 
 export default function RoomList({ gameRooms }) {
-  const [rooms, setRooms] = useState(gameRooms);
   const [filteredRooms, setFilteredRooms] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const theme = useTheme();
 
   useEffect(() => {
-    setRooms(gameRooms);
-  }, [gameRooms]);
-
-
-  useEffect(() => {
-    console.log("Updated Rooms:", rooms);
-
     // Filtrar salas según el término de búsqueda
-    const filtered = rooms.filter(
+    const filtered = gameRooms.filter(
       (room) =>
         room.gameName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         room.creatorName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     setFilteredRooms(filtered); // ✅ Guardamos el resultado en el estado
-  }, [rooms, searchTerm]); // ✅ Se ejecuta cuando `rooms` o `searchTerm` cambian
+  }, [gameRooms, searchTerm]); // ✅ Se ejecuta cuando `rooms` o `searchTerm` cambian
 
-
-  // Alternar favorito
-  const toggleFavorite = (id) => {
-    setRooms(rooms.map((room) => (room.id === id ? { ...room, isFavorite: !room.isFavorite } : room)))
-  }
 
   // Obtener el color según el estado de la sala
   const getStatusColor = (status) => {
     switch (status) {
-      case "En espera":
+      case "WAITING_FOR_PLAYERS":
         return theme.palette.success.main
-      case "En progreso":
+      case "IN_PROGRESS":
         return theme.palette.warning.main
-      case "Completa":
+      case "FINISHED":
         return theme.palette.error.main
       default:
         return theme.palette.info.main
@@ -186,37 +173,32 @@ export default function RoomList({ gameRooms }) {
                           color: "white",
                         }}
                       />
-                      <Typography
-                        variant="caption"
-                        component="span"
-                        color="text.secondary"
-                        sx={{
-                          ml: "auto",
-                          display: { xs: "none", sm: "block" },
-                          color: "rgba(255, 255, 255, 0.5)",
-                        }}
-                      >
-                        {new Date(room.creationTime*1000).toLocaleString()}
-                      </Typography>
+                      <Chip 
+                      icon={<CalendarMonthIcon />} 
+                      label={new Date(room.creationTime*1000).toLocaleString()} 
+                      size="small"
+                      variant="outlined" 
+                      sx={{
+                        mr: 1,
+                        mb: { xs: "0.5", sm: 0 },
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                        display: { xs: "none", sm: "flex" },
+                        color: "white",
+                        "& .MuiChip-icon": {
+                          color: "white",
+                        },
+                      }}/>
                     </Box>
                   </Box>
                 }
               />
-
               <ListItemSecondaryAction>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <IconButton
-                    edge="end"
-                    onClick={() => toggleFavorite(room.id)}
-                    sx={{ color: room.isFavorite ? "#FFD700" : "rgba(255, 255, 255, 0.5)" }}
-                  >
-                    {room.isFavorite ? <Star /> : <StarBorder />}
-                  </IconButton>
+                <Box sx={{ display: "flex", flexDirection: "column",  width: "auto" }}>
                   <Button
                     onClick={() => joinGame(room.id)}
                     variant="contained"
                     size="small"
-                    disabled={room.status === "Completa" || room.status === "En progreso"}
+                    disabled={room.status === "FINISHED" || room.status === "IN_PROGRESS" || room.status === "STARTING" }
                     sx={{
                       ml: 1,
                       display: { xs: "none", sm: "inline-flex" },
@@ -232,6 +214,25 @@ export default function RoomList({ gameRooms }) {
                   >
                     Join
                   </Button>
+                  <IconButton
+                    color="primary"
+                    onClick={() => joinGame(room.id)}
+                    sx={{
+                      ml: 1,
+                      display: { xs: "inline-flex", sm: "none" },
+                      bgcolor: "#4CAF50",
+                      color: "white",
+                      "&:hover": {
+                        bgcolor: "#388E3C",
+                      },
+                      "&.Mui-disabled": {
+                        bgcolor: "rgba(255, 255, 255, 0.27)",
+                        color: "rgba(255, 255, 255, 0.49)",
+                      },
+                    }}
+                      >
+                      <LoginIcon />
+                  </IconButton>
                 </Box>
               </ListItemSecondaryAction>
             </ListItem>

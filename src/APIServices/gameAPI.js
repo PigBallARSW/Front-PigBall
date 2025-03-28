@@ -16,10 +16,7 @@ export async function createRoom(newRoom, playerName) {
             maxPlayers: newRoom.maxPlayers,
             isPrivate: newRoom.isPrivate
         };
-
         const response = await axios.post(endpoint, requestBody);
-
-        console.log(response.status);
         return response;
     } catch (error) {
         console.error("Error creating room:", error);
@@ -31,7 +28,19 @@ export async function getGames() {
     try {
         const endpoint = `${API}/getAllGames`;
         const response = await axios.get(endpoint);
-        console.log(response.status);
+        return response;
+    } catch (error) {
+        console.error("Error getting games:", error);
+        throw error;
+    }
+}
+
+export async function getGame(id) {
+    try {
+        console.log(id);
+        const endpoint = `${API}/getGame/${id}`;
+        const response = await axios.get(endpoint);
+        console.log(response);
         return response;
     } catch (error) {
         console.error("Error getting games:", error);
