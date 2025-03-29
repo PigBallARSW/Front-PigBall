@@ -5,8 +5,6 @@ import {
   Typography,
   Button,
   IconButton,
-  useTheme,
-  useMediaQuery,
   Dialog,
   DialogTitle,
   DialogContent,

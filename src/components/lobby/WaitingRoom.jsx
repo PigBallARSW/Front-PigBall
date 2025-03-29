@@ -61,7 +61,7 @@ export const WaitingRoom = ({currentUser, id,onStartGame,players, leaveRoom})  =
             setHost(host);
         }
     
-    }, [id, players]); 
+    }, [id, players, currentUser, getRoom, roomData.creatorName]); 
 
     const startGame = () => {
       if(players.length > 1){
