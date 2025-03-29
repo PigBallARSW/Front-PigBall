@@ -39,7 +39,7 @@ export const User = ({width, height, name, move, border, color}) => {
         width: {width},
         height: {height},
         bgcolor: color ? color : "secondary.main",
-        border: "3px solid "+`${border}`,
+        border: `3px solid ${border}`,
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         display: "flex",
         alignItems: "center",
