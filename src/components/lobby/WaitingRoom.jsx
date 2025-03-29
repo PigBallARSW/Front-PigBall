@@ -51,8 +51,9 @@ export const WaitingRoom = ({currentUser, id,onStartGame,players, leaveRoom})  =
       }
       useEffect(() => {
         const fetchRoom = async () => {
-          await getRoom();
+            await getRoom();
         };
+    
         if (id && players) { 
             const teamAPlayers = players.filter((player) => player.team === 0);
             setTeamAPlayers(teamAPlayers);
@@ -62,9 +63,10 @@ export const WaitingRoom = ({currentUser, id,onStartGame,players, leaveRoom})  =
             const host = currentUser === roomData.creatorName;
             setHost(host);
         }
-        fetchRoom()
     
-    }, [id, players, currentUser, roomData.creatorName]); 
+        fetchRoom();
+    
+    }, [id, players, currentUser, roomData.creatorName, getRoom]); // Added getRoom here
 
     const startGame = () => {
       if(players.length > 1){
