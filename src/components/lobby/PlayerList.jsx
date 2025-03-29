@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Box,
   Typography,
@@ -19,10 +19,16 @@ import { User } from "../user/User"
   
 export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => {
     // Estados para los nombres de los equipos
-        const [teamNames, setTeamNames] = useState({
-          A: "A",
-          B: "B",
-        })
+        const [teamNames, setTeamNames] = useState();
+
+        useEffect(() => {
+          setTeamNames({
+            A: "A",
+            B: "B",
+          });
+        },[]);
+
+        
     return (
         <>
             <Box
