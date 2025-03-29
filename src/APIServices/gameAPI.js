@@ -2,13 +2,14 @@ import axios from "axios";
 
 // Leer variables de entorno
 
-const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL;
+//const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL;
+const API = "https://localhost:8081";
 
 export async function createRoom(newRoom, playerName) {
 
     try {
         const creatorName = playerName || "default";
-        const endpoint = `${API}/createGame`;
+        const endpoint = `${API}/lobby`;
 
         const requestBody = {
             gameName: newRoom.name,
@@ -29,7 +30,7 @@ export async function createRoom(newRoom, playerName) {
 
 export async function getGames() {
     try {
-        const endpoint = `${API}/getAllGames`;
+        const endpoint = `${API}/lobby`;
         const response = await axios.get(endpoint);
         console.log(response.status);
         return response;
