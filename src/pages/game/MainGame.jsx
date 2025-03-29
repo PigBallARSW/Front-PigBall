@@ -123,7 +123,7 @@ useEffect(() => {
       isConnected.current = false;
     }
   };
-}, [id]); // 🔹 Solo depende de `id`, no de `playerStats.name`
+}, [id, playerStats.name]); // 🔹 Solo depende de `id`, no de `playerStats.name`
 
 
   return (

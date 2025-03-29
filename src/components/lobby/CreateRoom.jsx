@@ -30,8 +30,6 @@ import { usePlayerStats } from "../../components/user/playerStats";
 
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
     const playerStats = usePlayerStats();
-    const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"))
     const [newRoom, setNewRoom] = useState({
       name: "",
       isPrivate: false,
