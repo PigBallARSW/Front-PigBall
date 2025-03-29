@@ -1,25 +1,22 @@
+
 import axios from "axios";
 
 // Leer variables de entorno
 
+
 const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL;
 
 export async function createRoom(newRoom, playerName) {
-
     try {
         const creatorName = playerName || "default";
-        const endpoint = `${API}/createGame`;
-
+        const endpoint = `${API}/lobby`;
         const requestBody = {
-            gameName: newRoom.name,
+            lobbyName: newRoom.name,
             creatorName: creatorName,
             maxPlayers: newRoom.maxPlayers,
-            isPrivate: newRoom.isPrivate
+            privateLobby: newRoom.isPrivate
         };
-
         const response = await axios.post(endpoint, requestBody);
-
-        console.log(response.status);
         return response;
     } catch (error) {
         console.error("Error creating room:", error);
@@ -29,9 +26,22 @@ export async function createRoom(newRoom, playerName) {
 
 export async function getGames() {
     try {
-        const endpoint = `${API}/getAllGames`;
+        console.log(API);
+        const endpoint = `${API}/lobby`;
         const response = await axios.get(endpoint);
-        console.log(response.status);
+        return response;
+    } catch (error) {
+        console.error("Error getting games:", error);
+        throw error;
+    }
+}
+
+export async function getGame(id) {
+    try {
+        console.log(id);
+        const endpoint = `${API}/lobby/${id}`;
+        const response = await axios.get(endpoint);
+        console.log(response);
         return response;
     } catch (error) {
         console.error("Error getting games:", error);

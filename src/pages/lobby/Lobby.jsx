@@ -30,15 +30,16 @@ export const Lobby = () => {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [openCreateDialog, setOpenCreateDialog] = useState(false)
 
+  const getRooms = async () => {
+    const response = await getGames();
+    if(response){
+      setRooms(response.data);
+    }
+  }
   const handleRefresh = () => {
     setIsRefreshing(true)
-
-    const updateRooms = async () => {
-      setRooms(await getGames())
-      setRooms(rooms)
-      setIsRefreshing(false)
-    }
-    updateRooms()
+    getRooms()
+    setIsRefreshing(false)
   }
   function showForm() {
     setOpenCreateDialog(true);
@@ -46,17 +47,10 @@ export const Lobby = () => {
   function hideForm() {
     setOpenCreateDialog(false);
   }
-
+  
   useEffect(() => {
-    getGames()
-      .then((response) => {
-        console.log(response.data);
-        setRooms(response.data);
-      })
-      .catch((error) => {
-        console.error("Error getting games:", error);
-      });
-  }, []);
+    getRooms();
+  }, [rooms]);
 
   return (
     <Box
@@ -77,11 +71,11 @@ export const Lobby = () => {
         sx={{
           width: "100%",
           maxWidth: 900,
-          maxHeight: "calc(100vh - 90px)",
+          height: "calc(100vh - 90px)",
           borderRadius: 3,
           overflow: "hidden",
-          bgcolor: "rgba(255, 255, 255, 0.8)",
-          border: "1px solid #fff"
+          border: "1px solid #fff",
+          bgcolor: "#0e250f"
         }}
       >
         <Box
@@ -90,7 +84,6 @@ export const Lobby = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderBottom: 1,
             borderColor: "divider",
             borderBottom: "2px solid #4CAF50",
             background: "linear-gradient(to right,rgb(69, 138, 55),rgb(90, 153, 82))",
@@ -139,7 +132,7 @@ export const Lobby = () => {
         <Box sx={{ p: 2, borderColor: "divider", borderBottom: "2px solid #4CAF50", bgcolor: "rgb(75, 145, 61)" }}>
           <TextField
             fullWidth
-            placeholder="Buscar sala por nombre, anfitrión o tipo..."
+            placeholder="Search for a room by name, host, or type..."
             variant="outlined"
             size="small"
             value={searchTerm}

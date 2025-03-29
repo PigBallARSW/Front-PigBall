@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import {Avatar} from "@mui/material"
  
-export const User = ({width, height, name, move, border}) => {
-  function stringAvatar(name) {
-    console.log(border);
-    console.log(move);
+export const User = ({width, height, name, move, border, color}) => {
+  function stringAvatar() {
+    const nameParts = name.split(" ");
     return {
       sx: {
         bgcolor: stringToColor(name),
       },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+      children: nameParts.length > 1
+        ? `${nameParts[0][0]}${nameParts[1][0]}`
+        : nameParts[0][0], // Si solo tiene un nombre, toma la primera letra.
     };
   }
+  
   function stringToColor(string) {
+    console.log(move);
+    console.log(border);
     let hash = 0;
     let i;
   
@@ -35,7 +39,7 @@ export const User = ({width, height, name, move, border}) => {
       sx={{
         width: {width},
         height: {height},
-        bgcolor: "secondary.main",
+        bgcolor: color ? color : "secondary.main",
         border: "3px solid white",
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         display: "flex",
