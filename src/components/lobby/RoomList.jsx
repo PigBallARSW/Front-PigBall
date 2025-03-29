@@ -37,7 +37,7 @@ export default function RoomList({ gameRooms }) {
     // Filtrar salas según el término de búsqueda
     const filtered = gameRooms.filter(
       (room) =>
-        room.gameName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        room.lobbyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         room.creatorName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -137,9 +137,9 @@ export default function RoomList({ gameRooms }) {
                 primary={
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography variant="subtitle1" component="span" sx={{ fontWeight: "bold", mr: 1 }}>
-                      {room.gameName}
+                      {room.lobbyName}
                     </Typography>
-                    {room.privateGame && <Lock fontSize="small" sx={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 16 }} />}
+                    {room.privateLobby && <Lock fontSize="small" sx={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 16 }} />}
                   </Box>
                 }
                 secondary={
