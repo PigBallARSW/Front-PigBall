@@ -7,11 +7,9 @@ import axios from "axios";
 const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL;
 
 export async function createRoom(newRoom, playerName) {
-
     try {
         const creatorName = playerName || "default";
         const endpoint = `${API}/lobby`;
-
         const requestBody = {
             lobbyName: newRoom.name,
             creatorName: creatorName,
@@ -41,7 +39,7 @@ export async function getGames() {
 export async function getGame(id) {
     try {
         console.log(id);
-        const endpoint = `${API}/getGame/${id}`;
+        const endpoint = `${API}/lobby/${id}`;
         const response = await axios.get(endpoint);
         console.log(response);
         return response;
