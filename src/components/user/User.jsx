@@ -3,6 +3,8 @@ import {Avatar} from "@mui/material"
  
 export const User = ({width, height, name, move, border}) => {
   function stringAvatar(name) {
+    console.log(border);
+    console.log(move);
     return {
       sx: {
         bgcolor: stringToColor(name),
@@ -18,7 +20,7 @@ export const User = ({width, height, name, move, border}) => {
     for (i = 0; i < string.length; i += 1) {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
-  
+    
     let color = '#';
   
     for (i = 0; i < 3; i += 1) {
@@ -34,7 +36,7 @@ export const User = ({width, height, name, move, border}) => {
         width: {width},
         height: {height},
         bgcolor: "secondary.main",
-        border: "3px solid "+`${border}`,
+        border: "3px solid white",
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         display: "flex",
         alignItems: "center",
