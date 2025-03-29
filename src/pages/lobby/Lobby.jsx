@@ -74,7 +74,6 @@ export const Lobby = () => {
           height: "calc(100vh - 90px)",
           borderRadius: 3,
           overflow: "hidden",
-          bgcolor: "rgba(255, 255, 255, 0.8)",
           border: "1px solid #fff",
           bgcolor: "#0e250f"
         }}
@@ -85,7 +84,6 @@ export const Lobby = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderBottom: 1,
             borderColor: "divider",
             borderBottom: "2px solid #4CAF50",
             background: "linear-gradient(to right,rgb(69, 138, 55),rgb(90, 153, 82))",

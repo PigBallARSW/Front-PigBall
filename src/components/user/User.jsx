@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {Avatar} from "@mui/material"
  
 export const User = ({width, height, name, move, border, color}) => {
@@ -15,6 +15,7 @@ export const User = ({width, height, name, move, border, color}) => {
   }
   
   function stringToColor(string) {
+    console.log(move);
     let hash = 0;
     let i;
   
