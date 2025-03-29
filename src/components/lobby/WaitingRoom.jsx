@@ -7,39 +7,26 @@ import {
   Paper,
   Chip,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Tooltip,
-  useTheme,
-  useMediaQuery,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Avatar
 } from "@mui/material"
 import {
   SportsSoccer,
   ExitToApp,
-  PlayArrow,
   PersonAdd,
   ContentCopy,
   People,
-  EmojiEvents,
-  AccessTime,
   Public,
   Lock,
-  ArrowBack,
   Timer,
 } from "@mui/icons-material"
-import Groups2Icon from '@mui/icons-material/Groups2';
-import { User } from "../user/User"
 import {getGame} from "../../APIServices/gameAPI"
 import { PlayerList } from "./PlayerList";
   
-export const WaitingRoom = ({currentUser, id,onStartGame,players})  => {
+export const WaitingRoom = ({currentUser, id,onStartGame,players, leaveRoom})  => {
     const [roomData, setRoomData] = useState({
         gameName: "Sala",
         creatorName: "",
@@ -69,11 +56,20 @@ export const WaitingRoom = ({currentUser, id,onStartGame,players})  => {
             setTeamAPlayers(teamAPlayers);
             const teamBPlayers = players.filter((player) => player.team === 1);
             setTeamBPlayers(teamBPlayers);
+            console.log(currentUser);
             const host = currentUser === roomData.creatorName;
             setHost(host);
         }
     
     }, [id, players]); 
+
+    const startGame = () => {
+      if(players.length > 1){
+        onStartGame();
+      }else{
+        alert("Debe haber almenos dos integrantes");
+      }
+    }
 
     
   
@@ -84,8 +80,7 @@ export const WaitingRoom = ({currentUser, id,onStartGame,players})  => {
   
     const handleLeaveRoom = () => {
       setIsLeaveDialogOpen(false)
-      // Aquí se implementaría la lógica para salir de la sala
-      // Por ahora, solo mostramos una alerta
+      leaveRoom();
       alert("Has abandonado la sala")
     }
     return (
@@ -117,16 +112,6 @@ export const WaitingRoom = ({currentUser, id,onStartGame,players})  => {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton
-              sx={{
-                color: "white",
-                mr: 1,
-                bgcolor: "rgba(255,255,255,0.1)",
-                "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
-              }}
-            >
-              <ArrowBack />
-            </IconButton>
             <Typography
               variant="h6"
               component="div"
@@ -248,7 +233,7 @@ export const WaitingRoom = ({currentUser, id,onStartGame,players})  => {
             />
             </Box>
             {/* Contenedor de equipos */}
-            <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={onStartGame} host={host}/>
+            <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={startGame} host={host}/>
           </Paper>
         </Box>
   

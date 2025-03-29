@@ -61,7 +61,6 @@ export default function RoomList({ gameRooms }) {
 
   // Obtener el icono según el tipo de juego
   const getGameTypeIcon = (gameType) => {
-
     switch (gameType) {
       case "Liga":
         return <EmojiEvents fontSize="small" />

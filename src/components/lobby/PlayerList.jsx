@@ -1,48 +1,27 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
   Box,
   Typography,
   Button,
-  Paper,
   Chip,
-  IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Tooltip,
-  useTheme,
-  useMediaQuery,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Avatar
 } from "@mui/material"
 import {
-  SportsSoccer,
-  ExitToApp,
   PlayArrow,
-  PersonAdd,
-  ContentCopy,
-  People,
-  EmojiEvents,
-  AccessTime,
-  Public,
-  Lock,
-  ArrowBack,
-  Timer,
 } from "@mui/icons-material"
 import Groups2Icon from '@mui/icons-material/Groups2';
 import { User } from "../user/User"
-import {getGame} from "../../APIServices/gameAPI"
   
 export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => {
     // Estados para los nombres de los equipos
         const [teamNames, setTeamNames] = useState({
-          A: "Equipo A",
-          B: "Equipo B",
+          A: "A",
+          B: "B",
         })
     return (
         <>
@@ -77,7 +56,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                         fontWeight: "bold",
                     }}
                     >
-                    <Groups2Icon sx={{ mr: 1, fontSize: 24 }} /> {teamNames.A} ({teamAPlayers.length})
+                    <Groups2Icon sx={{ mr: 1, fontSize: 24 }} /> {"Equipo" + teamNames.A} ({teamAPlayers.length})
                     </Typography>
                     <Box
                     sx={{
@@ -252,8 +231,8 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                 borderTop: "2px solid #4CAF50",
                 bgcolor: "rgba(27, 94, 32, 0.5)",
                 display: "flex",
-                justifyContent: "space-between",
                 alignItems: "center",
+                justifyContent: "center"
               }}
             >
               <Button
@@ -262,19 +241,19 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                 startIcon={<PlayArrow />}
                 onClick={onStartGame}
                 disabled = {!host}
+                loadingPosition="start"
+                loading = {!host}
                 sx={{
-                  flex: 1,
-                  mr: 1,
-                  bgcolor: "transparent",
+                  bgcolor: `${host ? "#4CAF50" : "transparent"}`,
                   borderColor: "#4CAF50",
-                  color: "#4CAF50",
+                  color: "white",
                   "&:hover": {
-                    bgcolor: "rgba(76, 175, 80, 0.1)",
+                    bgcolor: "rgba(58, 128, 60, 0.81)",
                   },
                   "&.Mui-disabled": {
                     borderColor: "#4CAF50",
-                    color: "rgba(255, 255, 255, 0.49)",
-                      }
+                    color: "rgba(93, 214, 97, 0.81)",
+                  }
                 }}
               >
                 {host ? "Empezar partida" : "Esperando a que el anfitrión inicie partida"}
