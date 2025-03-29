@@ -68,7 +68,7 @@ useEffect(() => {
   if (isConnected.current) return; // Evitar conexiones múltiples
 
   let playerName = playerStats.name || `Player${Math.floor(Math.random() * 1000)}`;
-  const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL;
+  const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";
 
   console.log("Conectando al broker:", brokerUrl);
   const client = new Client({
