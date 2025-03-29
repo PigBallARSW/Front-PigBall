@@ -16,6 +16,7 @@ export const User = ({width, height, name, move, border, color}) => {
   
   function stringToColor(string) {
     console.log(move);
+    console.log(border);
     let hash = 0;
     let i;
   
@@ -39,7 +40,7 @@ export const User = ({width, height, name, move, border, color}) => {
         width: {width},
         height: {height},
         bgcolor: color ? color : "secondary.main",
-        border: `3px solid ${border}`,
+        border: "3px solid white",
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         display: "flex",
         alignItems: "center",
