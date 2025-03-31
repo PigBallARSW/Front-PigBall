@@ -1,61 +1,55 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
-
 import { usePlayerStats } from "../../components/user/playerStats";
 import { SoccerField } from "../../components/game/SoccerField";
-import { useParams } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { WaitingRoom } from "../../components/lobby/WaitingRoom";
+  
 export const MainGame = () => {
   const { id } = useParams();
-
   const playerStats = usePlayerStats();
-  const [players, setPlayers] = useState([]); // Estado de los jugadores
+  const [players, setPlayers] = useState([]);
+  const [gameStarted, setGameStarted] = useState(false);
   const stompClient = useRef(null);
-  const movementState = useRef({
-    up: false,
-    down: false,
-    left: false,
-    right: false,
-  });
-  const FRAME_RATE = 60; // frames por segundo
+  const movementState = useRef({ up: false, down: false, left: false, right: false });
+  const FRAME_RATE = 60;
+  const navigate = useNavigate();
+  const playersRef = useRef([]);
 
-  // Registrar eventos de teclado para actualizar movementState
+  // ✅ Función para enviar el inicio del juego al backend
+  const handleStartGame = () => {
+    console.log("Iniciando juego...");
+    if (stompClient.current && stompClient.current.connected) {
+      stompClient.current.publish({
+        destination: `/app/start/${id}`
+      });
+    } else {
+      console.error("No conectado al broker, no se pudo iniciar el juego.");
+    }
+  };
+  // ✅ Función para enviar el inicio del juego al backend
+  const handleLeaveGame = () => {
+    if (stompClient.current && stompClient.current.connected) {
+      stompClient.current.publish({
+        destination: `/app/leave/${id}`
+      });
+  
+      navigate("/homepage/lobby")
+    } else {
+      console.error("No conectado al broker, no se pudo dejar el juego.");
+    }
+  };
+  // 🎮 Manejo de teclas
   useEffect(() => {
     const handleKeyDown = (e) => {
-      switch (e.key) {
-        case "ArrowUp":
-          movementState.current.up = true;
-          break;
-        case "ArrowDown":
-          movementState.current.down = true;
-          break;
-        case "ArrowLeft":
-          movementState.current.left = true;
-          break;
-        case "ArrowRight":
-          movementState.current.right = true;
-          break;
-        default:
-          break;
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        movementState.current[e.key.replace("Arrow", "").toLowerCase()] = true;
       }
     };
 
     const handleKeyUp = (e) => {
-      switch (e.key) {
-        case "ArrowUp":
-          movementState.current.up = false;
-          break;
-        case "ArrowDown":
-          movementState.current.down = false;
-          break;
-        case "ArrowLeft":
-          movementState.current.left = false;
-          break;
-        case "ArrowRight":
-          movementState.current.right = false;
-          break;
-        default:
-          break;
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        movementState.current[e.key.replace("Arrow", "").toLowerCase()] = false;
       }
     };
 
@@ -68,100 +62,78 @@ export const MainGame = () => {
     };
   }, []);
 
-  // Conectar al STOMP broker al montar el componente
-  useEffect(() => {
-    let playerName = playerStats.name;
-    console.log("Nombre del jugador:", playerName);
-    if (playerName === "Player") {
-      playerName = playerName + Math.floor(Math.random() * 1000);
+  const isConnected = useRef(false);
+
+useEffect(() => {
+  if (isConnected.current) return; // Evitar conexiones múltiples
+
+  let playerName = playerStats.name || `Player${Math.floor(Math.random() * 1000)}`;
+  const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL;
+
+  console.log("Conectando al broker:", brokerUrl);
+  const client = new Client({
+    brokerURL: brokerUrl,
+    onConnect: () => {
+      console.log("Conectado al WebSocket");
+      isConnected.current = true; // Marcar que la conexión está activa
+
+      client.subscribe(`/topic/players/${id}`, (message) => {
+        playersRef.current = JSON.parse(message.body);
+        setPlayers([...playersRef.current]); 
+      });
+
+      client.publish({
+        destination: `/app/join/${id}`,
+        body: JSON.stringify({ name: playerName }),
+      });
+
+      client.subscribe(`/topic/started/${id}`, (message) => {
+        setGameStarted(true);
+      });
+
+      client.subscribe(`/topic/play/${id}`, (message) => {
+        setPlayers(JSON.parse(message.body).players);
+      });
+
+      const intervalId = setInterval(() => {
+        if (client.active && client.connected) {
+          client.publish({
+            destination: `/app/play/${id}`,
+            body: JSON.stringify({
+              player: playerName,
+              dx: movementState.current.right - movementState.current.left,
+              dy: movementState.current.down - movementState.current.up,
+            }),
+          });
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 1000 / FRAME_RATE);
+    },
+    onStompError: (frame) => console.error("Error STOMP:", frame.body),
+    onWebSocketError: (error) => console.error("Error WebSocket:", error),
+  });
+
+  client.activate();
+  stompClient.current = client;
+
+  return () => {
+    if (client.active) {
+      client.deactivate();
+      isConnected.current = false;
     }
-    if (!playerName) {
-      alert("Debe ingresar un nombre para conectarse.");
-      return;
-    }
+  };
+}, [id]); // 🔹 Solo depende de `id`, no de `playerStats.name`
 
-    // Obtiene el broker URL desde la variable de entorno o usa un valor por defecto
-    const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL;
-    console.log("Conectando al broker:", brokerUrl);
-    const client = new Client({
-      brokerURL: brokerUrl,
-      onConnect: (frame) => {
-        console.log("Conectado:", frame);
-
-        // Suscribirse a actualizaciones del juego
-        client.subscribe("/topic/play/" + id, (message) => {
-          const gameData = JSON.parse(message.body);
-          // Actualizar las posiciones de los jugadores
-          setPlayers(gameData.players);
-        });
-
-        // Suscribirse para saber cuando un jugador se une
-        client.subscribe("/topic/players/" + id, (message) => {
-          const playersList = JSON.parse(message.body);
-          console.log("Lista de jugadores actualizada:", playersList);
-          setPlayers(playersList);
-        });
-
-        // Enviar el nombre del jugador al backend
-        console.log("Uniendo al jugador:", playerName);
-        client.publish({
-          destination: "/app/join/"+ id,
-          body: JSON.stringify({
-            name: playerName,
-          }),
-        });
-
-        // Enviar el estado de movimiento periódicamente
-        const intervalId = setInterval(() => {
-          if (client.active && client.connected) {
-            client.publish({
-              destination: "/app/play/"+ id,
-              body: JSON.stringify({
-                player: playerName,
-                dx: movementState.current.right - movementState.current.left,
-                dy: movementState.current.down - movementState.current.up,
-              }),
-            });
-          }
-          else {
-            clearInterval(intervalId);
-            console.log("Desconectado del broker.");
-          }
-        }, 1000 / FRAME_RATE);
-      },
-      onStompError: (frame) => {
-        console.error("Error del broker:", frame.headers["message"]);
-        console.error("Detalles adicionales:", frame.body);
-      },
-      onWebSocketError: (error) => {
-        console.error("Error en el websocket:", error);
-      },
-    });
-
-    client.activate();
-    stompClient.current = client;
-
-    // Desconectar al desmontar el componente
-    return () => {
-      if (client.active) {
-        client.deactivate();
-      }
-    };
-  }, [playerStats.name]);
 
   return (
-    <main className="overflow-hidden p-0 m-0">
-      <style jsx global>{`
-        html, body {
-          margin: 0;
-          padding: 0;
-          overflow: hidden;
-          width: 100%;
-          height: 100%;
-        }
-      `}</style>
-      {/* Pasar la lista de jugadores desde el estado actualizado */}
-      <SoccerField players={players} />
+    <main>
+      {gameStarted ? (
+        <SoccerField players={players} />
+      ) : (
+        <WaitingRoom currentUser = {playerStats.name} id={id} onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame}/>
+      )}
     </main>
   );
 };
+

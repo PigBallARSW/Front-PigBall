@@ -11,5 +11,13 @@ body {
   background-position: center; 
   background-repeat: no-repeat;
   min-height: 100vh;
+  z-index: -1;
+  position: relative;
 }
+.containerField {
+  width: 100vw;
+  height: 100vh;
+  background-color: #2d6a31; /* Color de fondo */
+}
+
 
