@@ -34,6 +34,7 @@ export default function RoomList({ gameRooms }) {
   const theme = useTheme();
 
   useEffect(() => {
+    setSearchTerm("");
     // Filtrar salas según el término de búsqueda
     const filtered = gameRooms.filter(
       (room) =>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {Avatar} from "@mui/material"
  
 export const User = ({width, height, name, move, border, color}) => {
@@ -15,6 +15,8 @@ export const User = ({width, height, name, move, border, color}) => {
   }
   
   function stringToColor(string) {
+    console.log(move);
+    console.log(border);
     let hash = 0;
     let i;
   
@@ -22,7 +24,7 @@ export const User = ({width, height, name, move, border, color}) => {
     for (i = 0; i < string.length; i += 1) {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
-  
+    
     let color = '#';
   
     for (i = 0; i < 3; i += 1) {
@@ -38,7 +40,7 @@ export const User = ({width, height, name, move, border, color}) => {
         width: {width},
         height: {height},
         bgcolor: color ? color : "secondary.main",
-        border: "3px solid "+`${border}`,
+        border: "3px solid white",
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         display: "flex",
         alignItems: "center",

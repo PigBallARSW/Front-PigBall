@@ -2,14 +2,13 @@
 import axios from "axios";
 
 // Leer variables de entorno
-
-
-const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL;
+const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL || "https://backendeci.duckdns.org:8081";
 
 export async function createRoom(newRoom, playerName) {
     try {
         const creatorName = playerName || "default";
         const endpoint = `${API}/lobby`;
+        console.log(endpoint);
         const requestBody = {
             lobbyName: newRoom.name,
             creatorName: creatorName,
