@@ -12,8 +12,8 @@
         "Id": "spa",
         "Name": "ms-identity-javascript-react-spa",
         "Kind" :  "SinglePageApplication",
-        "HomePage": "https://localhost:3000/",
-        "ReplyUrls":"https://localhost:3000/",
+        "HomePage": "https://delightful-river-06553511e.6.azurestaticapps.net/",
+        "ReplyUrls":"https://delightful-river-06553511e.6.azurestaticapps.net/",
         "Audience": "AzureADandPersonalMicrosoftAccount",
         "RequiredResourcesAccess": [
           {

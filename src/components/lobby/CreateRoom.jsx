@@ -5,8 +5,6 @@ import {
   Typography,
   Button,
   IconButton,
-  useTheme,
-  useMediaQuery,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -25,19 +23,16 @@ import {
   Groups,
   Public,
 } from "@mui/icons-material"
-import {createRoom} from "../../APIServices/gameAPI"
 import { usePlayerStats } from "../../components/user/playerStats";
-
+import {useLobbyService } from "../../Modules/useLobbyService";
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
+  const {createNewRoom} = useLobbyService();
     const playerStats = usePlayerStats();
-    const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"))
     const [newRoom, setNewRoom] = useState({
       name: "",
       isPrivate: false,
-      maxPlayers: 8,
-      gameType: "Amistoso",
-      description: "",
+      maxPlayers: 2,
+      description: ""
     })
     const [formErrors, setFormErrors] = useState({
       name: false,
@@ -47,9 +42,8 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
       setNewRoom({
         name: "",
         isPrivate: false,
-        maxPlayers: 8,
-        gameType: "Amistoso",
-        description: "",
+        maxPlayers: 2,
+        description: ""
       })
       setFormErrors({
         name: false,
@@ -62,8 +56,6 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         ...newRoom,
         [name]: value,
       })
-  
-      // Validación para el nombre
       if (name === "name") {
         setFormErrors({
           ...formErrors,
@@ -84,18 +76,18 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         ...newRoom,
         maxPlayers: newValue,
       })
-    }
-  
+    } 
     const handleCreateRoom = async () => {
       if (newRoom.name.trim() === "") {
         setFormErrors({
           ...formErrors,
           name: true,
         })
-        return
+        return;
       }
-      await createRoom(newRoom, playerStats.name);
-      handleCloseCreateDialog()
+      handleCloseCreateDialog();
+      createNewRoom(newRoom, playerStats.name);
+      
     }
 
   return (
