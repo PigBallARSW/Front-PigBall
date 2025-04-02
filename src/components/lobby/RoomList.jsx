@@ -1,6 +1,5 @@
 "use client"
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -25,9 +24,11 @@ import {
 } from "@mui/icons-material"
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { motion } from "framer-motion"
+import { useLobbyService } from "../../Modules/useLobbyService";
 
 
 export const RoomList = ({ gameRooms }) => {
+  const{joinRoom} = useLobbyService();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const getStatusColor = (status) => {
@@ -59,11 +60,6 @@ export const RoomList = ({ gameRooms }) => {
     }
   }
 
-  const navigate = useNavigate();
-
-  const joinGame = (roomId) => {
-    navigate(`/game/${roomId}`);
-  };
 
   return (
     <List sx={{
@@ -92,7 +88,7 @@ export const RoomList = ({ gameRooms }) => {
         gameRooms.map((room) => (
           <React.Fragment key={room.id}>
             <ListItem
-              onClick = {isMobile ? () => joinGame(room.id) : undefined}
+              onClick = {isMobile ? () => joinRoom(room.id) : undefined}
               component={motion.div}
               whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
               sx={{
@@ -172,10 +168,10 @@ export const RoomList = ({ gameRooms }) => {
               <ListItemSecondaryAction>
                 <Box sx={{ display: "flex", flexDirection: "column",  width: "auto" }}>
                   <Button
-                    onClick={() => joinGame(room.id)}
+                    onClick={() => joinRoom(room.id)}
                     variant="contained"
                     size="small"
-                    disabled={room.status === "FINISHED" || room.players.length >= room.maxPlayers}
+                    disabled={room.status === "FINISHED"}
                     sx={{
                       ml: 1,
                       display: { xs: "none", sm: "inline-flex" },

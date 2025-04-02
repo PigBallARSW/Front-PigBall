@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getGame, getGames } from "../../APIServices/gameAPI";
+import { useLobbyService } from "../../Modules/useLobbyService";
 
 
 export function useWaitingRoom (id) {
@@ -11,17 +11,13 @@ export function useWaitingRoom (id) {
         creationTime: 0,
         players: []
       });
-      const getRoom = useCallback(async () => {
-        if (id) {
-          const response = await getGame(id); 
-          if (response) {
-            setRoomData(response.data);
-          }
-        }
-      }, [] );
+      const {getAGame} = useLobbyService();
+      const func = (response) => {
+        setRoomData(response);
+      }
       useEffect(() => {
-        getRoom();
-      },[getRoom]);
+        getAGame(func, id);
+      },[]);
 
       return{roomData}
 

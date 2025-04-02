@@ -45,7 +45,6 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
   const handleLeaveRoom = () => {
     setIsLeaveDialogOpen(false);
     leaveRoom();
-    alert("You have left the room");
   }
   return (
     <Box

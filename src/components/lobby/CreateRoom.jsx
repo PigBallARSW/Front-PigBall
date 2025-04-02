@@ -23,11 +23,10 @@ import {
   Groups,
   Public,
 } from "@mui/icons-material"
-import {createRoom} from "../../APIServices/gameAPI"
 import { usePlayerStats } from "../../components/user/playerStats";
-import { useNavigate } from "react-router-dom"
-
+import {useLobbyService } from "../../Modules/useLobbyService";
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
+  const {createNewRoom} = useLobbyService();
     const playerStats = usePlayerStats();
     const [newRoom, setNewRoom] = useState({
       name: "",
@@ -77,10 +76,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         ...newRoom,
         maxPlayers: newValue,
       })
-    }
-
-    const navigate = useNavigate();
- 
+    } 
     const handleCreateRoom = async () => {
       if (newRoom.name.trim() === "") {
         setFormErrors({
@@ -89,12 +85,9 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         })
         return;
       }
-      const response = await createRoom(newRoom, playerStats.name);
-      if(response && response.data){
-        handleCloseCreateDialog();
-        const id = response.data.id;
-        navigate(`/game/${id}`);
-      }
+      handleCloseCreateDialog();
+      createNewRoom(newRoom, playerStats.name);
+      
     }
 
   return (
