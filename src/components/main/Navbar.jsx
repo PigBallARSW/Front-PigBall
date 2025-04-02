@@ -25,20 +25,8 @@ export const Navbar = () => {
       navigation("/");
     };
     const handleGoHome = () => {
-      navigation("homepage");
+      navigation("/homepage");
     }
-    /*
-    <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-              <Avatar sx={{ bgcolor: "secondary.main", width: 32, height: 32, mr: 1 }}>
-                <Typography variant="caption" sx={{ color: "primary.main", fontWeight: "bold" }}>
-                  2D
-                </Typography>
-              </Avatar>
-              <Typography variant="h6" sx={{ color: "secondary.main", fontWeight: "bold" }}>
-                PIGBALL
-              </Typography>
-            </Box>
-    */
     return (
       <AppBar
       position="static"

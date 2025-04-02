@@ -16,7 +16,6 @@ export const MainGame = () => {
   const playersRef = useRef([]);
 
   const handleStartGame = () => {
-    console.log("Iniciando juego...");
     if (stompClient.current && stompClient.current.connected) {
       stompClient.current.publish({
         destination: `/app/start/${id}`
@@ -50,7 +49,8 @@ export const MainGame = () => {
               dy: movementState.current.down - movementState.current.up,
             }),
           });
-        } else {
+        } 
+        else {
           clearInterval(intervalId);
         }
       }, 1000 / FRAME_RATE);
@@ -66,12 +66,9 @@ useEffect(() => {
 
   let playerName = playerStats.name || `Player${Math.floor(Math.random() * 1000)}`;
   const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";
-
-  console.log("Conectando al broker:", brokerUrl);
   const client = new Client({
     brokerURL: brokerUrl,
     onConnect: () => {
-      console.log("Conectado al WebSocket");
       isConnected.current = true; 
 
       client.subscribe(`/topic/players/${id}`, (message) => {

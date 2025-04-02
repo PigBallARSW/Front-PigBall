@@ -7,7 +7,9 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Avatar
+  Avatar,
+  useMediaQuery,
+  useTheme
 } from "@mui/material"
 import {
   PlayArrow,
@@ -16,6 +18,8 @@ import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import { User } from "../user/User"
   
 export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, host})  => {  
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     return (
         <>
             <Box
@@ -58,17 +62,18 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                         justifyContent: "center"
 
                       }}>
-                    <Avatar
-                    sx={{
-                        width: "80px",
-                        height: "80px",
-                        bgcolor: "#2196f3",
-                        border: "2px solid white",
-                        boxShadow: "0 4px 8px rgba(75, 148, 142, 0.92)",
+                      {!isMobile &&
+                        <Avatar
+                          sx={{
+                              width: "80px",
+                              height: "80px",
+                              bgcolor: "#2196f3",
+                              border: "2px solid white",
+                              boxShadow: "0 4px 8px rgba(75, 148, 142, 0.92)",
 
-                      }}>
-                        A
-                        </Avatar>
+                            }}>
+                            A
+                        </Avatar>}
                     </Box>
                   
                   <List dense disablePadding sx={{pt:"10px"}}>
@@ -153,17 +158,18 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                         justifyContent: "center"
 
                       }}>
-                    <Avatar
-                    sx={{
-                        width: "80px",
-                        height: "80px",
-                        bgcolor: "#f44336",
-                        border: "2px solid white",
-                        boxShadow: "0 4px 8px rgba(148, 75, 75, 0.92)",
+                    {!isMobile &&
+                      <Avatar
+                      sx={{
+                          width: "80px",
+                          height: "80px",
+                          bgcolor: "#f44336",
+                          border: "2px solid white",
+                          boxShadow: "0 4px 8px rgba(148, 75, 75, 0.92)",
 
-                      }}>
+                        }}>
                         B
-                        </Avatar>
+                        </Avatar>}
                     </Box>
              
                   <List dense disablePadding sx={{pt:"10px"}}>

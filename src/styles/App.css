@@ -4,12 +4,13 @@ body {
         -45deg,
         transparent 0%, transparent 5%, #c2ebbd 5%, #c2ebbd 10%  
     ), url('../../public/images/cesped2.png');
-    background-blend-mode: multiply; 
+  background-blend-mode: multiply; 
   margin: 0;
   padding: 0;
-  background-size: cover; 
+  background-size: auto; 
   background-position: center; 
   background-repeat: no-repeat;
+  background-attachment: fixed;
   min-height: 100vh;
   z-index: -1;
   position: relative;

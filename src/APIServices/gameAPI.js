@@ -8,7 +8,6 @@ export async function createRoom(newRoom, playerName) {
     try {
         const creatorName = playerName || "default";
         const endpoint = `${API}/lobby`;
-        console.log(endpoint);
         const requestBody = {
             lobbyName: newRoom.name,
             creatorName: creatorName,
@@ -25,7 +24,6 @@ export async function createRoom(newRoom, playerName) {
 
 export async function getGames() {
     try {
-        console.log(API);
         const endpoint = `${API}/lobby`;
         const response = await axios.get(endpoint);
         return response;
@@ -37,10 +35,8 @@ export async function getGames() {
 
 export async function getGame(id) {
     try {
-        console.log(id);
         const endpoint = `${API}/lobby/${id}`;
         const response = await axios.get(endpoint);
-        console.log(response);
         return response;
     } catch (error) {
         console.error("Error getting games:", error);

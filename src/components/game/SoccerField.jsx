@@ -1,78 +1,78 @@
-"use client"
-import { useEffect, useRef } from "react"
-export const SoccerField = ({players, movePlayer}) => {
+import { useRef, useEffect, useState, useMemo } from "react";
+
+export const SoccerField = ({ players, movePlayer }) => {
   const canvasRef = useRef(null);
   const movementState = useRef({ up: false, down: false, left: false, right: false });
   useEffect(() => {
-      const handleKeyDown = (e) => {
-        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-          movementState.current[e.key.replace("Arrow", "").toLowerCase()] = true;
-        }
-      };
-  
-      const handleKeyUp = (e) => {
-        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-          movementState.current[e.key.replace("Arrow", "").toLowerCase()] = false;
-        }
-      };
-  
-      window.addEventListener("keydown", handleKeyDown);
-      window.addEventListener("keyup", handleKeyUp);
-      movePlayer(movementState);
-      return () => {
-        window.removeEventListener("keydown", handleKeyDown);
-        window.removeEventListener("keyup", handleKeyUp);
-      };
-    }, []);
+    const handleKeyDown = (e) => {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        movementState.current[e.key.replace("Arrow", "").toLowerCase()] = true;
+      }
+    };
 
+    const handleKeyUp = (e) => {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        movementState.current[e.key.replace("Arrow", "").toLowerCase()] = false;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    movePlayer(movementState);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+  //Memorizar players para evitar renderizaciones innecesarias 
+  const memoizedPlayers = useMemo(() => players, [JSON.stringify(players)]);
   useEffect(() => {
-    console.log("holaa");
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const handleResize = () => {
       if (!canvas) return;
-  
-      const FIELD_WIDTH = 1200;  // Ancho exacto de la cancha
-      const FIELD_HEIGHT = 900;  // Alto exacto de la cancha
-      const MARGIN = 30;  // Margen extra 
-      const GOAL_WIDTH = 40;  // Ancho de los arcos
-  
+
+      const FIELD_WIDTH = 1200;
+      const FIELD_HEIGHT = 900;
+      const MARGIN = 30;
+      const GOAL_WIDTH = 40;
+
       const CANVAS_WIDTH = FIELD_WIDTH + MARGIN * 2 + GOAL_WIDTH * 2;
       const CANVAS_HEIGHT = FIELD_HEIGHT + MARGIN * 2;
-  
+
       const stageWidth = window.innerWidth;
       const stageHeight = window.innerHeight;
-  
+
       const scale = Math.min(stageWidth / CANVAS_WIDTH, stageHeight / CANVAS_HEIGHT);
-  
+
       canvas.style.width = `${CANVAS_WIDTH * scale}px`;
       canvas.style.height = `${CANVAS_HEIGHT * scale}px`;
-  
+
       canvas.style.position = "absolute";
       canvas.style.left = "50%";
       canvas.style.top = "50%";
       canvas.style.transform = "translate(-50%, -50%)";
-  
+
       canvas.width = CANVAS_WIDTH;
       canvas.height = CANVAS_HEIGHT;
-  
+
       const ctx = canvas.getContext("2d");
-      if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, players);
-  };
+      if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, memoizedPlayers);
+    };
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-}, [players]);
+  }, [memoizedPlayers]);
 
-return (
-  <div className="absolute inset-0 flex items-center justify-center containerField">
+  return (
+    <div className="absolute inset-0 flex items-center justify-center containerField">
       <canvas ref={canvasRef} className="block" />
-  </div>
-);
+    </div>
+  );
+};
 
-  
-}
 
 function drawSoccerField(ctx, fieldWidth, fieldHeight, margin, goalWidth, players) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
