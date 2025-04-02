@@ -17,11 +17,10 @@ import {
   Check,
 } from "@mui/icons-material";
 import Diversity3Icon from '@mui/icons-material/Diversity3';
-import {getGame} from "../../APIServices/gameAPI"
-import { usePlayerStats } from "../../components/user/playerStats";
-import { useNavigate } from "react-router-dom"
+import { useLobbyService } from "../../Modules/useLobbyService";
 
 export const JoinRoom = ({OpenDialog,CloseDialog}) => {
+  const{joinRoom} = useLobbyService();
     const [id, setId] = useState("");
     const [formErrors, setFormErrors] = useState({
       id: false,
@@ -44,8 +43,6 @@ export const JoinRoom = ({OpenDialog,CloseDialog}) => {
         });
       }
     }
-  
-    const navigate = useNavigate();
  
     const handleJoinRoom = async () => {
       if (id.trim() === "") {
@@ -55,13 +52,7 @@ export const JoinRoom = ({OpenDialog,CloseDialog}) => {
         })
         return;
       }
-      if(id){
-        const response = await getGame(id);
-        if(response && response.data){
-            const id = response.data.id;
-            navigate(`/game/${id}`);
-        }
-      }
+      joinRoom(id);
     }
 
   return (

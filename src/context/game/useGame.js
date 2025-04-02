@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { usePlayerStats } from "../../components/user/playerStats";
 import { Client } from "@stomp/stompjs";
+import { useAlert } from "../alert/AlertContext";
 
 export function useGame (id) {
+  const {showAlert} = useAlert();
   const playerStats = usePlayerStats();
   const [players, setPlayers] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
@@ -18,7 +20,7 @@ export function useGame (id) {
         destination: `/app/start/${id}`
       });
     } else {
-      console.error("No conectado al broker, no se pudo iniciar el juego.");
+      showAlert("Not connected to broker, game could not be started.","error");
     }
   };
   const handleLeaveGame = () => {
@@ -26,10 +28,10 @@ export function useGame (id) {
       stompClient.current.publish({
         destination: `/app/leave/${id}`
       });
-  
-      navigate("/homepage/lobby")
+      navigate("/homepage/lobby");
+      showAlert("you have left the room", "info");
     } else {
-      console.error("No conectado al broker, no se pudo dejar el juego.");
+      showAlert("Not connected to broker, could not quit game.","error");
     }
   };
   
@@ -52,7 +54,7 @@ export function useGame (id) {
         }
       }, 1000 / FRAME_RATE);
     } else {
-      console.error("No conectado al broker, no se pudo dejar el juego.");
+      showAlert("Not connected to broker, could not quit game.","error");
     }
   };
 
