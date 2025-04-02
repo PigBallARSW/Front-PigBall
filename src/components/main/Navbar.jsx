@@ -1,85 +1,32 @@
 "use client"
-
-import React, { useState, useEffect, useRef } from "react"
+import React from "react"
 import {
   Box,
   Typography,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  ListItemSecondaryAction,
-  Avatar,
   IconButton,
-  Paper,
-  Divider,
-  Chip,
-  TextField,
-  InputAdornment,
-  CircularProgress,
-  useTheme,
-  useMediaQuery,
   AppBar,
   Toolbar,
   Tooltip,
 } from "@mui/material"
 import {
-  Add,
-  Refresh,
-  Search,
   SportsSoccer,
-  Public,
-  Lock,
-  Star,
-  StarBorder,
-  People,
-  EmojiEvents,
-  AccessTime,
   Home,
   Logout,
 } from "@mui/icons-material"
-import { motion } from "framer-motion"
 import { useMsal } from "@azure/msal-react";
-import { usePlayerStats } from "../user/playerStats"
 import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
-    const playerStats = usePlayerStats();
     const navigation = useNavigate();
-    const [anchorEl, setAnchorEl] = useState(null)
-    const open = Boolean(anchorEl)
-    const muiTheme = useTheme()
-    const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"))
     const { instance } = useMsal();
     
     const handleLogout = async () => {
       await instance.logoutPopup();
       navigation("/");
     };
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget)
-    }
-
-    const handleClose = () => {
-        setAnchorEl(null)
-
-    }
     const handleGoHome = () => {
-      navigation("homepage");
+      navigation("/homepage");
     }
-    /*
-    <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-              <Avatar sx={{ bgcolor: "secondary.main", width: 32, height: 32, mr: 1 }}>
-                <Typography variant="caption" sx={{ color: "primary.main", fontWeight: "bold" }}>
-                  2D
-                </Typography>
-              </Avatar>
-              <Typography variant="h6" sx={{ color: "secondary.main", fontWeight: "bold" }}>
-                PIGBALL
-              </Typography>
-            </Box>
-    */
     return (
       <AppBar
       position="static"

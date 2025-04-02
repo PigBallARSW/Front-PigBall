@@ -38,7 +38,7 @@ export default function Character({name}) {
                   ease: "easeInOut", 
                 }}
               >
-                <User width={120} height={120} name={name} move={false} border={"white"} />
+                <User width={120} height={120} name={name} />
               </motion.div>
                 </Box>
                 <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}>

@@ -1,59 +1,17 @@
-"use client"
-import { useEffect, useRef } from "react"
-export const SoccerField = ({players}) => {
-  const canvasRef = useRef(null);
+import { useDraw } from "../../context/game/useDraw";
+import { useMoveGame } from "../../context/game/useMoveGame";
 
-  useEffect(() => {
-    console.log(players);
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+export const SoccerField = ({ players, movePlayer }) => {
+  useMoveGame(movePlayer);
+  const{canvasRef} = useDraw(players,drawSoccerField);
 
-    const handleResize = () => {
-      if (!canvas) return;
-  
-      const FIELD_WIDTH = 1200;  // Ancho exacto de la cancha
-      const FIELD_HEIGHT = 900;  // Alto exacto de la cancha
-      const MARGIN = 30;  // Margen extra 
-      const GOAL_WIDTH = 40;  // Ancho de los arcos
-  
-      const CANVAS_WIDTH = FIELD_WIDTH + MARGIN * 2 + GOAL_WIDTH * 2;
-      const CANVAS_HEIGHT = FIELD_HEIGHT + MARGIN * 2;
-  
-      const stageWidth = window.innerWidth;
-      const stageHeight = window.innerHeight;
-  
-      const scale = Math.min(stageWidth / CANVAS_WIDTH, stageHeight / CANVAS_HEIGHT);
-  
-      canvas.style.width = `${CANVAS_WIDTH * scale}px`;
-      canvas.style.height = `${CANVAS_HEIGHT * scale}px`;
-  
-      canvas.style.position = "absolute";
-      canvas.style.left = "50%";
-      canvas.style.top = "50%";
-      canvas.style.transform = "translate(-50%, -50%)";
-  
-      canvas.width = CANVAS_WIDTH;
-      canvas.height = CANVAS_HEIGHT;
-  
-      const ctx = canvas.getContext("2d");
-      if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, players);
-  };
-  
-  
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-}, [players]);
-
-return (
-  <div className="absolute inset-0 flex items-center justify-center containerField">
+  return (
+    <div className="absolute inset-0 flex items-center justify-center containerField">
       <canvas ref={canvasRef} className="block" />
-  </div>
-);
+    </div>
+  );
+};
 
-  
-}
 
 function drawSoccerField(ctx, fieldWidth, fieldHeight, margin, goalWidth, players) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
