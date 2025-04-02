@@ -38,6 +38,8 @@ export const RoomList = ({ gameRooms }) => {
         return theme.palette.warning.main;
       case "FINISHED":
         return theme.palette.error.main;
+      case "FULL":
+        return theme.palette.error.main;
       default:
         return theme.palette.info.main;
     }
@@ -101,7 +103,7 @@ export const RoomList = ({ gameRooms }) => {
               <ListItemAvatar>
                 <Avatar
                   sx={{
-                    bgcolor: getStatusColor(room.status),
+                    bgcolor: `${room.players.length >= room.maxPlayers ? getStatusColor("FULL") : getStatusColor(room.status)}`,
                     color: "white",
                   }}
                 >
@@ -139,12 +141,12 @@ export const RoomList = ({ gameRooms }) => {
                         }}
                       />
                       <Chip
-                        label={room.status}
+                        label={room.players.length >= room.maxPlayers ? "FULL" : room.status}
                         size="small"
                         sx={{
                           mr: 1,
                           mb: { xs: 0.5, sm: 0 },
-                          bgcolor: getStatusColor(room.status),
+                          bgcolor: `${room.players.length >= room.maxPlayers ? getStatusColor("FULL") : getStatusColor(room.status)}`,
                           color: "white",
                         }}
                       />
@@ -173,7 +175,7 @@ export const RoomList = ({ gameRooms }) => {
                     onClick={() => joinGame(room.id)}
                     variant="contained"
                     size="small"
-                    disabled={room.status === "FINISHED" }
+                    disabled={room.status === "FINISHED" || room.players.length >= room.maxPlayers}
                     sx={{
                       ml: 1,
                       display: { xs: "none", sm: "inline-flex" },

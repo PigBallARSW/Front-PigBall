@@ -1,70 +1,9 @@
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useDraw } from "../../context/game/useDraw";
+import { useMoveGame } from "../../context/game/useMoveGame";
 
 export const SoccerField = ({ players, movePlayer }) => {
-  const canvasRef = useRef(null);
-  const movementState = useRef({ up: false, down: false, left: false, right: false });
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-        movementState.current[e.key.replace("Arrow", "").toLowerCase()] = true;
-      }
-    };
-
-    const handleKeyUp = (e) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-        movementState.current[e.key.replace("Arrow", "").toLowerCase()] = false;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    movePlayer(movementState);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
-  //Memorizar players para evitar renderizaciones innecesarias 
-  const memoizedPlayers = useMemo(() => players, [JSON.stringify(players)]);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const handleResize = () => {
-      if (!canvas) return;
-
-      const FIELD_WIDTH = 1200;
-      const FIELD_HEIGHT = 900;
-      const MARGIN = 30;
-      const GOAL_WIDTH = 40;
-
-      const CANVAS_WIDTH = FIELD_WIDTH + MARGIN * 2 + GOAL_WIDTH * 2;
-      const CANVAS_HEIGHT = FIELD_HEIGHT + MARGIN * 2;
-
-      const stageWidth = window.innerWidth;
-      const stageHeight = window.innerHeight;
-
-      const scale = Math.min(stageWidth / CANVAS_WIDTH, stageHeight / CANVAS_HEIGHT);
-
-      canvas.style.width = `${CANVAS_WIDTH * scale}px`;
-      canvas.style.height = `${CANVAS_HEIGHT * scale}px`;
-
-      canvas.style.position = "absolute";
-      canvas.style.left = "50%";
-      canvas.style.top = "50%";
-      canvas.style.transform = "translate(-50%, -50%)";
-
-      canvas.width = CANVAS_WIDTH;
-      canvas.height = CANVAS_HEIGHT;
-
-      const ctx = canvas.getContext("2d");
-      if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, memoizedPlayers);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [memoizedPlayers]);
+  useMoveGame(movePlayer);
+  const{canvasRef} = useDraw(players,drawSoccerField);
 
   return (
     <div className="absolute inset-0 flex items-center justify-center containerField">

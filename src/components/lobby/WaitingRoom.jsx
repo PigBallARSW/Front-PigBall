@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -22,45 +22,15 @@ import {
   Lock,
   Timer,
 } from "@mui/icons-material"
-import { getGame } from "../../APIServices/gameAPI"
 import { PlayerList } from "./PlayerList";
+import { useWaitingRoom } from "../../context/lobby/useWaitingRoom";
+import { useTeams } from "../../context/lobby/useTeams";
 
 export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }) => {
-  const [roomData, setRoomData] = useState({
-    lobbyName: "",
-    creatorName: "",
-    maxPlayers: 0,
-    privateLobby: false,
-    creationTime: 0,
-    players: []
-  });
-  const [isInviteOpen, setIsInviteOpen] = useState(false)
-  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
-  const [teamAPlayers, setTeamAPlayers] = useState([]);
-  const [teamBPlayers, setTeamBPlayers] = useState([]);
-  const [host, setHost] = useState(false);
-  const getRoom = async () => {
-    if (id) {
-      const response = await getGame(id); 
-      if (response) {
-        setRoomData(response.data);
-      }
-    }
-  } 
-  useEffect(() => {
-    getRoom();
-  },[]);
-  useEffect(() => {
-    if (players) {
-      const teamA = players.filter((player) => player.team === 0);
-      const teamB = players.filter((player) => player.team === 1);
-      setTeamAPlayers(teamA);
-      setTeamBPlayers(teamB);
-      const isHost = currentUser === roomData.creatorName;
-      setHost(isHost);
-    }
-  }, [players.length]);
-
+  const{roomData} = useWaitingRoom(id);
+  const{teamAPlayers, teamBPlayers, host} = useTeams(players, currentUser, roomData.creatorName);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const startGame = () => {
     if (players.length > 1) {
       onStartGame();
@@ -68,16 +38,14 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
       alert("There must be at least two members");
     }
   }
-
   const handleCopyInviteCode = () => {
-    navigator.clipboard.writeText(roomData.id)
+    navigator.clipboard.writeText(roomData.id);
     // Aquí se podría mostrar un mensaje de éxito
   }
-
   const handleLeaveRoom = () => {
-    setIsLeaveDialogOpen(false)
+    setIsLeaveDialogOpen(false);
     leaveRoom();
-    alert("You have left the room")
+    alert("You have left the room");
   }
   return (
     <Box

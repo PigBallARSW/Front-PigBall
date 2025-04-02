@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -19,39 +19,15 @@ import {
 import LoginIcon from '@mui/icons-material/Login';
 import { RoomList } from '../../components/lobby/RoomList';
 import { CreateRoom } from "../../components/lobby/CreateRoom";
-import { getGames } from "../../APIServices/gameAPI";
 import { JoinRoom } from "../../components/lobby/JoinRoom";
+import { useRooms } from "../../context/lobby/useRooms";
+import { useLobby } from "../../context/lobby/useLobby";
 
 export const Lobby = () => {
-  const [rooms, setRooms] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const {rooms, isRefreshing, getRooms} = useRooms();
+  const {filteredRooms, searchTerm, setSearchTerm} = useLobby(rooms);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
-  const [filteredRooms, setFilteredRooms] = useState([]);
-  useEffect(() => {
-    const filtered = rooms.filter(
-      (room) =>
-        room.lobbyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        room.creatorName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredRooms(filtered); 
-  }, [searchTerm]); 
-
-  const getRooms = async () => {
-    const response = await getGames();
-    if(response){
-      setRooms(response.data);
-      if(filteredRooms.length <= 0){
-        setFilteredRooms(response.data);
-      }
-    }
-  }
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    getRooms();
-    setIsRefreshing(false);
-  }
   function showForm() {
     setOpenCreateDialog(true);
   }
@@ -64,10 +40,6 @@ export const Lobby = () => {
   function hideFormJoin() {
     setOpenJoinDialog(false);
   }
-  useEffect(() => {
-    getRooms();
-  }, []); 
-
 
   return (
     <Box
@@ -145,7 +117,7 @@ export const Lobby = () => {
             </Button>
             <IconButton
               color="primary"
-              onClick={handleRefresh}
+              onClick={getRooms}
               disabled={isRefreshing}
               sx={{
                 display: { xs: "none", sm: "inline-flex" },
@@ -216,7 +188,7 @@ export const Lobby = () => {
         >
           <IconButton
             color="primary"
-            onClick={handleRefresh}
+            onClick={getRooms}
             disabled={isRefreshing}
             sx={{
               bgcolor: "white",
@@ -250,7 +222,7 @@ export const Lobby = () => {
           </IconButton>
         </Box>
       </Paper>
-      <CreateRoom OpenDialog={openCreateDialog} CloseDialog={hideForm} />
+      <CreateRoom OpenDialog={openCreateDialog} CloseDialog={hideForm} getRooms={getRooms}/>
       <JoinRoom OpenDialog={openJoinDialog} CloseDialog={hideFormJoin} />
     </Box>
   )
