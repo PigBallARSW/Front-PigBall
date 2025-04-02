@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // Leer variables de entorno
-const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL || "https://backendeci.duckdns.org:8081";
+const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL;
 
 export async function createRoom(newRoom, playerName) {
     try {

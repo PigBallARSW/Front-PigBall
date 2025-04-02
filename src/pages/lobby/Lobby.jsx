@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -9,37 +9,48 @@ import {
   TextField,
   InputAdornment,
   CircularProgress,
-  useTheme,
-} from "@mui/material"
+} from "@mui/material";
 import {
   Add,
   Refresh,
   Search,
-  Public,
-} from "@mui/icons-material"
-import { motion } from "framer-motion"
-import RoomList from '../../components/lobby/RoomList'
-import { CreateRoom } from "../../components/lobby/CreateRoom"
-import { getGames } from "../../APIServices/gameAPI"
-
+  Public
+} from "@mui/icons-material";
+import LoginIcon from '@mui/icons-material/Login';
+import { RoomList } from '../../components/lobby/RoomList';
+import { CreateRoom } from "../../components/lobby/CreateRoom";
+import { getGames } from "../../APIServices/gameAPI";
+import { JoinRoom } from "../../components/lobby/JoinRoom";
 
 export const Lobby = () => {
-  const theme = useTheme()
-  const [rooms, setRooms] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [openCreateDialog, setOpenCreateDialog] = useState(false)
+  const [rooms, setRooms] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const [openJoinDialog, setOpenJoinDialog] = useState(false);
+  const [filteredRooms, setFilteredRooms] = useState([]);
+  useEffect(() => {
+    const filtered = rooms.filter(
+      (room) =>
+        room.lobbyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        room.creatorName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredRooms(filtered); 
+  }, [searchTerm]); 
 
   const getRooms = async () => {
     const response = await getGames();
     if(response){
       setRooms(response.data);
+      if(filteredRooms.length <= 0){
+        setFilteredRooms(response.data);
+      }
     }
   }
   const handleRefresh = () => {
-    setIsRefreshing(true)
-    getRooms()
-    setIsRefreshing(false)
+    setIsRefreshing(true);
+    getRooms();
+    setIsRefreshing(false);
   }
   function showForm() {
     setOpenCreateDialog(true);
@@ -47,35 +58,39 @@ export const Lobby = () => {
   function hideForm() {
     setOpenCreateDialog(false);
   }
-  
+  function showFormJoin() {
+    setOpenJoinDialog(true);
+  }
+  function hideFormJoin() {
+    setOpenJoinDialog(false);
+  }
   useEffect(() => {
     getRooms();
-  }, [rooms]);
+  }, []); 
+
 
   return (
     <Box
       sx={{
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        flexGrow: 1,
-        p: { xs: 2, md: 3 },
+        padding: 1,
+        overflow: "hidden",
+        height: "calc(100vh - 56px)"
       }}
     >
       <Paper
         elevation={8}
-        component={motion.div}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
         sx={{
           width: "100%",
-          maxWidth: 900,
-          height: "calc(100vh - 90px)",
+          maxWidth: 1000,
+          height: "100%",
           borderRadius: 3,
           overflow: "hidden",
           border: "1px solid #fff",
-          bgcolor: "#0e250f"
+          bgcolor: "#0e250f",
         }}
       >
         <Box
@@ -96,6 +111,22 @@ export const Lobby = () => {
           </Typography>
 
           <Box>
+          <Button
+              variant="contained"
+              onClick={showFormJoin}
+              startIcon={<LoginIcon />}
+              sx={{
+                mr: 1,
+                display: { xs: "none", sm: "inline-flex" },
+                bgcolor: "primary.light",
+                color: "white",
+                "&:hover": {
+                  bgcolor: "primary.dark",
+                },
+              }}
+            >
+              Join Room
+            </Button>
             <Button
               variant="contained"
               onClick={showForm}
@@ -171,7 +202,7 @@ export const Lobby = () => {
           />
         </Box>
 
-        <RoomList gameRooms={rooms} />
+        <RoomList gameRooms={filteredRooms} />
         {/* Botones flotantes para móvil */}
         <Box
           sx={{
@@ -196,20 +227,31 @@ export const Lobby = () => {
             {isRefreshing ? <CircularProgress size={24} /> : <Refresh />}
           </IconButton>
           <IconButton
-            color="primary"
             onClick={showForm}
             sx={{
-              bgcolor: theme.palette.primary.main,
+              bgcolor: "secondary.main",
               color: "white",
               boxShadow: 3,
-              "&:hover": { bgcolor: theme.palette.primary.dark },
+              "&:hover": { bgcolor: "secondary.dark" },
             }}
           >
             <Add />
           </IconButton>
+          <IconButton
+            onClick={showFormJoin}
+            sx={{
+              bgcolor: "primary.light",
+              color: "white",
+              boxShadow: 3,
+              "&:hover": { bgcolor: "primary.dark" },
+            }}
+          >
+            <LoginIcon />
+          </IconButton>
         </Box>
       </Paper>
       <CreateRoom OpenDialog={openCreateDialog} CloseDialog={hideForm} />
+      <JoinRoom OpenDialog={openJoinDialog} CloseDialog={hideFormJoin} />
     </Box>
   )
 }

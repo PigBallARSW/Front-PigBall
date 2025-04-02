@@ -1,5 +1,4 @@
-"use client"
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState } from "react"
 import {
   Box,
   Typography,
@@ -28,11 +27,11 @@ import { PlayerList } from "./PlayerList";
 
 export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }) => {
   const [roomData, setRoomData] = useState({
-    gameName: "Sala",
+    lobbyName: "",
     creatorName: "",
     maxPlayers: 0,
-    privateGame: false,
-    creationTime: 1743132809.893817300,
+    privateLobby: false,
+    creationTime: 0,
     players: []
   });
   const [isInviteOpen, setIsInviteOpen] = useState(false)
@@ -40,44 +39,35 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
   const [teamAPlayers, setTeamAPlayers] = useState([]);
   const [teamBPlayers, setTeamBPlayers] = useState([]);
   const [host, setHost] = useState(false);
-  const getRoom = useCallback(async () => {
+  const getRoom = async () => {
     if (id) {
-      const response = await getGame(id); // Assuming getGame is available
-      console.log(response);
+      const response = await getGame(id); 
       if (response) {
         setRoomData(response.data);
       }
     }
-  }, [id]); // Memoize getRoom with id as the dependency
-
+  } 
   useEffect(() => {
-    const fetchRoom = async () => {
-      await getRoom();
-    };
-
-    if (id && players) {
-      const teamAPlayers = players.filter((player) => player.team === 0);
-      setTeamAPlayers(teamAPlayers);
-      const teamBPlayers = players.filter((player) => player.team === 1);
-      setTeamBPlayers(teamBPlayers);
-      console.log(currentUser);
-      const host = currentUser === roomData.creatorName;
-      setHost(host);
+    getRoom();
+  },[]);
+  useEffect(() => {
+    if (players) {
+      const teamA = players.filter((player) => player.team === 0);
+      const teamB = players.filter((player) => player.team === 1);
+      setTeamAPlayers(teamA);
+      setTeamBPlayers(teamB);
+      const isHost = currentUser === roomData.creatorName;
+      setHost(isHost);
     }
-
-    fetchRoom();
-
-  }, [id, players, currentUser, roomData.creatorName, getRoom]); // getRoom is stable now
+  }, [players.length]);
 
   const startGame = () => {
     if (players.length > 1) {
       onStartGame();
     } else {
-      alert("Debe haber almenos dos integrantes");
+      alert("There must be at least two members");
     }
   }
-
-
 
   const handleCopyInviteCode = () => {
     navigator.clipboard.writeText(roomData.id)
@@ -87,7 +77,7 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
   const handleLeaveRoom = () => {
     setIsLeaveDialogOpen(false)
     leaveRoom();
-    alert("Has abandonado la sala")
+    alert("You have left the room")
   }
   return (
     <Box
@@ -129,15 +119,15 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
             }}
           >
             <SportsSoccer sx={{ mr: 1, color: "#4CAF50" }} />
-            {roomData.gameName}
+            {roomData.lobbyName}
           </Typography>
           <Chip
-            label={roomData.privateGame ? "Privada" : "Pública"}
+            label={roomData.privateLobby ? "Privada" : "Pública"}
             size="small"
-            icon={roomData.privateGame ? <Lock fontSize="small" /> : <Public fontSize="small" />}
+            icon={roomData.privateLobby ? <Lock fontSize="small" /> : <Public fontSize="small" />}
             sx={{
               ml: 2,
-              bgcolor: roomData.privateGame ? "rgba(244, 67, 54, 0.2)" : "rgba(76, 175, 80, 0.2)",
+              bgcolor: roomData.privateLobby ? "rgba(244, 67, 54, 0.2)" : "rgba(76, 175, 80, 0.2)",
               color: "white",
               "& .MuiChip-icon": { color: "white" },
               display: { xs: "none", sm: "flex" },
@@ -158,7 +148,7 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Tooltip title="Invitar jugadores">
+          <Tooltip title="Invite players">
             <IconButton
               onClick={() => setIsInviteOpen(true)}
               sx={{
@@ -171,7 +161,7 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
               <PersonAdd />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Abandonar sala">
+          <Tooltip title="Leave room">
             <IconButton
               onClick={() => setIsLeaveDialogOpen(true)}
               sx={{
@@ -224,7 +214,7 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: "bold", display: "flex", alignItems: "center" }}>
-              <People sx={{ mr: 1 }} /> Jugadores ({players.length}/{roomData.maxPlayers})
+              <People sx={{ mr: 1 }} /> Players ({players.length}/{roomData.maxPlayers})
             </Typography>
 
             <Chip
@@ -239,7 +229,7 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
             />
           </Box>
           {/* Contenedor de equipos */}
-          <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={startGame} host={host} />
+          <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={startGame} host={roomData.creatorName} isHost={host} />
         </Paper>
       </Box>
 
@@ -259,11 +249,11 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
         }}
       >
         <DialogTitle sx={{ bgcolor: "rgba(27, 94, 32, 0.9)", display: "flex", alignItems: "center" }}>
-          <PersonAdd sx={{ mr: 1 }} /> Invitar Jugadores
+          <PersonAdd sx={{ mr: 1 }} /> Invite Players
         </DialogTitle>
         <DialogContent sx={{ mt: 2 }}>
           <Typography variant="body2" paragraph>
-            Comparte este código con tus amigos para que puedan unirse a la sala:
+          Share this code with your friends so they can join the room:
           </Typography>
           <Box
             sx={{
@@ -298,7 +288,7 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
             </IconButton>
           </Box>
           <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
-            El código expirará cuando finalice la partida o cuando el anfitrión cierre la sala.
+          The code will expire when the match ends or when the host closes the room.
           </Typography>
         </DialogContent>
         <DialogActions sx={{ bgcolor: "rgba(27, 94, 32, 0.5)", p: 2 }}>
@@ -333,10 +323,10 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
           },
         }}
       >
-        <DialogTitle sx={{ bgcolor: "rgba(244, 67, 54, 0.2)", color: "#f44336" }}>¿Abandonar la sala?</DialogTitle>
+        <DialogTitle sx={{ bgcolor: "rgba(244, 67, 54, 0.2)", color: "#f44336" }}>Leave the room?</DialogTitle>
         <DialogContent sx={{ mt: 2 }}>
           <Typography variant="body1">
-            ¿Estás seguro de que quieres abandonar la sala? Perderás tu lugar si la sala está llena.
+          Are you sure you want to leave the room? You'll lose your spot if the room is full.
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
@@ -352,7 +342,7 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
               },
             }}
           >
-            Cancelar
+            Cancel
           </Button>
           <Button
             onClick={handleLeaveRoom}
@@ -363,7 +353,7 @@ export const WaitingRoom = ({ currentUser, id, onStartGame, players, leaveRoom }
               ml: 1,
             }}
           >
-            Abandonar
+            Leave
           </Button>
         </DialogActions>
       </Dialog>

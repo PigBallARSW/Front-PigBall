@@ -1,5 +1,3 @@
-"use client"
-import { useEffect, useState } from "react"
 import {
   Box,
   Typography,
@@ -14,23 +12,10 @@ import {
 import {
   PlayArrow,
 } from "@mui/icons-material"
-import Groups2Icon from '@mui/icons-material/Groups2';
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import { User } from "../user/User"
   
-export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => {
-    // Estados para los nombres de los equipos
-        const [teamNames, setTeamNames] = useState({
-          A: "A",
-          B: "B",
-        });
-        useEffect(() => {
-          setTeamNames({
-            A: "A",
-            B: "B",
-          });
-        },[]);
-
-        
+export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, host})  => {  
     return (
         <>
             <Box
@@ -39,6 +24,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                 flexDirection: { xs: "column", md: "row" },
                 flexGrow: 1,
                 overflow: "hidden",
+                height:"100vh"
               }}
             >
               {/* Equipo A */}
@@ -53,7 +39,6 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                 }}
               >
                 <Box sx={{ p: 2 }}>
-                  
                   <Typography
                     variant="h6"
                     sx={{
@@ -64,7 +49,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                         fontWeight: "bold",
                     }}
                     >
-                    <Groups2Icon sx={{ mr: 1, fontSize: 24 }} /> {"Equipo" + teamNames.A} ({teamAPlayers.length})
+                    <WorkspacesIcon sx={{ mr: 1, fontSize: 24 }} /> Team A ({teamAPlayers.length}) 
                     </Typography>
                     <Box
                     sx={{
@@ -82,7 +67,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                         boxShadow: "0 4px 8px rgba(75, 148, 142, 0.92)",
 
                       }}>
-                        {teamNames.A[0]}
+                        A
                         </Avatar>
                     </Box>
                   
@@ -98,7 +83,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                         }}
                       >
                         <ListItemAvatar>
-                            <User width={36} height={36} name={player.name} move={false} border={"transparent"} color={"#2196f3"}/>
+                            <User width={36} height={36} name={player.name} color={"#2196f3"}/>
                         </ListItemAvatar>
                         <ListItemText
                           primary={
@@ -106,9 +91,9 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                               <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                                 {player.name}
                               </Typography>
-                              {host && (
+                              {player.name === host && (
                                 <Chip
-                                  label="Anfitrión"
+                                  label="Host"
                                   size="small"
                                   sx={{
                                     ml: 1,
@@ -123,7 +108,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Partidas ganadas: 30
+                              Games won: 30
                             </Typography>
                           }
                         />
@@ -131,7 +116,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                     ))}
                     {teamAPlayers.length === 0 && (
                       <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", textAlign: "center", py: 1 }}>
-                        No hay jugadores en este equipo
+                        There are no players in this team
                       </Typography>
                     )}
                   </List>
@@ -159,7 +144,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                         fontWeight: "bold",
                         }}
                     >
-                    <Groups2Icon sx={{ mr: 1, fontSize: 24 }} /> {teamNames.B} ({teamBPlayers.length})
+                    <WorkspacesIcon sx={{ mr: 1, fontSize: 24 }} /> Team B ({teamBPlayers.length})
                 </Typography>
                 <Box
                     sx={{
@@ -177,7 +162,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                         boxShadow: "0 4px 8px rgba(148, 75, 75, 0.92)",
 
                       }}>
-                        {teamNames.B[0]}
+                        B
                         </Avatar>
                     </Box>
              
@@ -193,7 +178,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                         }}
                       >
                         <ListItemAvatar>
-                            <User width={36} height={36} name={player.name} move={false} border={"transparent"} color={"#f44336"}/>
+                            <User width={36} height={36} name={player.name} color={"#f44336"}/>
                         </ListItemAvatar>
                         <ListItemText
                           primary={
@@ -201,9 +186,9 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                               <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                                 {player.name}
                               </Typography>
-                              {host && (
+                              {player.name === host && (
                                 <Chip
-                                  label="Anfitrión"
+                                  label="Host"
                                   size="small"
                                   sx={{
                                     ml: 1,
@@ -218,7 +203,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Partidas ganadas: 30
+                              Games won: 30
                             </Typography>
                           }
                         />
@@ -226,7 +211,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                     ))}
                     {teamBPlayers.length === 0 && (
                       <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", textAlign: "center", py: 1 }}>
-                        No hay jugadores en este equipo
+                        There are no players in this team
                       </Typography>
                     )}
                   </List>
@@ -248,11 +233,11 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                 color="primary"
                 startIcon={<PlayArrow />}
                 onClick={onStartGame}
-                disabled = {!host}
+                disabled = {!isHost}
                 loadingPosition="start"
-                loading = {!host}
+                loading = {!isHost}
                 sx={{
-                  bgcolor: `${host ? "#4CAF50" : "transparent"}`,
+                  bgcolor: `${isHost ? "#4CAF50" : "transparent"}`,
                   borderColor: "#4CAF50",
                   color: "white",
                   "&:hover": {
@@ -264,7 +249,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, host})  => 
                   }
                 }}
               >
-                {host ? "Empezar partida" : "Esperando a que el anfitrión inicie partida"}
+                {isHost ? "Start game" : "Waiting for the host to start the game"}
               </Button>
             </Box>
         </>

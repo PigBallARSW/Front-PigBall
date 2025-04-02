@@ -25,15 +25,15 @@ import {
 } from "@mui/icons-material"
 import {createRoom} from "../../APIServices/gameAPI"
 import { usePlayerStats } from "../../components/user/playerStats";
+import { useNavigate } from "react-router-dom"
 
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
     const playerStats = usePlayerStats();
     const [newRoom, setNewRoom] = useState({
       name: "",
       isPrivate: false,
-      maxPlayers: 8,
-      gameType: "Amistoso",
-      description: "",
+      maxPlayers: 2,
+      description: ""
     })
     const [formErrors, setFormErrors] = useState({
       name: false,
@@ -43,9 +43,8 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
       setNewRoom({
         name: "",
         isPrivate: false,
-        maxPlayers: 8,
-        gameType: "Amistoso",
-        description: "",
+        maxPlayers: 2,
+        description: ""
       })
       setFormErrors({
         name: false,
@@ -58,8 +57,6 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         ...newRoom,
         [name]: value,
       })
-  
-      // Validación para el nombre
       if (name === "name") {
         setFormErrors({
           ...formErrors,
@@ -81,17 +78,23 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         maxPlayers: newValue,
       })
     }
-  
+
+    const navigate = useNavigate();
+ 
     const handleCreateRoom = async () => {
       if (newRoom.name.trim() === "") {
         setFormErrors({
           ...formErrors,
           name: true,
         })
-        return
+        return;
       }
-      await createRoom(newRoom, playerStats.name);
-      handleCloseCreateDialog()
+      const response = await createRoom(newRoom, playerStats.name);
+      if(response && response.data){
+        handleCloseCreateDialog();
+        const id = response.data.id;
+        navigate(`/game/${id}`);
+      }
     }
 
   return (

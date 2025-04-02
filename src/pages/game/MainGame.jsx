@@ -11,12 +11,10 @@ export const MainGame = () => {
   const [players, setPlayers] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
   const stompClient = useRef(null);
-  const movementState = useRef({ up: false, down: false, left: false, right: false });
   const FRAME_RATE = 60;
   const navigate = useNavigate();
   const playersRef = useRef([]);
 
-  // ✅ Función para enviar el inicio del juego al backend
   const handleStartGame = () => {
     console.log("Iniciando juego...");
     if (stompClient.current && stompClient.current.connected) {
@@ -27,7 +25,6 @@ export const MainGame = () => {
       console.error("No conectado al broker, no se pudo iniciar el juego.");
     }
   };
-  // ✅ Función para enviar el inicio del juego al backend
   const handleLeaveGame = () => {
     if (stompClient.current && stompClient.current.connected) {
       stompClient.current.publish({
@@ -39,33 +36,33 @@ export const MainGame = () => {
       console.error("No conectado al broker, no se pudo dejar el juego.");
     }
   };
-  // 🎮 Manejo de teclas
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-        movementState.current[e.key.replace("Arrow", "").toLowerCase()] = true;
-      }
-    };
-
-    const handleKeyUp = (e) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-        movementState.current[e.key.replace("Arrow", "").toLowerCase()] = false;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
+  
+  const handleMovePlayer = (movementState) => {
+    let playerName = playerStats.name || `Player${Math.floor(Math.random() * 1000)}`;
+    if (stompClient.current && stompClient.current.connected) {
+      const intervalId = setInterval(() => {
+        if (stompClient.current && stompClient.current.connected) {
+          stompClient.current.publish({
+            destination: `/app/play/${id}`,
+            body: JSON.stringify({
+              player: playerName,
+              dx: movementState.current.right - movementState.current.left,
+              dy: movementState.current.down - movementState.current.up,
+            }),
+          });
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 1000 / FRAME_RATE);
+    } else {
+      console.error("No conectado al broker, no se pudo dejar el juego.");
+    }
+  };
 
   const isConnected = useRef(false);
 
 useEffect(() => {
-  if (isConnected.current) return; // Evitar conexiones múltiples
+  if (isConnected.current) return; 
 
   let playerName = playerStats.name || `Player${Math.floor(Math.random() * 1000)}`;
   const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";
@@ -75,7 +72,7 @@ useEffect(() => {
     brokerURL: brokerUrl,
     onConnect: () => {
       console.log("Conectado al WebSocket");
-      isConnected.current = true; // Marcar que la conexión está activa
+      isConnected.current = true; 
 
       client.subscribe(`/topic/players/${id}`, (message) => {
         playersRef.current = JSON.parse(message.body);
@@ -95,20 +92,6 @@ useEffect(() => {
         setPlayers(JSON.parse(message.body).players);
       });
 
-      const intervalId = setInterval(() => {
-        if (client.active && client.connected) {
-          client.publish({
-            destination: `/app/play/${id}`,
-            body: JSON.stringify({
-              player: playerName,
-              dx: movementState.current.right - movementState.current.left,
-              dy: movementState.current.down - movementState.current.up,
-            }),
-          });
-        } else {
-          clearInterval(intervalId);
-        }
-      }, 1000 / FRAME_RATE);
     },
     onStompError: (frame) => console.error("Error STOMP:", frame.body),
     onWebSocketError: (error) => console.error("Error WebSocket:", error),
@@ -123,13 +106,11 @@ useEffect(() => {
       isConnected.current = false;
     }
   };
-}, [id, playerStats.name]); // 🔹 Solo depende de `id`, no de `playerStats.name`
-
-
+}, [id, playerStats.name]); 
   return (
     <main>
       {gameStarted ? (
-        <SoccerField players={players} />
+        <SoccerField players={players}  movePlayer ={handleMovePlayer}/>
       ) : (
         <WaitingRoom currentUser = {playerStats.name} id={id} onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame}/>
       )}

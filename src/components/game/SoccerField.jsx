@@ -1,10 +1,32 @@
 "use client"
 import { useEffect, useRef } from "react"
-export const SoccerField = ({players}) => {
+export const SoccerField = ({players, movePlayer}) => {
   const canvasRef = useRef(null);
+  const movementState = useRef({ up: false, down: false, left: false, right: false });
+  useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+          movementState.current[e.key.replace("Arrow", "").toLowerCase()] = true;
+        }
+      };
+  
+      const handleKeyUp = (e) => {
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+          movementState.current[e.key.replace("Arrow", "").toLowerCase()] = false;
+        }
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyUp);
+      movePlayer(movementState);
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("keyup", handleKeyUp);
+      };
+    }, []);
 
   useEffect(() => {
-    console.log(players);
+    console.log("holaa");
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -38,9 +60,6 @@ export const SoccerField = ({players}) => {
       const ctx = canvas.getContext("2d");
       if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, players);
   };
-  
-  
-
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
