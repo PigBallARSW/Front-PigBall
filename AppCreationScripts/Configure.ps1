@@ -36,7 +36,7 @@ Function ConfigureApplications {
         -SignInAudience AzureADandPersonalMicrosoftAccount `
          -Spa `
             @{ `
-                RedirectUris = "https://delightful-river-06553511e.6.azurestaticapps.net/"; `
+                RedirectUris = "https://nice-forest-015f0871e.6.azurestaticapps.net"; `
             } `
 
 
