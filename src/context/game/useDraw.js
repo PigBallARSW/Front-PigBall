@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import isEqual from "lodash.isequal";
 
-export function useDraw (players, drawSoccerField) {
+export function useDraw (players, ball, drawSoccerField) {
     const canvasRef = useRef(null);
     
     const useDeepMemo = (value) => {
@@ -12,7 +12,9 @@ export function useDraw (players, drawSoccerField) {
       return ref.current;
     };
 
-const memoizedPlayers = useDeepMemo(players);
+    const memoizedPlayers = useDeepMemo(players);
+    const memoizedBall = useDeepMemo(ball);
+
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -45,12 +47,12 @@ const memoizedPlayers = useDeepMemo(players);
           canvas.height = CANVAS_HEIGHT;
     
           const ctx = canvas.getContext("2d");
-          if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, memoizedPlayers);
+          if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, memoizedPlayers, memoizedBall);
         };
     
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
-    }, [memoizedPlayers, drawSoccerField]);
+    }, [memoizedPlayers, memoizedBall, drawSoccerField]);
   return {canvasRef}
 }

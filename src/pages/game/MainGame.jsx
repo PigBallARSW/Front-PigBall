@@ -7,11 +7,11 @@ import { useGame } from "../../context/game/useGame";
   
 export const MainGame = () => {
   const { id } = useParams();
-  const {players, gameStarted, handleStartGame, handleLeaveGame,handleMovePlayer, playerStats} = useGame(id);
+  const {players, ball, gameStarted, handleStartGame, handleLeaveGame,handleMovePlayer, playerStats} = useGame(id);
   return (
     <main>
       {gameStarted ? (
-        <SoccerField players={players}  movePlayer ={handleMovePlayer}/>
+        <SoccerField players={players} ball={ball} movePlayer ={handleMovePlayer}/>
       ) : (
         <WaitingRoom currentUser = {playerStats.name} id={id} onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame}/>
       )}

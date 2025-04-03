@@ -2,9 +2,9 @@ import { useCallback } from "react";
 import { useDraw } from "../../context/game/useDraw";
 import { useMoveGame } from "../../context/game/useMoveGame";
 
-export const SoccerField = ({ players, movePlayer }) => {
+export const SoccerField = ({ players, ball, movePlayer }) => {
   useMoveGame(movePlayer);
-  const drawSoccerField = useCallback((ctx, fieldWidth, fieldHeight, margin, goalWidth, players) => {
+  const drawSoccerField = useCallback((ctx, fieldWidth, fieldHeight, margin, goalWidth, players, ball) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   
     // Posicionar la cancha en el centro del canvas
@@ -84,7 +84,13 @@ export const SoccerField = ({ players, movePlayer }) => {
         ctx.fill();
         ctx.stroke();
     });
-  
+
+    // Dibujar la pelota
+    ctx.beginPath();
+    ctx.arc(fieldX + ball.x, fieldY + ball.y, 20, 0, Math.PI * 2);
+    ctx.fillStyle = "yellow";
+    ctx.fill();
+    
     // Dibujar los arcos fuera de la cancha
     ctx.strokeStyle = goalColor;
     ctx.lineWidth = 3;
@@ -135,7 +141,7 @@ export const SoccerField = ({ players, movePlayer }) => {
       ctx.stroke();
     }
   },[]);
-  const{canvasRef} = useDraw(players,drawSoccerField);
+  const{canvasRef} = useDraw(players,ball,drawSoccerField);
 
   return (
     <div className="absolute inset-0 flex items-center justify-center containerField">

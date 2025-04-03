@@ -8,6 +8,7 @@ export function useGame (id) {
   const {showAlert} = useAlert();
   const playerStats = usePlayerStats();
   const [players, setPlayers] = useState([]);
+  const [ball, setBall] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
   const stompClient = useRef(null);
   const FRAME_RATE = 60;
@@ -63,7 +64,7 @@ export function useGame (id) {
 useEffect(() => {
   if (isConnected.current) return; 
 
-  let playerName = playerStats.name || `Player${Math.floor(Math.random() * 1000)}`;
+  let playerName = playerStats.name || "Player" + Math.floor(Math.random() * 1000);
   const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";
   const client = new Client({
     brokerURL: brokerUrl,
@@ -86,6 +87,7 @@ useEffect(() => {
 
       client.subscribe(`/topic/play/${id}`, (message) => {
         setPlayers(JSON.parse(message.body).players);
+        setBall(JSON.parse(message.body).ball);
       });
 
     },
@@ -104,6 +106,6 @@ useEffect(() => {
   };
 }, [id, playerStats.name]); 
 
-return{players, gameStarted, handleStartGame, handleLeaveGame, handleMovePlayer, playerStats}
+return{players, ball, gameStarted, handleStartGame, handleLeaveGame, handleMovePlayer, playerStats}
 
 }
