@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePlayerStats } from "../../components/user/playerStats";
 import { Client } from "@stomp/stompjs";
@@ -35,7 +35,7 @@ export function useGame (id) {
     }
   };
   
-  const handleMovePlayer = (movementState) => {
+  const handleMovePlayer = useCallback((movementState) => {
     let playerName = playerStats.name || `Player${Math.floor(Math.random() * 1000)}`;
     if (stompClient.current && stompClient.current.connected) {
       const intervalId = setInterval(() => {
@@ -56,7 +56,7 @@ export function useGame (id) {
     } else {
       showAlert("Not connected to broker, could not quit game.","error");
     }
-  };
+  },[id, playerStats.name, showAlert]);
 
   const isConnected = useRef(false);
 

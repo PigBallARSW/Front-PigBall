@@ -1,9 +1,18 @@
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect } from "react";
+import isEqual from "lodash.isequal";
 
 export function useDraw (players, drawSoccerField) {
     const canvasRef = useRef(null);
-    //Memorizar players para evitar renderizaciones innecesarias 
-    const memoizedPlayers = useMemo(() => players, [JSON.stringify(players)]);
+    
+    const useDeepMemo = (value) => {
+      const ref = useRef();
+      if (!isEqual(ref.current, value)) {
+        ref.current = value;
+      }
+      return ref.current;
+    };
+
+const memoizedPlayers = useDeepMemo(players);
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -42,6 +51,6 @@ export function useDraw (players, drawSoccerField) {
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
-    }, [memoizedPlayers]);
+    }, [memoizedPlayers, drawSoccerField]);
   return {canvasRef}
 }

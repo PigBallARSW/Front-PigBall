@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { createRoom, getGame, getGames } from "../APIServices/gameAPI";
 import { useAlert } from "../context/alert/AlertContext";
+import { useCallback } from "react";
 
 export function useLobbyService() {
     const {showAlert} = useAlert();
@@ -25,7 +26,7 @@ export function useLobbyService() {
         }
        getAGame(func, id);
     }
-    const getAllRooms = async (callback) => {
+    const getAllRooms = useCallback(async (callback) => {
         try{
             const response = await getGames();
             callback(response.data);
@@ -33,15 +34,15 @@ export function useLobbyService() {
             showAlert("Could not load rooms", "error");
         }
         
-    }
-    const getAGame = async (callback, id) => {
+    },[showAlert]);
+    const getAGame = useCallback(async (callback, id) => {
         try{
             const response = await getGame(id);
             callback(response.data);
         }catch(error){
             showAlert("Could not load game", "error");
         }
-    }
+    },[showAlert]);
     return {createNewRoom, joinRoom, getAllRooms, getAGame};
 
 }

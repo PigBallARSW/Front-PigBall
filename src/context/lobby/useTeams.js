@@ -14,7 +14,7 @@ export function useTeams(players, currentUser, creatorName) {
             const isHost = currentUser === creatorName;
             setHost(isHost);
         }
-    }, [players.length]);
+    }, [players, creatorName, currentUser]);
 
     return {teamAPlayers, teamBPlayers, host}
 }
