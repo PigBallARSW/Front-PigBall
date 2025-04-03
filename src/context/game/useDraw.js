@@ -1,9 +1,11 @@
 import { useRef, useEffect, useMemo } from "react";
 
-export function useDraw (players, drawSoccerField) {
+export function useDraw (players, ball, drawSoccerField) {
     const canvasRef = useRef(null);
     //Memorizar players para evitar renderizaciones innecesarias 
     const memoizedPlayers = useMemo(() => players, [JSON.stringify(players)]);
+    const memoizedBall = useMemo(() => ball, [JSON.stringify(ball)]);
+    
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -36,12 +38,12 @@ export function useDraw (players, drawSoccerField) {
           canvas.height = CANVAS_HEIGHT;
     
           const ctx = canvas.getContext("2d");
-          if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, memoizedPlayers);
+          if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, memoizedPlayers, memoizedBall);
         };
     
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
-    }, [memoizedPlayers]);
+    }, [memoizedPlayers, memoizedBall]);
   return {canvasRef}
 }
