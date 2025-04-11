@@ -12,6 +12,7 @@ import { Main } from './Main';
  */
 export const PageLayout = () => {
     const isAuthenticated = useIsAuthenticated();
+    
     return (
         <>
             {isAuthenticated ? (<Main />) : (<Login />)}

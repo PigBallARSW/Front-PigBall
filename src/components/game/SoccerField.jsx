@@ -77,19 +77,54 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
   
     // Dibujar los jugadores DENTRO del área del campo
     players.forEach(player => {
-        const playerRadius = 20;
-        ctx.beginPath();
-        ctx.arc(fieldX + player.x, fieldY + player.y, playerRadius, 0, Math.PI * 2);
-        ctx.fillStyle = player.team === 0 ? "blue" : "red";
-        ctx.fill();
-        ctx.stroke();
-    });
+      const playerRadius = 25;
+      const x = fieldX + player.x;
+      const y = fieldY + player.y;
+  
+      ctx.beginPath();
+      ctx.arc(x, y, playerRadius, 0, Math.PI * 2);
+      ctx.fillStyle = player.team === 0 ? "blue" : "red";
+  
+      // sombra
+      ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 2;
+  
+      ctx.fill();
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+  
+      // limpiar sombra
+      ctx.shadowColor = "transparent";
+  
+      // texto (nombre del jugador)
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "black";
+      ctx.textAlign = "center";
+      ctx.fillText(player.name, x, y + playerRadius + 16); // debajo del círculo
+  });
+  
 
     // Dibujar la pelota
     ctx.beginPath();
     ctx.arc(fieldX + ball.x, fieldY + ball.y, 20, 0, Math.PI * 2);
-    ctx.fillStyle = "yellow";
+    ctx.fillStyle = "white";
+
+    // sombra
+    ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+
     ctx.fill();
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // limpiar sombra
+    ctx.shadowColor = "transparent";
     
     // Dibujar los arcos fuera de la cancha
     ctx.strokeStyle = goalColor;
@@ -144,9 +179,7 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
   const{canvasRef} = useDraw(players,ball,drawSoccerField);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center containerField">
       <canvas ref={canvasRef} className="block" />
-    </div>
   );
 };
 

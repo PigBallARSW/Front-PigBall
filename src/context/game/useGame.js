@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { usePlayerStats } from "../../components/user/playerStats";
 import { Client } from "@stomp/stompjs";
 import { useAlert } from "../alert/AlertContext";
+import { useUser } from "../user/userContext";
 
 export function useGame (id) {
   const {showAlert} = useAlert();
-  const playerStats = usePlayerStats();
+  const playerStats = useUser();
   const [players, setPlayers] = useState([]);
   const [ball, setBall] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
@@ -37,7 +37,7 @@ export function useGame (id) {
   };
   
   const handleMovePlayer = useCallback((movementState) => {
-    let playerName = playerStats.name || `Player${Math.floor(Math.random() * 1000)}`;
+    let playerName = playerStats.username || `Player${Math.floor(Math.random() * 1000)}`;
     if (stompClient.current && stompClient.current.connected) {
       const intervalId = setInterval(() => {
         if (stompClient.current && stompClient.current.connected) {
@@ -57,14 +57,14 @@ export function useGame (id) {
     } else {
       showAlert("Not connected to broker, could not quit game.","error");
     }
-  },[id, playerStats.name, showAlert]);
+  },[id, playerStats.username, showAlert]);
 
   const isConnected = useRef(false);
 
 useEffect(() => {
   if (isConnected.current) return; 
 
-  let playerName = playerStats.name || "Player" + Math.floor(Math.random() * 1000);
+  let playerName = playerStats.username || "Player" + Math.floor(Math.random() * 1000);
   const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";
   const client = new Client({
     brokerURL: brokerUrl,
@@ -104,8 +104,8 @@ useEffect(() => {
       isConnected.current = false;
     }
   };
-}, [id, playerStats.name]); 
+}, [id, playerStats.username]); 
 
-return{players, ball, gameStarted, handleStartGame, handleLeaveGame, handleMovePlayer, playerStats}
+return{players, ball, gameStarted, handleStartGame, handleLeaveGame, handleMovePlayer}
 
 }

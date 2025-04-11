@@ -29,6 +29,7 @@ export function useLobbyService() {
     const getAllRooms = useCallback(async (callback) => {
         try{
             const response = await getGames();
+            console.log(response.data);
             callback(response.data);
         }catch(error){
             showAlert("Could not load rooms", "error");

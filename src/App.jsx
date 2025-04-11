@@ -10,8 +10,7 @@ import { AlertProvider } from './context/alert/AlertContext';
 
 export default function App() {
     return (
-    <AlertProvider>
-        <BrowserRouter>
+    <BrowserRouter>
             <Routes>
                 <Route path="/" element={<PageLayout />}>
                     <Route index element={<HomePage />} />
@@ -22,7 +21,6 @@ export default function App() {
                     <Route path="lobby" element={<Lobby />} />
                 </Route>
             </Routes>
-        </BrowserRouter>
-    </AlertProvider>
+    </BrowserRouter>
     );
 }
