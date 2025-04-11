@@ -5,17 +5,10 @@ import { Box } from "@mui/material"
 import Scoreboard from "./Scoreboard"
 import { SoccerField } from "./SoccerField"
 
-export default function GameContainer({players,ball,movePlayer}) {
-  const [gameState, setGameState] = useState({
-    score: {
-      blue: 0,
-      red: 0,
-    },
-    gameTime: 0,  
-  })
+export default function GameContainer({players,ball,movePlayer,gameState}) {
   const formatGameTime = () => {
-    const minutes = Math.floor(gameState.gameTime / 60)
-    const seconds = gameState.gameTime % 60
+    const minutes = Math.floor(1000 / 60)
+    const seconds = 1000 % 60
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
   }
 
@@ -37,8 +30,8 @@ export default function GameContainer({players,ball,movePlayer}) {
       }}
     >
       <Scoreboard
-        blueScore={gameState.score.blue}
-        redScore={gameState.score.red}
+        blueScore={gameState.teams.first}
+        redScore={gameState.teams.second}
         gameTime={formatGameTime()}
       />
     </Box>

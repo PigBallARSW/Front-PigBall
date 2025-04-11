@@ -9,6 +9,7 @@ export function useGame (id) {
   const playerStats = useUser();
   const [players, setPlayers] = useState([]);
   const [ball, setBall] = useState(null);
+  const [gameState, setGameState] = useState();
   const [gameStarted, setGameStarted] = useState(false);
   const stompClient = useRef(null);
   const FRAME_RATE = 60;
@@ -37,7 +38,10 @@ export function useGame (id) {
   };
   
   const handleMovePlayer = useCallback((movementState) => {
-    let playerName = playerStats.username || `Player${Math.floor(Math.random() * 1000)}`;
+    if (sessionStorage.getItem("usarname") === null) {
+      sessionStorage.setItem("usarname", playerStats?.username || "Guest" + Math.floor(Math.random() * 10000000));
+    }
+    let playerName = playerStats?.username || sessionStorage.getItem("usarname");
     if (stompClient.current && stompClient.current.connected) {
       const intervalId = setInterval(() => {
         if (stompClient.current && stompClient.current.connected) {
@@ -57,14 +61,16 @@ export function useGame (id) {
     } else {
       showAlert("Not connected to broker, could not quit game.","error");
     }
-  },[id, playerStats.username, showAlert]);
+  },[id, playerStats?.username, showAlert]);
 
   const isConnected = useRef(false);
 
 useEffect(() => {
   if (isConnected.current) return; 
-
-  let playerName = playerStats.username || "Player" + Math.floor(Math.random() * 1000);
+  if (sessionStorage.getItem("usarname") === null) {
+    sessionStorage.setItem("usarname", playerStats?.username || "Guest" + Math.floor(Math.random() * 10000000));
+  }
+  let playerName = playerStats?.username || sessionStorage.getItem("usarname")
   const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";
   const client = new Client({
     brokerURL: brokerUrl,
@@ -90,6 +96,10 @@ useEffect(() => {
         setBall(JSON.parse(message.body).ball);
       });
 
+      client.subscribe(`/topic/goal/${id}`, (message) => {
+        console.log("goal", message.body);
+        setGameState(JSON.parse(message.body));
+      });
     },
     onStompError: (frame) => console.error("Error STOMP:", frame.body),
     onWebSocketError: (error) => console.error("Error WebSocket:", error),
@@ -104,8 +114,8 @@ useEffect(() => {
       isConnected.current = false;
     }
   };
-}, [id, playerStats.username]); 
+}, [id, playerStats?.username]); 
 
-return{players, ball, gameStarted, handleStartGame, handleLeaveGame, handleMovePlayer}
+return{players, ball, gameStarted, gameState, handleStartGame, handleLeaveGame, handleMovePlayer}
 
 }

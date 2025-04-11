@@ -29,7 +29,7 @@ import { useUser } from "../../context/user/userContext";
 
 export const WaitingRoom = ({ id, onStartGame, players, leaveRoom }) => {
   const user = useUser();
-  const currentUser = user.username;
+  const currentUser = user?.username || sessionStorage.getItem("username");
   const{roomData} = useWaitingRoom(id);
   const{teamAPlayers, teamBPlayers, host} = useTeams(players, currentUser, roomData.creatorName);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
