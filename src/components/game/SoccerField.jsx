@@ -77,7 +77,7 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
   
     // Dibujar los jugadores DENTRO del área del campo
     players.forEach(player => {
-      const playerRadius = 25;
+      const playerRadius = 30;
       const x = fieldX + player.x;
       const y = fieldY + player.y;
   
@@ -103,14 +103,19 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
       ctx.font = "16px Arial";
       ctx.fillStyle = "black";
       ctx.textAlign = "center";
-      ctx.fillText(player.name, x, y + playerRadius + 16); // debajo del círculo
+      ctx.fillText(player.name, x, y + playerRadius); // debajo del círculo
   });
   
 
     // Dibujar la pelota
-    ctx.beginPath();
-    ctx.arc(fieldX + ball.x, fieldY + ball.y, 20, 0, Math.PI * 2);
-    ctx.fillStyle = "white";
+    if (ball === undefined) {
+
+    } else {
+      ctx.beginPath();
+      ctx.arc(fieldX + ball.x, fieldY + ball.y, 20, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
+    }
+    
 
     // sombra
     ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
