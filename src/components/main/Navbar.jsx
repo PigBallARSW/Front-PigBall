@@ -15,14 +15,22 @@ import {
 } from "@mui/icons-material"
 import { useMsal } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
+import { useIsAuthenticated } from '@azure/msal-react';
 
 export const Navbar = () => {
     const navigation = useNavigate();
     const { instance } = useMsal();
-    
+    const isAuthenticated = useIsAuthenticated();
     const handleLogout = async () => {
-      await instance.logoutPopup();
-      navigation("/");
+      if (isAuthenticated) {
+        await instance.logoutRedirect({
+          postLogoutRedirectUri: "/"
+        });
+      } else {
+        sessionStorage.removeItem("guestPlayerId");
+        sessionStorage.removeItem("guestPlayerName");
+        navigation("/");
+      }
     };
     const handleGoHome = () => {
       navigation("/homepage");
@@ -55,12 +63,12 @@ export const Navbar = () => {
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: "flex" }}>
-          <Tooltip title="Ir al inicio">
+          <Tooltip title="Go Home">
             <IconButton size="small" onClick={handleGoHome} sx={{ color: "white" }}>
               <Home fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Cerrar sesión">
+          <Tooltip title="Log Out">
             <IconButton size="small" onClick={handleLogout} sx={{ color: "white", ml: 1 }}>
               <Logout fontSize="small" />
             </IconButton>

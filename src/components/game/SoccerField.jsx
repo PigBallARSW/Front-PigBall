@@ -100,10 +100,10 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
       ctx.shadowColor = "transparent";
   
       // texto (nombre del jugador)
-      ctx.font = "16px Arial";
-      ctx.fillStyle = "black";
+      ctx.font = "12px Arial";
+      ctx.fillStyle = player.team === 0 ? "blue" : "red";
       ctx.textAlign = "center";
-      ctx.fillText(player.name, x, y + playerRadius); // debajo del círculo
+      ctx.fillText(player.name, x, y + playerRadius+12); 
   });
   
 

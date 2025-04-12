@@ -1,24 +1,23 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { Box } from "@mui/material"
 import Scoreboard from "./Scoreboard"
 import { SoccerField } from "./SoccerField"
-
 export default function GameContainer({ players, ball, movePlayer, gameState }) {
   const [elapsedTime, setElapsedTime] = useState(0)
-
   useEffect(() => {
     if (!gameState?.creationTime) return
-
     const startTime = new Date(gameState.startTime)
-    console.log("startTime", startTime)
     const interval = setInterval(() => {
       const now = Date.now()
-      const diff = Math.floor((now - startTime.getTime()) / 1000) // segundos
-      setElapsedTime(diff)
-    }, 1000)
-
+      const diff = Math.floor((now - startTime.getTime()) / 1000) 
+      if (diff >= 300) { 
+        setElapsedTime(300); 
+        clearInterval(interval); 
+      } else {
+        setElapsedTime(diff);
+      }
+    }, 1000);
     return () => clearInterval(interval)
   }, [gameState?.creationTime])
 
@@ -27,7 +26,6 @@ export default function GameContainer({ players, ball, movePlayer, gameState }) 
     const seconds = elapsedTime % 60
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
   }
-
   return (
     <Box
       sx={{

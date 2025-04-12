@@ -1,5 +1,4 @@
 "use client"
-
 import { Box, Typography, Paper } from "@mui/material"
 import { alpha } from "@mui/material/styles"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"

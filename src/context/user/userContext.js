@@ -5,7 +5,7 @@ import { useUserLogin } from '../../Modules/useUserLogin';
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-    const { accounts } = useMsal();
+        const { accounts } = useMsal();
         const isAuthenticated = accounts.length > 0;
         const [playerData, setPlayerData] = useState(null);
     
@@ -15,7 +15,6 @@ export const UserProvider = ({ children }) => {
             setPlayerData(res);
         }
         useEffect(() => {
-            console.log("ejecutando playerStat")
             const fetchOrCreateUser = async (id, name) => {
                 const user = await getAUser(id, setPlayer);
                 if (!user) {
