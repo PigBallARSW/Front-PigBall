@@ -1,13 +1,5 @@
 import React from 'react';
-import { useMsal } from '@azure/msal-react';
-import { loginRequest } from '../../authConfig';
-import Button from "@mui/material/Button";
 
-/*
-const handleLogin = async () => {
-            instance.loginPopup(loginRequest).catch((e) => console.error(e));
-    };
-    */
 export default function MicrosoftLoginButton() {
         return (
           <svg width="20" height="20" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "8px" }}>

@@ -1,5 +1,5 @@
 import { useIsAuthenticated } from "@azure/msal-react";
-import {Outlet, Navigate} from "react-router-dom";
+import {Navigate} from "react-router-dom";
 
 const ProtectedRoutes = ({children}) => {
     const isAuthenticated = useIsAuthenticated();

@@ -1,10 +1,10 @@
 import { useAlert } from "../context/alert/AlertContext";
-import { useCallback } from "react";
 import { createUser, getUser } from "../APIServices/userAPI";
+import { useCallback } from "react";
 
 export function useUserLogin() {
     const {showAlert} = useAlert();
-    const createNewUser = async (id, name, callback) => {
+    const createNewUser = useCallback(async (id, name, callback) => {
         try{
             const response = await createUser(id, name);
             callback(response.data);
@@ -13,8 +13,8 @@ export function useUserLogin() {
             console.log(error);
             showAlert("Could not Loggin", "error");
         }
-    }
-    const getAUser = async (id, callback) => {
+    },[showAlert]);
+    const getAUser = useCallback(async (id, callback) => {
         try{
             const response = await getUser(id);
             callback(response.data);
@@ -24,7 +24,7 @@ export function useUserLogin() {
             return false;
         }
         
-    }
+    },[showAlert]);
     
     return {createNewUser, getAUser};
 

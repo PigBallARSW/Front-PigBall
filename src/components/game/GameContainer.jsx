@@ -19,7 +19,7 @@ export default function GameContainer({ players, ball, movePlayer, gameState }) 
       }
     }, 1000);
     return () => clearInterval(interval)
-  }, [gameState?.creationTime])
+  }, [gameState?.creationTime, gameState?.startTime]);
 
   const formatGameTime = () => {
     const minutes = Math.floor(elapsedTime / 60)

@@ -48,7 +48,7 @@ export const UserProvider = ({ children }) => {
                     winningPercentage: 0,
                 });
             }
-        }, [isAuthenticated, accounts]);
+        }, [isAuthenticated, accounts, createNewUser, getAUser]);
 
     return (
         <UserContext.Provider value={playerData}>

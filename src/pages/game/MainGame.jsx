@@ -1,6 +1,4 @@
 import React from "react";
-
-import { SoccerField } from "../../components/game/SoccerField";
 import { useParams } from "react-router-dom";
 import { WaitingRoom } from "../../components/lobby/WaitingRoom";
 import { useGame } from "../../context/game/useGame";
