@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Bungee+Spice&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap');
 body {
   background: repeating-linear-gradient(
         -45deg,
@@ -17,7 +17,11 @@ body {
 .containerField {
   width: 100vw;
   height: 100vh;
-  background-color: #2d6a31; /* Color de fondo */
+  background-color: #2d6a31; 
+}
+.title{
+  font-family: "Alfa Slab One", serif;
+  font-style: normal;
 }
 
 

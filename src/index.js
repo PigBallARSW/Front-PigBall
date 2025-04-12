@@ -4,6 +4,8 @@ import App from './App';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
 import { msalConfig } from './authConfig';
+import { UserProvider } from './context/user/userContext';
+import { AlertProvider } from './context/alert/AlertContext';
 
 /**
  * Initialize a PublicClientApplication instance which is provided to the MsalProvider component
@@ -19,7 +21,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <MsalProvider instance={msalInstance}>
+        <AlertProvider>
+        <UserProvider>
             <App />
+        </UserProvider>
+        </AlertProvider>
         </MsalProvider>
     </React.StrictMode>
 );

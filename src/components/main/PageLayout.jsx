@@ -6,15 +6,17 @@ import React from 'react';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { Login } from '../../pages/login/Login';
 import { Main } from './Main';
+import { useUser } from '../../context/user/userContext';
 /**
  * Renders the navbar component with a sign-in or sign-out button depending on whether or not a user is authenticated
  * 
  */
 export const PageLayout = () => {
-    const isAuthenticated = useIsAuthenticated();
+    const user = useUser();
+    
     return (
         <>
-            {isAuthenticated ? (<Main />) : (<Login />)}
+            {user ? (<Main />) : (<Login />)}
         </>
     );
 };

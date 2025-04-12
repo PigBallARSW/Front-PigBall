@@ -23,11 +23,11 @@ import {
   Groups,
   Public,
 } from "@mui/icons-material"
-import { usePlayerStats } from "../../components/user/playerStats";
 import {useLobbyService } from "../../Modules/useLobbyService";
+import { useUser } from "../../context/user/userContext";
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
   const {createNewRoom} = useLobbyService();
-    const playerStats = usePlayerStats();
+    const playerStats = useUser();
     const [newRoom, setNewRoom] = useState({
       name: "",
       isPrivate: false,
@@ -86,7 +86,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         return;
       }
       handleCloseCreateDialog();
-      createNewRoom(newRoom, playerStats.name);
+      createNewRoom(newRoom, playerStats.username);
       
     }
 
