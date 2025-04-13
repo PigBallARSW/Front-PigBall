@@ -12,8 +12,8 @@
         "Id": "spa",
         "Name": "ms-identity-javascript-react-spa",
         "Kind" :  "SinglePageApplication",
-        "HomePage": "https://nice-forest-015f0871e.6.azurestaticapps.net",
-        "ReplyUrls":"https://nice-forest-015f0871e.6.azurestaticapps.net",
+        "HomePage": "https://localhost:3000",
+        "ReplyUrls":"https://localhost:3000",
         "Audience": "AzureADandPersonalMicrosoftAccount",
         "RequiredResourcesAccess": [
           {
