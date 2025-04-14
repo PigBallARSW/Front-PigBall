@@ -15,7 +15,6 @@ export function useRooms () {
         getAllRooms(func);
     }, [getAllRooms, func]);
     useEffect(() => {
-        console.log("hola");
         getRooms();
     }, [getRooms]); 
 
