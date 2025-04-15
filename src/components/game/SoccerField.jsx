@@ -77,7 +77,7 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
   
     // Dibujar los jugadores DENTRO del área del campo
     players.forEach(player => {
-      const playerRadius = 30;
+      const playerRadius = 20;
       const x = fieldX + player.x;
       const y = fieldY + player.y;
   
@@ -92,7 +92,12 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
       ctx.shadowOffsetY = 2;
   
       ctx.fill();
-      ctx.strokeStyle = "black";
+      if (player.kicking) {
+        ctx.strokeStyle = "white";
+      }
+      else{
+        ctx.strokeStyle = "black";
+      }
       ctx.lineWidth = 2;
       ctx.stroke();
   
@@ -111,8 +116,9 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
     if (ball === undefined) {
 
     } else {
+      const ballRadius = 10;
       ctx.beginPath();
-      ctx.arc(fieldX + ball.x, fieldY + ball.y, 20, 0, Math.PI * 2);
+      ctx.arc(fieldX + ball.x, fieldY + ball.y, ballRadius, 0, Math.PI * 2);
       ctx.fillStyle = "white";
     }
     

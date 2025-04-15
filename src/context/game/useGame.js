@@ -51,6 +51,7 @@ export function useGame(id) {
               player: playerName,
               dx: movementState.current.right - movementState.current.left,
               dy: movementState.current.down - movementState.current.up,
+              isKicking: movementState.current.isKicking,
             }),
           });
         }
