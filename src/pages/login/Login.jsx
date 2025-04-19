@@ -21,7 +21,8 @@ export const Login = () => {
   const navigate = useNavigate();
   const handleMicrosoftLogin = async () => {
     try {
-      await instance.loginPopup(loginRequest);
+      const loginResponse = await instance.loginPopup(loginRequest);
+      instance.setActiveAccount(loginResponse.account);
       navigate("/homepage");
     } catch (e) {
       console.error("Error durante login con Microsoft:", e);

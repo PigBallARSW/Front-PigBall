@@ -5,6 +5,7 @@
 
 import { LogLevel } from "@azure/msal-browser";
 
+
 /**
  * Configuration object to be passed to MSAL instance on creation. 
  * For a full list of MSAL.js configuration parameters, visit:
@@ -54,7 +55,9 @@ export const msalConfig = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 export const loginRequest = {
-    scopes: ["User.Read"]
+    //scopes: ["User.Read"] 
+    // el access_token que te da MSAL es para 1 recurso a la vez, así que deberás hacer 2 solicitudes (acquireTokenSilent) si necesitas ambos.
+    scopes: ["api://e6027ced-e75a-4d57-bac8-af9777eaf9de/userAccess"]
 };
 
 /**
