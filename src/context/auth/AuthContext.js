@@ -1,11 +1,11 @@
-// src/context/AuthContext.jsx
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useMsal } from "@azure/msal-react";
-import { loginRequest } from "../../authConfig"; // ajusta la ruta si es necesario
+import { loginRequest } from "../../authConfig";
 
 const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
-    const { instance } = useMsal(); // ✅ usa esta instancia, la misma del <MsalProvider>
+    const { instance } = useMsal();
   
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     const signInUser = async () => {
         try {
           const response = await instance.loginPopup(loginRequest);
-          instance.setActiveAccount(response.account); // Muy importante
+          instance.setActiveAccount(response.account);
           setUser(response.account);
           return response.account;
         } catch (error) {
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   
       const getToken = async () => {
         try {
-          const account = instance.getActiveAccount(); // este se debe haber seteado antes
+          const account = instance.getActiveAccount();
           if (!account) throw new Error("No active account. Please log in first.");
       
           const response = await instance.acquireTokenSilent({
