@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER_URL_LOCAL || "https://backendeci.duckdns.org:8082";
+const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER_URL_LOCAL || "https://d7iyb9ibte.execute-api.us-east-1.amazonaws.com/v1";
 
 export async function createUser(id, name, token) {
     try {
         const creatorName = name || "default";
-        const endpoint = `${API}/users`;
+        const endpoint = `${API}/user`;
         const requestBody = {
             id: id,
             username: creatorName
@@ -26,7 +26,7 @@ export async function createUser(id, name, token) {
 export async function getUser(id, token) {
     try {
 
-        const endpoint = `${API}/users/`;
+        const endpoint = `${API}/user/`;
         const response = await axios.get(endpoint + id, {
             headers: {
                 Authorization: `Bearer ${token}`
