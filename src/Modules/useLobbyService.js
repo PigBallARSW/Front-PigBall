@@ -9,17 +9,17 @@ export function useLobbyService() {
     const { getToken } = useAuth(); 
 
     const navigate = useNavigate();
-    const finishRoom = async (id) => {
-        try{
+    const finishRoom = useCallback(async (id) => {
+        try {
             const token = await getToken();
             const response = await finishGame(id, token);
             console.log(response)
             navigate(`/homepage/lobby`);
-            
-        }catch(error){
+        } catch (error) {
             showAlert("Could not create", "error");
         }
-    }
+    }, [getToken, navigate, showAlert]);
+    
     const createNewRoom = async (newRoom, name) => {
         try{
             const token = await getToken();

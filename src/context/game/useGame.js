@@ -117,7 +117,7 @@ export function useGame(id) {
         isConnected.current = false;
       }
     };
-  }, [id, playerStats?.username]);
+  }, [id, playerStats?.username, playerStats?.id]);
 
   return { players, ball, gameStarted, gameState, handleStartGame, handleLeaveGame, handleMovePlayer }
 
