@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { createRoom, getGame, getGames } from "../APIServices/gameAPI";
+import { createRoom, getGame, getGames, finishGame } from "../APIServices/gameAPI";
 import { useAlert } from "../context/alert/AlertContext";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth/AuthContext";
