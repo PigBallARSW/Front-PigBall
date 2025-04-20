@@ -24,6 +24,10 @@ export function useUserLogin() {
         try{
             const token = await getToken();
             const response = await getUser(id,token);
+            if (!response.data) {
+                console.warn("⚠️ No user data returned");
+                return false;
+            }
             callback(response.data);
             showAlert("Welcome back! "+response.data.username, "success"); 
             return true;
