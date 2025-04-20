@@ -22,10 +22,13 @@ export function useUserLogin() {
     
     const getAUser = useCallback(async (id, callback) => {
         try{
+            console.log("entro getAUser");
             const token = await getToken();
             const response = await getUser(id,token);
+            console.log("response getAUser",response)
+            console.log("response.data",response.data)
             if (!response.data) {
-                console.warn("⚠️ No user data returned");
+                console.log("⚠️ No user data returned");
                 return false;
             }
             callback(response.data);
