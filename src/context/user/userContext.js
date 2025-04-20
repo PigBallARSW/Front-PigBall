@@ -17,7 +17,7 @@ export const UserProvider = ({ children }) => {
         useEffect(() => {
             const fetchOrCreateUser = async (id, name) => {
                 const user = await getAUser(id, setPlayer);
-                console.log("Useeffect de getAusaer")
+                console.log("Useeffect de getAusaer",user)
                 if (!user) {
                     console.log("entre a crear usuario nuevo")
                     await createNewUser(id, name, setPlayer);
