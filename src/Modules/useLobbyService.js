@@ -9,6 +9,17 @@ export function useLobbyService() {
     const { getToken } = useAuth(); 
 
     const navigate = useNavigate();
+    const finishRoom = async (id) => {
+        try{
+            const token = await getToken();
+            const response = await finishGame(id, token);
+            console.log(response)
+            navigate(`/homepage/lobby`);
+            
+        }catch(error){
+            showAlert("Could not create", "error");
+        }
+    }
     const createNewRoom = async (newRoom, name) => {
         try{
             const token = await getToken();
@@ -50,7 +61,8 @@ export function useLobbyService() {
             showAlert("Could not load game", "error");
         }
     },[getToken,showAlert]);
-    return {createNewRoom, joinRoom, getAllRooms, getAGame};
+
+    return {createNewRoom, joinRoom, getAllRooms, getAGame, finishRoom};
 
 }
 

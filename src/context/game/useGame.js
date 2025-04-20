@@ -72,7 +72,7 @@ export function useGame(id) {
       sessionStorage.setItem("usarname", playerStats?.username || "Guest" + Math.floor(Math.random() * 10000000));
     }
     let playerName = playerStats?.username || sessionStorage.getItem("usarname")
-    const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";
+    let playerId = playerStats?.id || "123"
     const client = new Client({
       brokerURL: brokerUrl,
       onConnect: () => {
@@ -85,7 +85,7 @@ export function useGame(id) {
 
         client.publish({
           destination: `/app/join/${id}`,
-          body: JSON.stringify({ name: playerName }),
+          body: JSON.stringify({ name: playerName , id: playerId}),
         });
 
         client.subscribe(`/topic/started/${id}`, (message) => {
