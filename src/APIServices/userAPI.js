@@ -4,6 +4,7 @@ const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER
 
 export async function createUser(id, name, token) {
     try {
+        console.log("create user ",id,name)
         const creatorName = name || "default";
         const endpoint = `${API}/user`;
         const requestBody = {
