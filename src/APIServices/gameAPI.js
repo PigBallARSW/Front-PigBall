@@ -57,3 +57,18 @@ export async function getGame(id,token) {
         throw error;
     }
 }
+
+export async function finishGame(id,token) {
+    try {
+        const endpoint = `${API}/lobby/${id}`;
+        const response = await axios.delete(endpoint, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        return response;
+    } catch (error) {
+        console.error("Error deleting game:", error);
+        throw error;
+    }
+}

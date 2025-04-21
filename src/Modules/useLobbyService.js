@@ -1,14 +1,26 @@
 import { useNavigate } from "react-router-dom";
-import { createRoom, getGame, getGames } from "../APIServices/gameAPI";
+import { createRoom, getGame, getGames, finishGame } from "../APIServices/gameAPI";
 import { useAlert } from "../context/alert/AlertContext";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth/AuthContext";
-
+import { useUserLogin } from "./useUserLogin"
 export function useLobbyService() {
     const {showAlert} = useAlert();
     const { getToken } = useAuth(); 
-
+    const {sendStatsUser} = useUserLogin();
     const navigate = useNavigate();
+    const finishRoom = useCallback(async (id) => {
+        try {
+            const token = await getToken();
+            const response = await finishGame(id, token);
+            console.log(response)
+            await sendStatsUser(response.data)
+            navigate(`/homepage/lobby`);
+        } catch (error) {
+            showAlert("Could not finish room", "error");
+        }
+    }, [getToken, navigate, showAlert,sendStatsUser]);
+    
     const createNewRoom = async (newRoom, name) => {
         try{
             const token = await getToken();
@@ -50,7 +62,8 @@ export function useLobbyService() {
             showAlert("Could not load game", "error");
         }
     },[getToken,showAlert]);
-    return {createNewRoom, joinRoom, getAllRooms, getAGame};
+
+    return {createNewRoom, joinRoom, getAllRooms, getAGame, finishRoom};
 
 }
 

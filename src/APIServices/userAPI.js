@@ -4,7 +4,6 @@ const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER
 
 export async function createUser(id, name, token) {
     try {
-        console.log("create user ",id,name)
         const creatorName = name || "default";
         const endpoint = `${API}/user`;
         const requestBody = {
@@ -23,7 +22,25 @@ export async function createUser(id, name, token) {
         throw error;
     }
 }
-
+export async function sendStats(data, token) {
+    try {
+        console.log(data)
+        const endpoint = `${API}/user/stats`;
+        const requestBody = {
+            stats: data.events,
+            players: data.players
+        };
+        const response = await axios.put(endpoint, requestBody, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+            });
+        return response;
+    } catch (error) {
+        console.error("Error sending stats:", error);
+        throw error;
+    }
+}
 export async function getUser(id, token) {
     try {
 
