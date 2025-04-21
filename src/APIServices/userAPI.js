@@ -21,7 +21,25 @@ export async function createUser(id, name, token) {
         throw error;
     }
 }
-
+export async function sendStats(data, token) {
+    try {
+        console.log(data)
+        const endpoint = `${API}/user/stats`;
+        const requestBody = {
+            stats: data.events,
+            players: data.players
+        };
+        const response = await axios.put(endpoint, requestBody, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+            });
+        return response;
+    } catch (error) {
+        console.error("Error sending stats:", error);
+        throw error;
+    }
+}
 export async function getUser(id, token) {
     try {
         const endpoint = `${API}/users/`;
