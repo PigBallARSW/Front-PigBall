@@ -79,8 +79,13 @@ export function useGame(id) {
         isConnected.current = true;
 
         client.subscribe(`/topic/players/${id}`, (message) => {
-          playersRef.current = JSON.parse(message.body);
+          let bodyJSON = JSON.parse(message.body);
+          playersRef.current = bodyJSON.players;
           setPlayers([...playersRef.current]);
+          setGameState(bodyJSON);
+          if (bodyJSON.startTime !== null) {
+            setGameStarted(true);
+          }
         });
 
         client.publish({
@@ -90,6 +95,7 @@ export function useGame(id) {
 
         client.subscribe(`/topic/started/${id}`, (message) => {
           setGameState(JSON.parse(message.body));
+          console.log("game started", message.body);
           setGameStarted(true);
         });
 
