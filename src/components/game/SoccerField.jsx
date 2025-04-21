@@ -113,7 +113,7 @@ export const SoccerField = ({ players, ball, movePlayer, borderX,borderY }) => {
   
 
     // Dibujar la pelota
-    if (ball === undefined) {
+    if (ball === undefined || ball === null) {
 
     } else {
       const ballRadius = 10;

@@ -82,25 +82,24 @@ export function useGame(id) {
       onConnect: () => {
         isConnected.current = true;
 
-        // Join game first
+        client.subscribe(`/topic/players/${id}`, (message) => {
+          let bodyJSON = JSON.parse(message.body);
+          playersRef.current = bodyJSON.players;
+          setPlayers([...playersRef.current]);
+          setGameState(bodyJSON);
+          if (bodyJSON.startTime !== null) {
+            setGameStarted(true);
+          }
+        });
+
         client.publish({
           destination: `/app/join/${id}`,
           body: JSON.stringify({ name: playerName , id: playerId}),
         });
 
-        // Set up subscriptions
-        const playersSub = client.subscribe(`/topic/players/${id}`, (message) => {
-          playersRef.current = JSON.parse(message.body);
-          setPlayers(prevPlayers => 
-            JSON.stringify(prevPlayers) === JSON.stringify(playersRef.current) 
-              ? prevPlayers 
-              : [...playersRef.current]
-          );
-        });
-
-        const startedSub = client.subscribe(`/topic/started/${id}`, (message) => {
-          const newState = JSON.parse(message.body);
-          setGameState(prev => JSON.stringify(prev) === JSON.stringify(newState) ? prev : newState);
+        client.subscribe(`/topic/started/${id}`, (message) => {
+          setGameState(JSON.parse(message.body));
+          console.log("game started", message.body);
           setGameStarted(true);
         });
 
