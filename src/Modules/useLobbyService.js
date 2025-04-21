@@ -23,12 +23,10 @@ export function useLobbyService() {
         }
     }
     const joinRoom = (id) => {
-        const func = (response) => {
-            const id = response.id;
+        if(id){
             navigate(`/game/${id}`);
             showAlert("Joined successfully!", "success");
         }
-       getAGame(func, id);
     }
     const getAllRooms = useCallback(async (callback) => {
         try{
@@ -40,7 +38,7 @@ export function useLobbyService() {
         }
         
     },[getToken,showAlert]);
-    const getAGame = useCallback(async (callback, id) => {
+    const getAGame = useCallback(async (callback,id) => {
         try{
             const token = await getToken();
             const response = await getGame(id, token);

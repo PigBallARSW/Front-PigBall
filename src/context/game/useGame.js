@@ -99,9 +99,8 @@ export function useGame(id) {
 
         const startedSub = client.subscribe(`/topic/started/${id}`, (message) => {
           const newState = JSON.parse(message.body);
-          setGameStarted(true);
           setGameState(prev => JSON.stringify(prev) === JSON.stringify(newState) ? prev : newState);
-          console.log("empezo juego",gameState.status);
+          setGameStarted(true);
         });
 
         const playSub = client.subscribe(`/topic/play/${id}`, (message) => {
@@ -128,10 +127,6 @@ export function useGame(id) {
 
     client.activate();
     stompClient.current = client;
-
-    if(gameState && gameState.status === "IN_PROGRESS"){
-      handleStartGame();
-    }
 
     return () => {
       if (client.active) {
