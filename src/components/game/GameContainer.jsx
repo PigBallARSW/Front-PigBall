@@ -65,6 +65,8 @@ export default function GameContainer({ players, ball, movePlayer, gameState }) 
           players={players}
           ball={ball}
           movePlayer={movePlayer}
+          borderX={gameState.borderX}
+          borderY={gameState.borderY}
         />
       </Box>
     </Box>

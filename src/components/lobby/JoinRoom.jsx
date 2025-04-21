@@ -61,16 +61,24 @@ export const JoinRoom = ({OpenDialog,CloseDialog}) => {
     onClose={handleCloseCreateDialog}
     maxWidth="sm"
     fullWidth
-    PaperProps={{
-      sx: {
-        borderRadius: 3,
-        bgcolor: "#1d4c1f",
-        border: "3px solid #4CAF50",
-        boxShadow: "0 0 20px rgba(60, 145, 63, 0.42)",
-        color: "white",
-        overflow: "hidden",
+    slotProps={{
+      paper: {
+        component: 'form',
+        onSubmit: (e) => {
+          e.preventDefault();
+          handleJoinRoom();
+        },
+        sx: {
+          borderRadius: 3,
+          bgcolor: "#1d4c1f",
+          border: "3px solid #4CAF50",
+          boxShadow: "0 0 20px rgba(60, 145, 63, 0.42)",
+          color: "white",
+          overflow: "hidden",
+        },
       },
     }}
+  
     
   >
     <DialogTitle
@@ -147,7 +155,7 @@ export const JoinRoom = ({OpenDialog,CloseDialog}) => {
       }}
     >
       <Button
-        onClick={handleJoinRoom}
+        type="submit"
         variant="contained"
         startIcon={<Check />}
         sx={{

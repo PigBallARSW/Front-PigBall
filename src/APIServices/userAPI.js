@@ -4,14 +4,12 @@ const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER
 
 export async function createUser(id, name, token) {
     try {
-        console.log("create user ",id,name)
         const creatorName = name || "default";
-        const endpoint = `${API}/user`;
+        const endpoint = `${API}/users`;
         const requestBody = {
             id: id,
             username: creatorName
         };
-        console.log(requestBody);
         const response = await axios.post(endpoint, requestBody, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -26,8 +24,7 @@ export async function createUser(id, name, token) {
 
 export async function getUser(id, token) {
     try {
-
-        const endpoint = `${API}/user/`;
+        const endpoint = `${API}/users/`;
         const response = await axios.get(endpoint + id, {
             headers: {
                 Authorization: `Bearer ${token}`

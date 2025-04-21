@@ -57,7 +57,7 @@ export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,w
       return () => clearInterval(interval);
   }
     return (
-        <Grid item size={{
+        <Grid size={{
             xs: 12,
             sm: 8
           }}>
@@ -69,7 +69,7 @@ export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,w
               />
               <CardContent sx={{ py: 3 }}>
                 <Grid container spacing={2}>
-                  <Grid item size={{
+                  <Grid size={{
                   xs: 12,
                   sm: 6
                   }}>
@@ -96,7 +96,7 @@ export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,w
                     </Paper>
                   </Grid>
 
-                  <Grid item size={{
+                  <Grid size={{
                     xs: 12,
                     sm: 6
                   }}>
@@ -123,7 +123,7 @@ export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,w
                     </Paper>
                   </Grid>
 
-                  <Grid item size={{
+                  <Grid size={{
                   xs: 12,
                   sm: 6
                   }}>
@@ -151,7 +151,7 @@ export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,w
                     </Paper>
                   </Grid>
 
-                  <Grid item size={{
+                  <Grid size={{
                     xs: 12,
                     sm: 6
                   }}>

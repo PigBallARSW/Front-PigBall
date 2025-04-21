@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import isEqual from "lodash.isequal";
 
-export function useDraw (players, ball, drawSoccerField) {
+export function useDraw (players, ball, drawSoccerField, borderX, borderY) {
     const canvasRef = useRef(null);
     
     const useDeepMemo = (value) => {
@@ -22,8 +22,8 @@ export function useDraw (players, ball, drawSoccerField) {
         const handleResize = () => {
           if (!canvas) return;
     
-          const FIELD_WIDTH = 1200;
-          const FIELD_HEIGHT = 900;
+          const FIELD_WIDTH = borderX;
+          const FIELD_HEIGHT = borderY;
           const MARGIN = 30;
           const GOAL_WIDTH = 40;
     

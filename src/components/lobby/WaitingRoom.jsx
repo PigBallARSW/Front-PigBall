@@ -26,9 +26,11 @@ import { PlayerList } from "./PlayerList";
 import { useWaitingRoom } from "../../context/lobby/useWaitingRoom";
 import { useTeams } from "../../context/lobby/useTeams";
 import { useUser } from "../../context/user/userContext";
+import { useAlert } from "../../context/alert/AlertContext";
 
 export const WaitingRoom = ({ id, onStartGame, players, leaveRoom }) => {
   const user = useUser();
+  const{showAlert} = useAlert();
   const currentUser = user?.username || sessionStorage.getItem("username");
   const{roomData} = useWaitingRoom(id);
   const{teamAPlayers, teamBPlayers, host} = useTeams(players, currentUser, roomData.creatorName);
@@ -38,7 +40,7 @@ export const WaitingRoom = ({ id, onStartGame, players, leaveRoom }) => {
     if (players.length > 1) {
       onStartGame();
     } else {
-      alert("There must be at least two members");
+      showAlert("There must be at least two members","warning");
     }
   }
   const handleCopyInviteCode = () => {
@@ -209,12 +211,14 @@ export const WaitingRoom = ({ id, onStartGame, players, leaveRoom }) => {
         onClose={() => setIsInviteOpen(false)}
         maxWidth="xs"
         fullWidth
-        PaperProps={{
-          sx: {
-            bgcolor: "#222",
-            color: "white",
-            borderRadius: 2,
-            border: "2px solid #4CAF50",
+        slotProps={{
+          paper: {
+            sx: {
+                bgcolor: "#222",
+                color: "white",
+                borderRadius: 2,
+                border: "2px solid #4CAF50",
+            },
           },
         }}
       >
@@ -284,12 +288,14 @@ export const WaitingRoom = ({ id, onStartGame, players, leaveRoom }) => {
         onClose={() => setIsLeaveDialogOpen(false)}
         maxWidth="xs"
         fullWidth
-        PaperProps={{
-          sx: {
-            bgcolor: "#222",
-            color: "white",
-            borderRadius: 2,
-            border: "2px solid #f44336",
+        slotProps={{
+          paper: {
+            sx: {
+              bgcolor: "#222",
+              color: "white",
+              borderRadius: 2,
+              border: "2px solid #f44336",
+            },
           },
         }}
       >

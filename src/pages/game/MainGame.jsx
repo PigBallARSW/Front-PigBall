@@ -9,7 +9,7 @@ export const MainGame = () => {
   const {players, ball, gameStarted, gameState, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id);
   return (
     <main>
-      {gameStarted ? (
+      {(gameState?.status === "IN_PROGRESS" || gameState?.status === "IN_PROGRESS_FULL") ? (
         <GameContainer players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState}/>
       ) : (
         <WaitingRoom  id={id} onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame} gameState={gameState}/>

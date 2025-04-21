@@ -87,7 +87,6 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
       }
       handleCloseCreateDialog();
       createNewRoom(newRoom, playerStats.username);
-      
     }
 
   return (
@@ -96,14 +95,21 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
     onClose={handleCloseCreateDialog}
     maxWidth="sm"
     fullWidth
-    PaperProps={{
-      sx: {
-        borderRadius: 3,
-        bgcolor: "#1d4c1f",
-        border: "3px solid #4CAF50",
-        boxShadow: "0 0 20px rgba(60, 145, 63, 0.42)",
-        color: "white",
-        overflow: "hidden",
+    slotProps={{
+      paper: {
+        component: 'form',
+        onSubmit: (e) => {
+          e.preventDefault();
+          handleCreateRoom();
+        },
+        sx: {
+          borderRadius: 3,
+          bgcolor: "#1d4c1f",
+          border: "3px solid #4CAF50",
+          boxShadow: "0 0 20px rgba(60, 145, 63, 0.42)",
+          color: "white",
+          overflow: "hidden",
+        },
       },
     }}
     
@@ -137,10 +143,9 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
     <DialogContent
       sx={{
         bgcolor: "rgba(0, 0, 0, 0.7)",
-        py: 3,
+        padding: 3
       }}
     >
-      <Box component="form" sx={{ mt: 1 }}>
         <MuiTextField
           margin="dense"
           label="Room Name"
@@ -271,7 +276,6 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
             ? "Only players with the code will be able to join"
             : "Any player will be able to find and join this room"}
         </FormHelperText>
-      </Box>
     </DialogContent>
     <DialogActions
       sx={{
@@ -282,7 +286,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
       }}
     >
       <Button
-        onClick={handleCreateRoom}
+        type="submit"
         variant="contained"
         startIcon={<Check />}
         sx={{

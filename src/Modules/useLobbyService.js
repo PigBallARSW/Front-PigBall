@@ -34,7 +34,6 @@ export function useLobbyService() {
         try{
             const token = await getToken();
             const response = await getGames(token);
-            console.log(response.data);
             callback(response.data);
         }catch(error){
             showAlert("Could not load rooms", "error");
