@@ -33,7 +33,6 @@ export const MainGame = () => {
 
   useEffect(() => {
     loadGame();
-    console.log(roomData);
   },[loadGame]);
 
   return (
