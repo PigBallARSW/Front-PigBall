@@ -1,12 +1,11 @@
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../authConfig";
 
 const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const { instance } = useMsal();
-  
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
   
@@ -21,7 +20,7 @@ export const AuthProvider = ({ children }) => {
         }
       };
   
-      const getToken = async () => {
+      const getToken = useCallback(async () => {
         try {
           const account = instance.getActiveAccount();
           if (!account) throw new Error("No active account. Please log in first.");
@@ -37,7 +36,7 @@ export const AuthProvider = ({ children }) => {
           console.error("Token fetch error:", error);
           throw error;
         }
-      };
+      },[]);
   
     const signOut = () => {
       const account = instance.getActiveAccount();

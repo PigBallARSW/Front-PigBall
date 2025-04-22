@@ -15,7 +15,6 @@ export function useUserLogin() {
             callback(response.data);
             showAlert("Welcome "+name, "success");    
         }catch(error){
-            console.log(error);
             showAlert("Could not Loggin", "error");
         }
     },[getToken,showAlert]);
@@ -25,9 +24,7 @@ export function useUserLogin() {
             const token = await getToken();
             const response = await sendStats(stats, token);
             callback(response);
-            //showAlert("Welcome "+name, "success");
         }catch(error){
-            console.log(error);
             showAlert("Could not sendStats", "error");
         }
     },[getToken,showAlert]);

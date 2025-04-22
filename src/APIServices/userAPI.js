@@ -10,7 +10,6 @@ export async function createUser(id, name, token) {
             id: id,
             username: creatorName
         };
-        console.log(requestBody);
         const response = await axios.post(endpoint, requestBody, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -24,7 +23,6 @@ export async function createUser(id, name, token) {
 }
 export async function sendStats(data, token) {
     try {
-        console.log(data)
         const endpoint = `${API}/user/stats`;
         const requestBody = {
             stats: data.events,
@@ -43,7 +41,6 @@ export async function sendStats(data, token) {
 }
 export async function getUser(id, token) {
     try {
-
         const endpoint = `${API}/user/`;
         const response = await axios.get(endpoint + id, {
             headers: {

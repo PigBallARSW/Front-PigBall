@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useDraw } from "../../context/game/useDraw";
 import { useMoveGame } from "../../context/game/useMoveGame";
 
-export const SoccerField = ({ players, ball, movePlayer }) => {
+export const SoccerField = ({ players, ball, movePlayer, borderX,borderY }) => {
   useMoveGame(movePlayer);
   const drawSoccerField = useCallback((ctx, fieldWidth, fieldHeight, margin, goalWidth, players, ball) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -113,7 +113,7 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
   
 
     // Dibujar la pelota
-    if (ball === undefined) {
+    if (ball === undefined || ball === null) {
 
     } else {
       const ballRadius = 10;
@@ -187,7 +187,7 @@ export const SoccerField = ({ players, ball, movePlayer }) => {
       ctx.stroke();
     }
   },[]);
-  const{canvasRef} = useDraw(players,ball,drawSoccerField);
+  const{canvasRef} = useDraw(players,ball,drawSoccerField, borderX, borderY);
 
   return (
       <canvas ref={canvasRef} className="block" />

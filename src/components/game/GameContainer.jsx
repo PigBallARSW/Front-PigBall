@@ -74,6 +74,8 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
           players={players}
           ball={ball}
           movePlayer={movePlayer}
+          borderX={gameState.borderX}
+          borderY={gameState.borderY}
         />
       </Box>
      {/* 🚨 Mensaje de juego terminado */}

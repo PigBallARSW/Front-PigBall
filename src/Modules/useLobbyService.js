@@ -13,8 +13,7 @@ export function useLobbyService() {
         try {
             const token = await getToken();
             const response = await finishGame(id, token);
-            console.log(response)
-            await sendStatsUser(response.data)
+            await sendStatsUser(response.data);
             navigate(`/homepage/lobby`);
         } catch (error) {
             showAlert("Could not finish room", "error");
@@ -46,7 +45,6 @@ export function useLobbyService() {
         try{
             const token = await getToken();
             const response = await getGames(token);
-            console.log(response.data);
             callback(response.data);
         }catch(error){
             showAlert("Could not load rooms", "error");
@@ -55,13 +53,12 @@ export function useLobbyService() {
     },[getToken,showAlert]);
     const getAGame = useCallback(async (callback, id) => {
         try{
-            const token = await getToken();
-            const response = await getGame(id, token);
+            const response = await getGame(id);
             callback(response.data);
         }catch(error){
             showAlert("Could not load game", "error");
         }
-    },[getToken,showAlert]);
+    },[showAlert]);
 
     return {createNewRoom, joinRoom, getAllRooms, getAGame, finishRoom};
 

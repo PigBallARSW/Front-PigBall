@@ -19,5 +19,4 @@ export function useRooms () {
     }, [getRooms]); 
 
     return {rooms, isRefreshing, getRooms};
-
 }
