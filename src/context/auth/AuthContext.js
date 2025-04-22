@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
           console.error("Token fetch error:", error);
           throw error;
         }
-      },[]);
+      },[instance]);
   
     const signOut = () => {
       const account = instance.getActiveAccount();

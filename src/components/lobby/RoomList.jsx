@@ -16,7 +16,6 @@ import {
 } from "@mui/material"
 import {
   SportsSoccer,
-  Lock,
   People,
   EmojiEvents,
   AccessTime,

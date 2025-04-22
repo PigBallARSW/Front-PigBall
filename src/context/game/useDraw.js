@@ -4,18 +4,21 @@ import isEqual from "lodash.isequal";
 export function useDraw (players, ball, drawSoccerField, borderX, borderY) {
     const canvasRef = useRef(null);
     
-    const useDeepMemo = (value) => {
+    function useDeepCompareMemoize(value) {
       const ref = useRef();
+    
       if (!isEqual(ref.current, value)) {
         ref.current = value;
       }
+    
       return ref.current;
-    };
+    }
 
-    const memoizedPlayers = useDeepMemo(players);
-    const memoizedBall = useDeepMemo(ball);
+    const memoizedPlayers = useDeepCompareMemoize(players);
+    const memoizedBall = useDeepCompareMemoize(ball);
 
     useEffect(() => {
+      console.log("hola");
         const canvas = canvasRef.current;
         if (!canvas) return;
     
@@ -53,6 +56,6 @@ export function useDraw (players, ball, drawSoccerField, borderX, borderY) {
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
-    }, [memoizedPlayers, memoizedBall, drawSoccerField]);
+    }, [memoizedPlayers, memoizedBall, drawSoccerField, borderX, borderY]);
   return {canvasRef}
 }
