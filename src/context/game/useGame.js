@@ -99,27 +99,19 @@ export function useGame(id) {
 
         client.subscribe(`/topic/started/${id}`, (message) => {
           setGameState(JSON.parse(message.body));
-          console.log("game started", message.body);
           setGameStarted(true);
         });
 
-        const playSub = client.subscribe(`/topic/play/${id}`, (message) => {
+        client.subscribe(`/topic/play/${id}`, (message) => {
           const data = JSON.parse(message.body);
           setPlayers(prev => JSON.stringify(prev) === JSON.stringify(data.players) ? prev : data.players);
           setBall(prev => JSON.stringify(prev) === JSON.stringify(data.ball) ? prev : data.ball);
         });
 
-        const goalSub = client.subscribe(`/topic/goal/${id}`, (message) => {
+        client.subscribe(`/topic/goal/${id}`, (message) => {
           const newState = JSON.parse(message.body);
           setGameState(prev => JSON.stringify(prev) === JSON.stringify(newState) ? prev : newState);
         });
-
-        return () => {
-          playersSub.unsubscribe();
-          startedSub.unsubscribe();
-          playSub.unsubscribe();
-          goalSub.unsubscribe();
-        };
       },
       onStompError: (frame) => console.error("Error STOMP:", frame.body),
       onWebSocketError: (error) => console.error("Error WebSocket:", error),
@@ -138,13 +130,4 @@ export function useGame(id) {
 
   return { players, ball, gameStarted, gameState, handleStartGame, handleLeaveGame, handleMovePlayer }
 
-  return { 
-    players, 
-    ball, 
-    gameStarted, 
-    gameState, 
-    handleStartGame, 
-    handleLeaveGame, 
-    handleMovePlayer 
-  };
 }

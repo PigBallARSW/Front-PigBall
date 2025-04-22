@@ -23,8 +23,7 @@ export async function createUser(id, name, token) {
 }
 export async function sendStats(data, token) {
     try {
-        console.log(data)
-        const endpoint = `${API}/user/stats`;
+        const endpoint = `${API}/users/stats`;
         const requestBody = {
             stats: data.events,
             players: data.players

@@ -13,8 +13,7 @@ export function useLobbyService() {
         try {
             const token = await getToken();
             const response = await finishGame(id, token);
-            console.log(response)
-            await sendStatsUser(response.data)
+            await sendStatsUser(response.data);
             navigate(`/homepage/lobby`);
         } catch (error) {
             showAlert("Could not finish room", "error");
@@ -35,10 +34,12 @@ export function useLobbyService() {
         }
     }
     const joinRoom = (id) => {
-        if(id){
+        const func = (response) => {
+            const id = response.id;
             navigate(`/game/${id}`);
             showAlert("Joined successfully!", "success");
         }
+       getAGame(func, id);
     }
     const getAllRooms = useCallback(async (callback) => {
         try{
@@ -50,15 +51,14 @@ export function useLobbyService() {
         }
         
     },[getToken,showAlert]);
-    const getAGame = useCallback(async (callback,id) => {
+    const getAGame = useCallback(async (callback, id) => {
         try{
-            const token = await getToken();
-            const response = await getGame(id, token);
+            const response = await getGame(id);
             callback(response.data);
         }catch(error){
             showAlert("Could not load game", "error");
         }
-    },[getToken,showAlert]);
+    },[showAlert]);
 
     return {createNewRoom, joinRoom, getAllRooms, getAGame, finishRoom};
 
