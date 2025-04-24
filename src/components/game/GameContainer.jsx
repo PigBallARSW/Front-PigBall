@@ -1,18 +1,52 @@
 "use client"
-import { useState, useEffect } from "react"
-import {  Typography, Box } from "@mui/material"
+import { useState, useEffect, useRef } from "react"
+import {  Typography, Box, useTheme, useMediaQuery } from "@mui/material"
 import Scoreboard from "./Scoreboard"
 import { SoccerField } from "./SoccerField"
 import {useLobbyService } from "../../Modules/useLobbyService";
+import MobileControls from "./MobileControls"
+import { useMoveGame } from "../../context/game/useMoveGame"
+import GoalAnimation from "./GoalAnimation"
+import { useGoal } from "../../context/game/useGoal"
 export default function GameContainer({ id, players, ball, movePlayer, gameState }) {
+  console.log("loop:" + gameState);
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
   const [showGameOver, setShowGameOver] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const movementState = useRef({ up: false, down: false, left: false, right: false, isKicking: false });
+  useMoveGame(movePlayer, movementState);
+  const { goalAnimation, addGoal, closeGoalAnimation } = useGoal();
+  const onMoveStart = (direction) => {
+    const key = direction.replace("Arrow", "").toLowerCase();
+    movementState.current[key] = true;
+  };
+
+  const onMoveEnd = (direction) => {
+    const key = direction.replace("Arrow", "").toLowerCase();
+    movementState.current[key] = false;
+  };
+
+  const onActionStart = () => {
+    movementState.current.isKicking = true;
+  };
+
+  const onActionEnd = () => {
+    movementState.current.isKicking = false;
+  };
   useEffect(() => {
+    console.log("No loop:" + gameState);
+    if (gameState?.events?.length) {
+      addGoal(gameState);
+    }
+  }, [gameState?.events]);
+
+  useEffect(() => {
+    console.log("ejecutando tiempo")
     if (!gameState?.creationTime) return
     if (!gameState?.creationTime || hasFinished) return;
-
     const startTime = new Date(gameState.startTime)
     const interval = setInterval(() => {
       const now = Date.now()
@@ -43,6 +77,9 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
       }}
       className="containerField"
     >
+       {goalAnimation.show && (
+        <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} />
+      )}
       <Box
         sx={{
           position: "absolute",
@@ -76,9 +113,9 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
           movePlayer={movePlayer}
           borderX={gameState.borderX}
           borderY={gameState.borderY}
+          movementState={movementState}
         />
       </Box>
-     {/* 🚨 Mensaje de juego terminado */}
      {showGameOver && (
   <Box
     sx={{
@@ -117,6 +154,10 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     </Typography>
   </Box>
 )}
+  {isMobile && <MobileControls onMoveStart={onMoveStart}
+        onMoveEnd={onMoveEnd}
+        onActionStart={onActionStart}
+        onActionEnd={onActionEnd} />}
     </Box>
 
   )

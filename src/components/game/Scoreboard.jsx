@@ -51,7 +51,7 @@ export default function Scoreboard({
           <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
             <ShieldIcon color="primary" sx={{ fontSize: 18, mr: 0.5 }} />
             <Typography variant="body2" color="primary" sx={{ fontWeight: "bold" }}>
-              BLUE
+              A
             </Typography>
           </Box>
           <Typography variant="h5" sx={{ fontFamily: "scoreboard, monospace", color: "white" }}>
@@ -114,7 +114,7 @@ export default function Scoreboard({
           <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
             <ShieldIcon sx={{ fontSize: 18, mr: 0.5, color: "#dc004e" }} />
             <Typography variant="body2" sx={{ fontWeight: "bold", color: "#dc004e" }}>
-              RED
+              B
             </Typography>
           </Box>
           <Typography variant="h5" sx={{ fontFamily: "scoreboard, monospace", color: "white" }}>

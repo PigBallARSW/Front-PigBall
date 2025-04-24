@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import { useAlert } from "../alert/AlertContext";
 import { useUser } from "../user/userContext";
+import { useGolContext } from "./useGoal";
 
 export function useGame(id) {
   const { showAlert } = useAlert();
@@ -68,6 +69,8 @@ export function useGame(id) {
 
     return () => clearInterval(intervalId);
   }, [id, playerName, showAlert]);
+
+  
 
   useEffect(() => {
     if (isConnected.current) return;

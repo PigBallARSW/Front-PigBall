@@ -23,16 +23,14 @@ import {
   Timer,
 } from "@mui/icons-material"
 import { PlayerList } from "./PlayerList";
-import { useWaitingRoom } from "../../context/lobby/useWaitingRoom";
 import { useTeams } from "../../context/lobby/useTeams";
 import { useUser } from "../../context/user/userContext";
 import { useAlert } from "../../context/alert/AlertContext";
 
-export const WaitingRoom = ({ id, onStartGame, players, leaveRoom}) => {
+export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData}) => {
   const user = useUser();
   const{showAlert} = useAlert();
   const currentUser = user?.username || sessionStorage.getItem("username");
-  const{roomData} = useWaitingRoom(id);
   const{teamAPlayers, teamBPlayers, host} = useTeams(players, currentUser, roomData.creatorName);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
@@ -45,7 +43,6 @@ export const WaitingRoom = ({ id, onStartGame, players, leaveRoom}) => {
   }
   const handleCopyInviteCode = () => {
     navigator.clipboard.writeText(roomData.id);
-    // Aquí se podría mostrar un mensaje de éxito
   }
   const handleLeaveRoom = () => {
     setIsLeaveDialogOpen(false);
@@ -91,15 +88,15 @@ export const WaitingRoom = ({ id, onStartGame, players, leaveRoom}) => {
             }}
           >
             <SportsSoccer sx={{ mr: 1, color: "#4CAF50" }} />
-            {roomData.lobbyName}
+            {roomData.gameName}
           </Typography>
           <Chip
-            label={roomData.privateLobby ? "Privada" : "Pública"}
+            label={roomData.privateGame ? "Private" : "Públic"}
             size="small"
-            icon={roomData.privateLobby ? <Lock fontSize="small" /> : <Public fontSize="small" />}
+            icon={roomData.privateGame ? <Lock fontSize="small" /> : <Public fontSize="small" />}
             sx={{
               ml: 2,
-              bgcolor: roomData.privateLobby ? "rgba(244, 67, 54, 0.2)" : "rgba(76, 175, 80, 0.2)",
+              bgcolor: roomData.privateGame ? "rgba(244, 67, 54, 0.2)" : "rgba(76, 175, 80, 0.2)",
               color: "white",
               "& .MuiChip-icon": { color: "white" },
               display: { xs: "none", sm: "flex" },
@@ -191,7 +188,7 @@ export const WaitingRoom = ({ id, onStartGame, players, leaveRoom}) => {
 
             <Chip
               icon={<Timer fontSize="small" />}
-              label={`${new Date(roomData.creationTime * 1000).toLocaleString()}`}
+              label={`${new Date(roomData.creationTime).toLocaleString()}`}
               size="small"
               sx={{
                 bgcolor: "rgba(255,255,255,0.1)",

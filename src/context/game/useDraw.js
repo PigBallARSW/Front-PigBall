@@ -18,7 +18,6 @@ export function useDraw (players, ball, drawSoccerField, borderX, borderY) {
     const memoizedBall = useDeepCompareMemoize(ball);
 
     useEffect(() => {
-      console.log("hola");
         const canvas = canvasRef.current;
         if (!canvas) return;
     
