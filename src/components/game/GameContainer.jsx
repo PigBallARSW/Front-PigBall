@@ -8,8 +8,8 @@ import MobileControls from "./MobileControls"
 import { useMoveGame } from "../../context/game/useMoveGame"
 import GoalAnimation from "./GoalAnimation"
 import { useGoal } from "../../context/game/useGoal"
+import Summary from "./Summary"
 export default function GameContainer({ id, players, ball, movePlayer, gameState }) {
-  console.log("loop:" + gameState);
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
@@ -18,7 +18,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const movementState = useRef({ up: false, down: false, left: false, right: false, isKicking: false });
   useMoveGame(movePlayer, movementState);
-  const { goalAnimation, addGoal, closeGoalAnimation } = useGoal();
+  const { goalAnimation, addGoal, closeGoalAnimation, playersGoal } = useGoal();
   const onMoveStart = (direction) => {
     const key = direction.replace("Arrow", "").toLowerCase();
     movementState.current[key] = true;
@@ -37,7 +37,6 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     movementState.current.isKicking = false;
   };
   useEffect(() => {
-    console.log("No loop:" + gameState);
     if (gameState?.events?.length) {
       addGoal(gameState);
     }
@@ -55,7 +54,6 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
         setElapsedTime(300); 
         clearInterval(interval); 
         setShowGameOver(true);
-        setTimeout(() => finishRoom(id), 2000);
         setHasFinished(true);
       } else {
         setElapsedTime(diff);
@@ -68,6 +66,12 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     const minutes = Math.floor(elapsedTime / 60)
     const seconds = elapsedTime % 60
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+  }
+  const exitGame = () => {
+    finishRoom(id);
+  }
+  const playAgain = () => {
+    alert("Denuevoo");
   }
   return (
     <Box
@@ -117,42 +121,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
         />
       </Box>
      {showGameOver && (
-  <Box
-    sx={{
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 1300,
-      bgcolor: "#222",
-      color: "white",
-      borderRadius: 2,
-      border: "2px solid #f44336",
-      maxWidth: 400,
-      width: "90%",
-      p: 3,
-      boxShadow: 24,
-    }}
-  >
-    <Box
-      sx={{
-        bgcolor: "rgba(244, 67, 54, 0.2)",
-        color: "#f44336",
-        px: 2,
-        py: 1,
-        borderRadius: 1,
-        mb: 2,
-        fontWeight: "bold",
-        textAlign: "center",
-        fontSize: "1.25rem",
-      }}
-    >
-      Game Over
-    </Box>
-    <Typography variant="body1" sx={{ textAlign: "center" }}>
-      The game is over. Returning to the main room...
-    </Typography>
-  </Box>
+      <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
 )}
   {isMobile && <MobileControls onMoveStart={onMoveStart}
         onMoveEnd={onMoveEnd}

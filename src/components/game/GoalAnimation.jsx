@@ -12,7 +12,6 @@ export default function GoalAnimation({ player, team, onClose }) {
   const teamName = team === 0 ? "A" : "B";
 
   useEffect(() => {
-    console.log("ejecutando");
     const timer = setTimeout(() => {
       setShowConfetti(false);
       if (onClose) onClose();

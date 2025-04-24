@@ -16,7 +16,7 @@ export function useLobbyService() {
             await sendStatsUser(response.data);
             navigate(`/homepage/lobby`);
         } catch (error) {
-            showAlert("Could not finish room", "error");
+            navigate(`/homepage/lobby`);
         }
     }, [getToken, navigate, showAlert,sendStatsUser]);
     
