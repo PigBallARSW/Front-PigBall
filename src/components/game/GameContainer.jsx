@@ -23,7 +23,6 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     const key = direction.replace("Arrow", "").toLowerCase();
     movementState.current[key] = true;
   };
-
   const onMoveEnd = (direction) => {
     const key = direction.replace("Arrow", "").toLowerCase();
     movementState.current[key] = false;
@@ -43,7 +42,6 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
   }, [gameState?.events]);
 
   useEffect(() => {
-    console.log("ejecutando tiempo")
     if (!gameState?.creationTime) return
     if (!gameState?.creationTime || hasFinished) return;
     const startTime = new Date(gameState.startTime)
@@ -81,7 +79,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
       }}
       className="containerField"
     >
-       {goalAnimation.show && (
+      {goalAnimation.show && (
         <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} />
       )}
       <Box
@@ -120,10 +118,10 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
           movementState={movementState}
         />
       </Box>
-     {showGameOver && (
+    {showGameOver && (
       <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
-)}
-  {isMobile && <MobileControls onMoveStart={onMoveStart}
+    )}
+    {isMobile && <MobileControls onMoveStart={onMoveStart}
         onMoveEnd={onMoveEnd}
         onActionStart={onActionStart}
         onActionEnd={onActionEnd} />}

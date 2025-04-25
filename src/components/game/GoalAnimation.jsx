@@ -5,9 +5,30 @@ import Confetti from "react-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
+const waveVariants = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const letterVariants = {
+  initial: { y: 0 },
+  animate: {
+    y: [0, -20, 0],
+    transition: {
+      duration: 0.8,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  },
+};
+
 export default function GoalAnimation({ player, team, onClose }) {
   const [showConfetti, setShowConfetti] = useState(true);
 
+  const text = "¡GOL!";
   const teamColor = team === 0 ? "#1976d2" : "#dc004e";
   const teamName = team === 0 ? "A" : "B";
 
@@ -37,8 +58,7 @@ export default function GoalAnimation({ player, team, onClose }) {
           alignItems: "center",
           justifyContent: "center",
           zIndex: 1000,
-          backgroundColor: alpha("#000", 0.7),
-          backdropFilter: "blur(8px)",
+          backgroundColor: alpha("#000", 0.3),
         }}
       >
         {showConfetti && <Confetti numberOfPieces={300} recycle={false} />}
@@ -51,7 +71,7 @@ export default function GoalAnimation({ player, team, onClose }) {
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           elevation={24}
           sx={{
-            bgcolor: alpha("#000000", 0.75),
+            bgcolor: alpha("#000000", 0.65),
             borderRadius: 4,
             p: { xs: 3, md: 5 },
             width: { xs: "90%", sm: "70%", md: "60%" },
@@ -88,25 +108,35 @@ export default function GoalAnimation({ player, team, onClose }) {
             >
               <EmojiEventsIcon sx={{ mr: 1 }} /> TEAM {teamName}
             </Typography>
-
-            <Typography
-              component={motion.div}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1.1 }}
-              transition={{ duration: 0.5, repeat: Infinity, repeatType: "mirror" }}
-              variant="h1"
-              sx={{
-                fontWeight: 900,
-                fontSize: { xs: "4rem", sm: "6rem", md: "8rem" },
-                letterSpacing: "0.1em",
-                textShadow: `0 0 20px ${teamColor}`,
-                color: teamColor,
-                mb: 2,
-                lineHeight: 1,
-              }}
-            >
-              ¡GOL!
-            </Typography>
+            <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
+              <Box
+                component={motion.div}
+                variants={waveVariants}
+                initial="initial"
+                animate="animate"
+                display="flex"
+              >
+                {text.split("").map((char, index) => (
+                  <Typography
+                    key={index}
+                    component={motion.span}
+                    variants={letterVariants}
+                    variant="h1"
+                    sx={{
+                      fontWeight: 900,
+                      fontSize: { xs: "4rem", sm: "6rem", md: "8rem" },
+                      letterSpacing: "0.05em",
+                      textShadow: `0 0 20px ${teamColor}`,
+                      color: teamColor,
+                      lineHeight: 1,
+                      mx: 0.2,
+                    }}
+                  >
+                    {char}
+                  </Typography>
+                ))}
+              </Box>
+            </Box>
 
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
               <SportsSoccerIcon
@@ -132,14 +162,14 @@ export default function GoalAnimation({ player, team, onClose }) {
                 ANOTADO POR
               </Typography>
               <Typography
-                variant="h3"
+                variant="h4"
                 sx={{
                   fontWeight: "bold",
                   color: "white",
                   textShadow: `0 0 10px ${teamColor}`,
                 }}
               >
-                {player}
+                {player ? player:"Guest"}
               </Typography>
             </Box>
           </Box>

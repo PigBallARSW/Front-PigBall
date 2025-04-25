@@ -23,5 +23,8 @@ body {
   font-family: "Alfa Slab One", serif;
   font-style: normal;
 }
+.mvp{
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
 
 

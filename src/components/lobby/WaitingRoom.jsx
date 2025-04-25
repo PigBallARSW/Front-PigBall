@@ -61,8 +61,6 @@ export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData}) => {
         position: "relative",
       }}
     >
-
-      {/* Barra superior */}
       <Box
         sx={{
           position: "relative",
@@ -144,8 +142,6 @@ export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData}) => {
           </Tooltip>
         </Box>
       </Box>
-
-      {/* Contenido principal */}
       <Box
         sx={{
           display: "flex",
@@ -169,7 +165,6 @@ export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData}) => {
             transition: "all 0.3s ease",
           }}
         >
-          {/* Cabecera con información del partido */}
           <Box
             sx={{
               p: 2,
@@ -197,12 +192,9 @@ export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData}) => {
               }}
             />
           </Box>
-          {/* Contenedor de equipos */}
           <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={startGame} host={roomData.creatorName} isHost={host} />
         </Paper>
       </Box>
-
-      {/* Diálogo de invitación */}
       <Dialog
         open={isInviteOpen}
         onClose={() => setIsInviteOpen(false)}
