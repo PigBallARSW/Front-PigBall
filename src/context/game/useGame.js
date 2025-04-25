@@ -63,28 +63,29 @@ export function useGame(id) {
           }),
         });
       } else {
+        console.error("Not connected to broker");
         clearInterval(intervalId);
       }
     }, 1000 / FRAME_RATE);
 
     return () => clearInterval(intervalId);
-  }, [id, playerName, showAlert]);
+  }, [id, playerName, showAlert, stompClient.current?.connected]);
 
   
 
   useEffect(() => {
-    if (isConnected.current) return;
+    //if (isConnected.current) return;
     if (sessionStorage.getItem("usarname") === null) {
       sessionStorage.setItem("usarname", playerStats?.username || "Guest" + Math.floor(Math.random() * 10000000));
     }
     let playerName = playerStats?.username || sessionStorage.getItem("usarname")
     let playerId = playerStats?.id || "123"
     const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";    
+    
     const client = new Client({
       brokerURL: brokerUrl,
       onConnect: () => {
         isConnected.current = true;
-
         client.subscribe(`/topic/players/${id}`, (message) => {
           let bodyJSON = JSON.parse(message.body);
           playersRef.current = bodyJSON.players;
