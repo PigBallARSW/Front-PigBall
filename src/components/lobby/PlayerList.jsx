@@ -22,28 +22,28 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     return (
         <>
-            <Box
-              sx={{
+          <Box
+            sx={{
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
                 flexGrow: 1,
                 overflow: "hidden",
                 height:"100vh"
-              }}
-            >
+            }}
+          >
               {/* Equipo A */}
-              <Box
-                sx={{
+            <Box
+              sx={{
                   flex: 1,
                   display: "flex",
                   flexDirection: "column",
                   borderRight: { xs: "none", md: "1px solid rgba(255,255,255,0.1)" },
                   borderBottom: { xs: "1px solid rgba(255,255,255,0.1)", md: "none" },
                   overflow: "auto",
-                }}
-              >
-                <Box sx={{ p: 2 }}>
-                  <Typography
+              }}
+            >
+              <Box sx={{ p: 2 }}>
+                <Typography
                     variant="h6"
                     sx={{
                         mb: 1,
@@ -52,7 +52,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                         color: "#2196f3",
                         fontWeight: "bold",
                     }}
-                    >
+              >
                     <WorkspacesIcon sx={{ mr: 1, fontSize: 24 }} /> Team A ({teamAPlayers.length}) 
                     </Typography>
                     <Box
@@ -113,7 +113,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Games won: 30
+                              Games won: {player?.won ? player.won : 0}
                             </Typography>
                           }
                         />
@@ -209,7 +209,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Games won: 30
+                              Games won:  {player?.won ? player.won : 0}
                             </Typography>
                           }
                         />

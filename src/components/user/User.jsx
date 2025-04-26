@@ -1,7 +1,8 @@
 import React from "react";
 import {Avatar} from "@mui/material"
  
-export const User = ({width, height, name, color}) => {
+export const User = ({width, height, name, color, shadow, border}) => {
+  const shadowColor = shadow ? shadow : "0 4px 8px rgba(0,0,0,0.2)";
   function stringAvatar() {
     const nameParts = name.split(" ");
     return {
@@ -21,8 +22,8 @@ export const User = ({width, height, name, color}) => {
         width: {width},
         height: {height},
         bgcolor: color ? color : "secondary.main",
-        border: "3px solid white",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+        border: border ? border : "3px solid white",
+        boxShadow: shadow ? shadow : "0 4px 8px rgba(0,0,0,0.2)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center"

@@ -1,27 +1,60 @@
 "use client"
-import { useState, useEffect } from "react"
-import {  Typography, Box } from "@mui/material"
+import { useState, useEffect, useRef } from "react"
+import {  Box, useTheme, useMediaQuery} from "@mui/material"
 import Scoreboard from "./Scoreboard"
 import { SoccerField } from "./SoccerField"
 import {useLobbyService } from "../../Modules/useLobbyService";
+import MobileControls from "./MobileControls"
+import { useMoveGame } from "../../context/game/useMoveGame"
+import GoalAnimation from "./GoalAnimation"
+import { useGoal } from "../../context/game/useGoal"
+import Summary from "./Summary"
+import TeamDetails from "./TeamDetails"
+
 export default function GameContainer({ id, players, ball, movePlayer, gameState }) {
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
   const [showGameOver, setShowGameOver] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const movementState = useRef({ up: false, down: false, left: false, right: false, isKicking: false });
+  useMoveGame(movePlayer, movementState);
+  const { goalAnimation, addGoal, closeGoalAnimation, playersGoal } = useGoal();
+  const onMoveStart = (direction) => {
+    const key = direction.replace("Arrow", "").toLowerCase();
+    movementState.current[key] = true;
+  };
+  const onMoveEnd = (direction) => {
+    const key = direction.replace("Arrow", "").toLowerCase();
+    movementState.current[key] = false;
+  };
+
+  const onActionStart = () => {
+    movementState.current.isKicking = true;
+  };
+
+  const onActionEnd = () => {
+    movementState.current.isKicking = false;
+  };
+  useEffect(() => {
+    if (gameState?.events?.length) {
+      addGoal(gameState);
+    }
+  }, [gameState?.events]);
+
   useEffect(() => {
     if (!gameState?.creationTime) return
     if (!gameState?.creationTime || hasFinished) return;
-
     const startTime = new Date(gameState.startTime)
     const interval = setInterval(() => {
       const now = Date.now()
       const diff = Math.floor((now - startTime.getTime()) / 1000) 
+      setElapsedTime(diff);
       if (diff >= 300) { 
         setElapsedTime(300); 
         clearInterval(interval); 
         setShowGameOver(true);
-        setTimeout(() => finishRoom(id), 2000);
         setHasFinished(true);
       } else {
         setElapsedTime(diff);
@@ -35,6 +68,12 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     const seconds = elapsedTime % 60
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
   }
+  const exitGame = () => {
+    finishRoom(id);
+  }
+  const playAgain = () => {
+    alert("Denuevoo");
+  }
   return (
     <Box
       sx={{
@@ -43,21 +82,44 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
       }}
       className="containerField"
     >
-      <Box
-        sx={{
+      {goalAnimation.show && (
+        <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
+      )}
+        <Box 
+        sx={{ 
+          display: "flex", 
+          alignItems: "flex-start", 
+          width: "100%", 
+          justifyContent: "space-between",
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
           zIndex: 10,
+          overflow: "hidden"
         }}
       >
-        <Scoreboard
-          blueScore={gameState?.teams.first || 0}
-          redScore={gameState?.teams.second || 0}
-          gameTime={formatGameTime()}
-        />
-      </Box>
+        <Box sx={{width: "18%"}}>
+          <TeamDetails gameState={gameState} playersGoal={playersGoal} />
+        </Box>
+        {/* Centro */}
+        <Box 
+          sx={{ 
+            position: "absolute", 
+            left: "50%", 
+            transform: "translateX(-50%)",
+            zIndex: 1
+          }}
+        >
+          <Scoreboard
+            blueScore={gameState?.teams.first || 0}
+            redScore={gameState?.teams.second || 0}
+            gameTime={formatGameTime()}
+          />
+        </Box>
+        
+        {/*<Box sx={{width: "15%"}}>
+          <Spectators />
+        </Box>*/}
+    </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -76,47 +138,16 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
           movePlayer={movePlayer}
           borderX={gameState.borderX}
           borderY={gameState.borderY}
+          movementState={movementState}
         />
       </Box>
-     {/* 🚨 Mensaje de juego terminado */}
-     {showGameOver && (
-  <Box
-    sx={{
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 1300,
-      bgcolor: "#222",
-      color: "white",
-      borderRadius: 2,
-      border: "2px solid #f44336",
-      maxWidth: 400,
-      width: "90%",
-      p: 3,
-      boxShadow: 24,
-    }}
-  >
-    <Box
-      sx={{
-        bgcolor: "rgba(244, 67, 54, 0.2)",
-        color: "#f44336",
-        px: 2,
-        py: 1,
-        borderRadius: 1,
-        mb: 2,
-        fontWeight: "bold",
-        textAlign: "center",
-        fontSize: "1.25rem",
-      }}
-    >
-      Game Over
-    </Box>
-    <Typography variant="body1" sx={{ textAlign: "center" }}>
-      The game is over. Returning to the main room...
-    </Typography>
-  </Box>
-)}
+    {showGameOver && (
+      <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
+    )}
+    {isMobile && <MobileControls onMoveStart={onMoveStart}
+        onMoveEnd={onMoveEnd}
+        onActionStart={onActionStart}
+        onActionEnd={onActionEnd} />}
     </Box>
 
   )
