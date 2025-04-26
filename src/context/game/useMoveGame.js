@@ -2,7 +2,6 @@ import { useEffect } from "react";
 
 export function useMoveGame(movePlayer, movementState) {
   useEffect(() => {
-    console.log("holaaa")
     const handleKeyDown = (e) => {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key) || e.code === "Space") {
         if (e.code === "Space") {

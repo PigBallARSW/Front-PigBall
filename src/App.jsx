@@ -7,7 +7,6 @@ import { Lobby } from './pages/lobby/Lobby';
 import { Main } from './components/main/Main';
 import { Login } from './pages/login/Login';
 import ProtectedRoutes from './utils/ProtectedRoutes';
-import { GolProvider } from './context/game/useGoal';
 
 export default function App() {
 

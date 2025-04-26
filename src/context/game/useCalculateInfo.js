@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 export function useCalculateInfo () {
     const [playersAssist, setPlayersAssist] = useState({
@@ -10,7 +10,7 @@ export function useCalculateInfo () {
         red: 0
       });
       const [assists, setAssists] = useState([]);
-      const calculateGoalNumber = (players) => {
+      const calculateGoalNumber = useCallback((players) => {
         const goalsNumber = {
             blue: 0,
             red: 0
@@ -24,9 +24,9 @@ export function useCalculateInfo () {
             }
         });
         setPlayersGoals(goalsNumber);
-      }
+      },[]);
     
-      const calculateAssistNumber = (gameState) => {
+      const calculateAssistNumber = useCallback((gameState) => {
         const assistEvents = gameState.events?.filter((e) => e.second === "GOAL_ASSIST") || [];
         const assistsByTeam = { blue: 0, red: 0 };
         const assistList = [];
@@ -46,7 +46,7 @@ export function useCalculateInfo () {
         });
         setPlayersAssist(assistsByTeam);
         setAssists(assistList);
-      };
+      },[]);
 
   
   return {assists, playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber};

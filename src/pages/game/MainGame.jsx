@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { WaitingRoom } from "../../components/lobby/WaitingRoom";
 import { useGame } from "../../context/game/useGame";
 import GameContainer from "../../components/game/GameContainer";
-import { GolProvider } from "../../context/game/useGoal";
   
 export const MainGame = () => {
   const { id } = useParams();
@@ -14,7 +13,7 @@ export const MainGame = () => {
   return (
     <main>
       {gameStarted ? (
-        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState}/>
+        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame}/>
       ) : (
         <WaitingRoom  onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame} roomData={gameState}/>
       )}

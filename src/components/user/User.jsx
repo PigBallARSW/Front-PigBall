@@ -2,7 +2,6 @@ import React from "react";
 import {Avatar} from "@mui/material"
  
 export const User = ({width, height, name, color, shadow, border}) => {
-  const shadowColor = shadow ? shadow : "0 4px 8px rgba(0,0,0,0.2)";
   function stringAvatar() {
     const nameParts = name.split(" ");
     return {

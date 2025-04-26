@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 export function useGoal () {
   const [goalAnimation, setGoalAnimation] = useState({

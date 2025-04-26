@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Box, Typography, Paper, Tabs, Tab, Chip, Grid, Divider, IconButton, Tooltip } from "@mui/material"
 import { alpha } from "@mui/material/styles"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
@@ -28,7 +28,7 @@ export default function TeamDetails({gameState, playersGoal}) {
     }
     const teamColor = selectedTeam === "blue" ? "#1976d2" : "#dc004e"
     const teamName = selectedTeam === "blue" ? "Team A" : "Team B"
-    const calculateTeam = () => {
+    const calculateTeam = useCallback(() => {
         const current = selectedTeam === "blue" ? teamAPlayers : teamBPlayers
         const updatedTeam = current.map((player) => {
           const goal = playersGoal.find((p) => p.id === player.id);
@@ -42,11 +42,11 @@ export default function TeamDetails({gameState, playersGoal}) {
         setCurrentTeam(updatedTeam);
         calculateGoalNumber(updatedTeam);
         calculateAssistNumber(gameState);
-    };
+    },[calculateAssistNumber, calculateGoalNumber, gameState, playersGoal, selectedTeam, teamAPlayers, teamBPlayers]);
 
     useEffect(() => {
         calculateTeam();
-    },[selectedTeam, gameState?.events?.length, playersGoal])
+    },[selectedTeam, gameState?.events?.length, playersGoal, calculateTeam])
 
   return (
     <Paper

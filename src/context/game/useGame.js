@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import { useAlert } from "../alert/AlertContext";
 import { useUser } from "../user/userContext";
-import { useGolContext } from "./useGoal";
 
 export function useGame(id) {
   const { showAlert } = useAlert();
@@ -50,7 +49,6 @@ export function useGame(id) {
       showAlert("Not connected to broker", "error");
       return;
     }
-
     const intervalId = setInterval(() => {
       if (stompClient.current?.connected) {
         stompClient.current.publish({

@@ -14,11 +14,9 @@ export function useLobbyService() {
             const token = await getToken();
             const response = await finishGame(id, token);
             await sendStatsUser(response.data);
-            navigate(`/homepage/lobby`);
         } catch (error) {
-            navigate(`/homepage/lobby`);
         }
-    }, [getToken, navigate, showAlert,sendStatsUser]);
+    }, [getToken, navigate, sendStatsUser]);
     
     const createNewRoom = async (newRoom, name) => {
         try{

@@ -11,7 +11,7 @@ import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
 import TeamDetails from "./TeamDetails"
 
-export default function GameContainer({ id, players, ball, movePlayer, gameState }) {
+export default function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom }) {
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
@@ -41,7 +41,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     if (gameState?.events?.length) {
       addGoal(gameState);
     }
-  }, [gameState?.events]);
+  }, [gameState, addGoal,gameState?.events]);
 
   useEffect(() => {
     if (!gameState?.creationTime) return
@@ -70,6 +70,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
   }
   const exitGame = () => {
     finishRoom(id);
+    leaveRoom();
   }
   const playAgain = () => {
     alert("Denuevoo");

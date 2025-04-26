@@ -12,7 +12,6 @@ import {
   ListItemText,
   Chip,
   Grid,
-  useTheme,
 } from "@mui/material"
 import { alpha, keyframes } from "@mui/material/styles"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
@@ -83,7 +82,6 @@ const rotate = keyframes`
 `
 
 export default function Summary({ gameState, players, onExit, onPlayAgain }) {
-  const theme = useTheme()
   const [showContent, setShowContent] = useState(false)
   const {assists, playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
 
@@ -116,7 +114,7 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   useEffect(() => {
     calculateGoalNumber(players);
     calculateAssistNumber(gameState);
-  }, [])
+  }, [calculateAssistNumber, calculateGoalNumber, gameState, players])
 
   return (
     <Box
