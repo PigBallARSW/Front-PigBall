@@ -16,7 +16,7 @@ export function useLobbyService() {
             await sendStatsUser(response.data);
         } catch (error) {
         }
-    }, [getToken, navigate, sendStatsUser]);
+    }, [getToken, sendStatsUser]);
     
     const createNewRoom = async (newRoom, name) => {
         try{
