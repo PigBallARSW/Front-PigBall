@@ -25,6 +25,7 @@ import ReplayIcon from "@mui/icons-material/Replay"
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows"
 import { User } from "../user/User"
 import { motion } from "framer-motion";
+import { useCalculateInfo } from "../../context/game/useCalculateInfo"
 
 const scrollbarStyles = {
     // Estilos para webkit (Chrome, Safari, Edge)
@@ -84,15 +85,7 @@ const rotate = keyframes`
 export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   const theme = useTheme()
   const [showContent, setShowContent] = useState(false)
-  const [playersAssist, setPlayersAssist] = useState({
-    blue: 0,
-    red: 0
-  });
-  const [playersGoals, setPlayersGoals] = useState({
-    blue: 0,
-    red: 0
-  });
-  const [assists, setAssists] = useState([]);
+  const {assists, playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
 
   const blueWins = gameState?.teams.first > gameState?.teams.second || 0
   const redWins = gameState?.teams.second > gameState?.teams.first || 0
@@ -101,44 +94,6 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   const winnerColor = blueWins ? "#1976d2" : redWins ? "#dc004e" : "#4caf50"
   const winnerTeam = blueWins ? "A" : redWins ? "B" : "DRAW"
 
-  const calculateGoalNumber = () => {
-    const goalsNumber = {
-        blue: 0,
-        red: 0
-    }
-    players.forEach((player) => {
-        if (player.team === 0){
-            goalsNumber.blue = goalsNumber.blue+player.goal;
-        }
-        else{
-            goalsNumber.red = goalsNumber.red+player.goal;
-        }
-    });
-    setPlayersGoals(goalsNumber);
-  }
-
-  const calculateAssistNumber = () => {
-    const assistEvents = gameState.events?.filter((e) => e.second === "GOAL_ASSIST") || [];
-    const assistsByTeam = { blue: 0, red: 0 };
-    const assistList = [];
-  
-    assistEvents.forEach((event) => {
-      const player = gameState.players?.find((p) => p.id === event.first);
-      if (player) {
-        if (player.team === 0) assistsByTeam.blue++;
-        else if (player.team === 1) assistsByTeam.red++;
-        const existing = assistList.find((pl) => pl.id === player.id);
-        if (existing) {
-            existing.assist++;
-        } else {
-            assistList.push({ id: player.id, name: player.name, team: player.team, assist: 1 });
-        }
-      }
-    });
-    setPlayersAssist(assistsByTeam);
-    setAssists(assistList);
-  };
-  
   const gameStats = {
     possession: { blue: 55, red: 45 },
     shots: { blue: 12, red: 9 },
@@ -159,8 +114,8 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   }, [])
 
   useEffect(() => {
-    calculateGoalNumber();
-    calculateAssistNumber();
+    calculateGoalNumber(players);
+    calculateAssistNumber(gameState);
   }, [])
 
   return (

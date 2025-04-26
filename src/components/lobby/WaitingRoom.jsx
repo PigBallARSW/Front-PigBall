@@ -27,8 +27,8 @@ import { useTeams } from "../../context/lobby/useTeams";
 import { useUser } from "../../context/user/userContext";
 import { useAlert } from "../../context/alert/AlertContext";
 
-export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData}) => {
-  const user = useUser();
+export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData }) => {
+  let user = useUser();
   const{showAlert} = useAlert();
   const currentUser = user?.username || sessionStorage.getItem("username");
   const{teamAPlayers, teamBPlayers, host} = useTeams(players, currentUser, roomData.creatorName);

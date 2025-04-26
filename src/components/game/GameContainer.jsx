@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
-import {  Typography, Box, useTheme, useMediaQuery } from "@mui/material"
+import {  Box, useTheme, useMediaQuery} from "@mui/material"
 import Scoreboard from "./Scoreboard"
 import { SoccerField } from "./SoccerField"
 import {useLobbyService } from "../../Modules/useLobbyService";
@@ -9,6 +9,8 @@ import { useMoveGame } from "../../context/game/useMoveGame"
 import GoalAnimation from "./GoalAnimation"
 import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
+import TeamDetails from "./TeamDetails"
+
 export default function GameContainer({ id, players, ball, movePlayer, gameState }) {
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
@@ -48,6 +50,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     const interval = setInterval(() => {
       const now = Date.now()
       const diff = Math.floor((now - startTime.getTime()) / 1000) 
+      setElapsedTime(diff);
       if (diff >= 300) { 
         setElapsedTime(300); 
         clearInterval(interval); 
@@ -80,23 +83,43 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
       className="containerField"
     >
       {goalAnimation.show && (
-        <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} />
+        <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
       )}
-      <Box
-        sx={{
+        <Box 
+        sx={{ 
+          display: "flex", 
+          alignItems: "flex-start", 
+          width: "100%", 
+          justifyContent: "space-between",
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
           zIndex: 10,
+          overflow: "hidden"
         }}
       >
-        <Scoreboard
-          blueScore={gameState?.teams.first || 0}
-          redScore={gameState?.teams.second || 0}
-          gameTime={formatGameTime()}
-        />
-      </Box>
+        <Box sx={{width: "18%"}}>
+          <TeamDetails gameState={gameState} playersGoal={playersGoal} />
+        </Box>
+        {/* Centro */}
+        <Box 
+          sx={{ 
+            position: "absolute", 
+            left: "50%", 
+            transform: "translateX(-50%)",
+            zIndex: 1
+          }}
+        >
+          <Scoreboard
+            blueScore={gameState?.teams.first || 0}
+            redScore={gameState?.teams.second || 0}
+            gameTime={formatGameTime()}
+          />
+        </Box>
+        
+        {/*<Box sx={{width: "15%"}}>
+          <Spectators />
+        </Box>*/}
+    </Box>
+
       <Box
         sx={{
           display: "flex",

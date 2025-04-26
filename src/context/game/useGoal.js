@@ -17,12 +17,14 @@ export function useGoal () {
     if (!lastGoal) return;
 
     const playerId = lastGoal.first;
+    const playerGoal = lastGoal.second;
     const player = state.players?.find((p) => p.id === playerId);
     if (player) {
       setGoalAnimation({
         show: true,
         player: player.name,
         team: player.team,
+        event: playerGoal
       });
       setPlayersGoal((prevGoals) => {
         const existing = prevGoals.find((p) => p.id === player.id);
@@ -31,7 +33,7 @@ export function useGoal () {
             p.id === player.id ? { ...p, goal: p.goal + 1 } : p
           );
         } else {
-          return [...prevGoals, { id: player.id, name: player.name, team: player.team, goal: 1 }];
+          return [...prevGoals, { id: player.id, name: player.name, team: player.team, x: player.x, y: player.y, goal: 1 }];
         }
       });
     } else {

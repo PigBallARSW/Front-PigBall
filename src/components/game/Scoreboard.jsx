@@ -11,7 +11,6 @@ export default function Scoreboard({
   gameTime,
 }) {
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", width: "100%"}}>
     <Paper
       elevation={3}
       sx={{
@@ -51,7 +50,7 @@ export default function Scoreboard({
           <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
             <ShieldIcon color="primary" sx={{ fontSize: 18, mr: 0.5 }} />
             <Typography variant="body2" color="primary" sx={{ fontWeight: "bold" }}>
-              A
+              Team A
             </Typography>
           </Box>
           <Typography variant="h5" sx={{ fontFamily: "scoreboard, monospace", color: "white" }}>
@@ -114,7 +113,7 @@ export default function Scoreboard({
           <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
             <ShieldIcon sx={{ fontSize: 18, mr: 0.5, color: "#dc004e" }} />
             <Typography variant="body2" sx={{ fontWeight: "bold", color: "#dc004e" }}>
-              B
+              Team B
             </Typography>
           </Box>
           <Typography variant="h5" sx={{ fontFamily: "scoreboard, monospace", color: "white" }}>
@@ -124,7 +123,6 @@ export default function Scoreboard({
         </Box>
       </Box>
     </Paper>
-  </Box>
   
   )
 }

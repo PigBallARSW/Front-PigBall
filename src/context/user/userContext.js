@@ -8,7 +8,6 @@ export const UserProvider = ({ children }) => {
         const { accounts } = useMsal();
         const isAuthenticated = accounts.length > 0;
         const [playerData, setPlayerData] = useState(null);
-    
         const { getAUser, createNewUser } = useUserLogin();
         const prevAuthState = useRef(isAuthenticated);
         const setPlayer = (res) => {
@@ -33,13 +32,12 @@ export const UserProvider = ({ children }) => {
                 const name = accounts[0].name;
                 fetchOrCreateUser(id, name);
             } else {
-                // Cargar datos locales para un invitado
                 const id = sessionStorage.getItem('guestPlayerId') || `guest-${crypto.randomUUID()}`;
                 const name = sessionStorage.getItem('guestPlayerName') || `Guest${Math.floor(Math.random() * 1000000)}`;
                 sessionStorage.setItem('guestPlayerId', id);
                 sessionStorage.setItem('guestPlayerName', name);
                 setPlayerData({
-                    id,
+                    id: id,
                     username: name,
                     gamesPlayed: 0,
                     gamesWon: 0,

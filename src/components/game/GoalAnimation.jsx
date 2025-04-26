@@ -25,11 +25,11 @@ const letterVariants = {
   },
 };
 
-export default function GoalAnimation({ player, team, onClose }) {
+export default function GoalAnimation({ player, team, onClose, goalState }) {
   const [showConfetti, setShowConfetti] = useState(true);
 
-  const text = "¡GOL!";
-  const teamColor = team === 0 ? "#1976d2" : "#dc004e";
+  const text = goalState === "GOAL_SCORED" ? "¡GOAL!": "SELF GOAL";
+  const teamColor = goalState === "GOAL_SCORED" && team === 0 ? "#1976d2" : (goalState === "GOAL_SCORED" && team === 1 ? "#dc004e": (team === 0 ? "#dc004e": "#1976d2"));
   const teamName = team === 0 ? "A" : "B";
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function GoalAnimation({ player, team, onClose }) {
                 justifyContent: "center",
               }}
             >
-              <EmojiEventsIcon sx={{ mr: 1 }} /> TEAM {teamName}
+              <EmojiEventsIcon sx={{ mr: 1 }} /> { goalState === "GOAL_SCORED" ? "TEAM " + teamName : "The point is given to team " + (teamName === "A" ? "B" : "A")}
             </Typography>
             <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
               <Box
@@ -159,7 +159,7 @@ export default function GoalAnimation({ player, team, onClose }) {
                 variant="subtitle1"
                 sx={{ color: "white", mb: 1, fontWeight: "medium" }}
               >
-                ANOTADO POR
+                NOTED BY
               </Typography>
               <Typography
                 variant="h4"
@@ -169,7 +169,7 @@ export default function GoalAnimation({ player, team, onClose }) {
                   textShadow: `0 0 10px ${teamColor}`,
                 }}
               >
-                {player ? player:"Guest"}
+                {player ? player: "Guest"}
               </Typography>
             </Box>
           </Box>

@@ -113,7 +113,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Games won: 30
+                              Games won: {player?.won ? player.won : 0}
                             </Typography>
                           }
                         />
@@ -209,7 +209,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Games won: 30
+                              Games won:  {player?.won ? player.won : 0}
                             </Typography>
                           }
                         />
