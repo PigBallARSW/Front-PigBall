@@ -12,10 +12,10 @@ export function useGame(id) {
   const [gameState, setGameState] = useState();
   const [gameStarted, setGameStarted] = useState(false);
   const stompClient = useRef(null);
-  const [isConnected, setIsConnected] = useState(false);
   const FRAME_RATE = 60;
   const navigate = useNavigate();
   const playersRef = useRef([]);
+  const isConnected = useRef(false);
 
   const playerName = useMemo(() => {
     const storedName = sessionStorage.getItem("username");
@@ -45,12 +45,12 @@ export function useGame(id) {
   }, [id, navigate, showAlert]);
 
   const handleMovePlayer = useCallback((movementState) => {
-    if (isConnected === false) {
+    if (!stompClient.current?.connected) {
       showAlert("Not connected to broker", "error");
       return;
     }
     const intervalId = setInterval(() => {
-      if (isConnected) {
+      if (stompClient.current?.connected) {
         stompClient.current.publish({
           destination: `/app/play/${id}`,
           body: JSON.stringify({
@@ -67,12 +67,9 @@ export function useGame(id) {
     }, 1000 / FRAME_RATE);
 
     return () => clearInterval(intervalId);
-  }, [
-    id, 
-    playerName, 
-    showAlert, 
-    isConnected
-  ]);
+  }, [id, playerName, showAlert]);
+
+  
 
   useEffect(() => {
     //if (isConnected.current) return;
@@ -81,12 +78,12 @@ export function useGame(id) {
     }
     let playerName = playerStats?.username || sessionStorage.getItem("usarname")
     let playerId = playerStats?.id || "123"
-    const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://piggame.duckdns.org:8080/pigball";    
+    const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://backendeci.duckdns.org:8080/pigball";    
     
     const client = new Client({
       brokerURL: brokerUrl,
       onConnect: () => {
-        setIsConnected(true);
+        isConnected.current = true;
         client.subscribe(`/topic/players/${id}`, (message) => {
           let bodyJSON = JSON.parse(message.body);
           playersRef.current = bodyJSON.players;
@@ -120,12 +117,7 @@ export function useGame(id) {
       },
       onStompError: (frame) => console.error("Error STOMP:", frame.body),
       onWebSocketError: (error) => console.error("Error WebSocket:", error),
-      onDisconnect: () => {
-        setIsConnected(false);
-      },
     });
-
-
 
     client.activate();
     stompClient.current = client;
@@ -133,7 +125,7 @@ export function useGame(id) {
     return () => {
       if (client.active) {
         client.deactivate();
-        setIsConnected(false);
+        isConnected.current = false;
       }
     };
   }, [id, playerStats?.username, playerStats?.id]);
