@@ -57,7 +57,7 @@ export function useLobbyService() {
         }catch(error){
             showAlert("Could not load game", "error");
         }
-    },[showAlert]);
+    },[getToken, showAlert]);
 
     return {createNewRoom, joinRoom, getAllRooms, getAGame, finishRoom};
 
