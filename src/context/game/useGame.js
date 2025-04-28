@@ -67,7 +67,12 @@ export function useGame(id) {
     }, 1000 / FRAME_RATE);
 
     return () => clearInterval(intervalId);
-  }, [id, playerName, showAlert, stompClient.current?.connected]);
+  }, [
+    id, 
+    playerName, 
+    showAlert, 
+    stompClient.current?.connected // eslint-disable-line react-hooks/exhaustive-deps
+  ]);
 
   
 
