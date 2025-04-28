@@ -12,10 +12,10 @@ export function useGame(id) {
   const [gameState, setGameState] = useState();
   const [gameStarted, setGameStarted] = useState(false);
   const stompClient = useRef(null);
+  const [isConnected, setIsConnected] = useState(false);
   const FRAME_RATE = 60;
   const navigate = useNavigate();
   const playersRef = useRef([]);
-  const isConnected = useRef(false);
 
   const playerName = useMemo(() => {
     const storedName = sessionStorage.getItem("username");
@@ -45,12 +45,12 @@ export function useGame(id) {
   }, [id, navigate, showAlert]);
 
   const handleMovePlayer = useCallback((movementState) => {
-    if (!stompClient.current?.connected) {
+    if (isConnected === false) {
       showAlert("Not connected to broker", "error");
       return;
     }
     const intervalId = setInterval(() => {
-      if (stompClient.current?.connected) {
+      if (isConnected) {
         stompClient.current.publish({
           destination: `/app/play/${id}`,
           body: JSON.stringify({
@@ -71,10 +71,16 @@ export function useGame(id) {
     id, 
     playerName, 
     showAlert, 
-    stompClient.current?.connected // eslint-disable-line react-hooks/exhaustive-deps
+    isConnected
   ]);
 
-  
+  stompClient.current.onConnect = () => {
+    setIsConnected(true);
+  }
+
+  stompClient.current.onDisconnect = () => {
+    setIsConnected(false);
+  }
 
   useEffect(() => {
     //if (isConnected.current) return;
@@ -88,7 +94,7 @@ export function useGame(id) {
     const client = new Client({
       brokerURL: brokerUrl,
       onConnect: () => {
-        isConnected.current = true;
+        setIsConnected(true);
         client.subscribe(`/topic/players/${id}`, (message) => {
           let bodyJSON = JSON.parse(message.body);
           playersRef.current = bodyJSON.players;
@@ -130,7 +136,7 @@ export function useGame(id) {
     return () => {
       if (client.active) {
         client.deactivate();
-        isConnected.current = false;
+        setIsConnected(false);
       }
     };
   }, [id, playerStats?.username, playerStats?.id]);
