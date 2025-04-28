@@ -36,7 +36,7 @@ Function ConfigureApplications {
         -SignInAudience AzureADandPersonalMicrosoftAccount `
          -Spa `
             @{ `
-                RedirectUris = "https://delightful-river-06553511e.6.azurestaticapps.net/"; `
+                RedirectUris = "http://localhost:3000"; `
             } `
 
 

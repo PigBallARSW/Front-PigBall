@@ -1,19 +1,21 @@
 import React from "react";
-
-import { SoccerField } from "../../components/game/SoccerField";
 import { useParams } from "react-router-dom";
 import { WaitingRoom } from "../../components/lobby/WaitingRoom";
 import { useGame } from "../../context/game/useGame";
+import GameContainer from "../../components/game/GameContainer";
   
 export const MainGame = () => {
   const { id } = useParams();
-  const {players, gameStarted, handleStartGame, handleLeaveGame,handleMovePlayer, playerStats} = useGame(id);
+  const {players, ball, gameStarted, gameState, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id);
+  if(!gameState){
+    return <p>Cargando...</p>
+  }
   return (
     <main>
       {gameStarted ? (
-        <SoccerField players={players}  movePlayer ={handleMovePlayer}/>
+        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame}/>
       ) : (
-        <WaitingRoom currentUser = {playerStats.name} id={id} onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame}/>
+        <WaitingRoom  onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame} roomData={gameState}/>
       )}
     </main>
   );

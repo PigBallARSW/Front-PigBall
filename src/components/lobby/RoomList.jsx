@@ -8,7 +8,6 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  ListItemSecondaryAction,
   Avatar,
   Divider,
   Chip,
@@ -17,7 +16,6 @@ import {
 } from "@mui/material"
 import {
   SportsSoccer,
-  Lock,
   People,
   EmojiEvents,
   AccessTime,
@@ -37,12 +35,10 @@ export const RoomList = ({ gameRooms }) => {
         return theme.palette.success.main;
       case "IN_PROGRESS":
         return theme.palette.warning.main;
-      case "FINISHED":
-        return theme.palette.error.main;
-      case "FULL":
-        return theme.palette.error.main;
-      default:
+      case "ABANDONED":
         return theme.palette.info.main;
+      default:
+        return theme.palette.error.main;
     }
   }
   const getGameTypeIcon = (gameType) => {
@@ -59,8 +55,6 @@ export const RoomList = ({ gameRooms }) => {
         return <SportsSoccer fontSize="small" />
     }
   }
-
-
   return (
     <List sx={{
       overflow: "auto",
@@ -95,77 +89,7 @@ export const RoomList = ({ gameRooms }) => {
                 cursor: "pointer",
                 py: 1.5,
               }}
-            >
-              <ListItemAvatar>
-                <Avatar
-                  sx={{
-                    bgcolor: `${room.players.length >= room.maxPlayers ? getStatusColor("FULL") : getStatusColor(room.status)}`,
-                    color: "white",
-                  }}
-                >
-                  {getGameTypeIcon("Liga")}
-                </Avatar>
-              </ListItemAvatar>
-
-              <ListItemText
-                primary={
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography variant="subtitle1" component="span" sx={{ fontWeight: "bold", mr: 1 }}>
-                      {room.lobbyName}
-                    </Typography>
-                    {room.privateLobby && <Lock fontSize="small" sx={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 16 }} />}
-                  </Box>
-                }
-                secondary={
-                  <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    <Typography variant="body2" component="span" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-                      Host: {room.creatorName}
-                    </Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", mt: 0.5, flexWrap: "wrap" }}>
-                      <Chip
-                        label={`${room.players.length}/${room.maxPlayers}`}
-                        size="small"
-                        icon={<People fontSize="small" />}
-                        sx={{
-                          mr: 1,
-                          mb: { xs: 0.5, sm: 0 },
-                          bgcolor: "rgba(255, 255, 255, 0.1)",
-                          color: "white",
-                          "& .MuiChip-icon": {
-                            color: "white",
-                          },
-                        }}
-                      />
-                      <Chip
-                        label={room.players.length >= room.maxPlayers ? "FULL" : room.status}
-                        size="small"
-                        sx={{
-                          mr: 1,
-                          mb: { xs: 0.5, sm: 0 },
-                          bgcolor: `${room.players.length >= room.maxPlayers ? getStatusColor("FULL") : getStatusColor(room.status)}`,
-                          color: "white",
-                        }}
-                      />
-                      <Chip 
-                      icon={<CalendarMonthIcon />} 
-                      label={new Date(room.creationTime*1000).toLocaleString()} 
-                      size="small"
-                      variant="outlined" 
-                      sx={{
-                        mr: 1,
-                        mb: { xs: "0.5", sm: 0 },
-                        borderColor: "rgba(255, 255, 255, 0.3)",
-                        display: { xs: "none", sm: "flex" },
-                        color: "white",
-                        "& .MuiChip-icon": {
-                          color: "white",
-                        },
-                      }}/>
-                    </Box>
-                  </Box>
-                }
-              />
-              <ListItemSecondaryAction>
+              secondaryAction = {
                 <Box sx={{ display: "flex", flexDirection: "column",  width: "auto" }}>
                   <Button
                     onClick={() => joinRoom(room.id)}
@@ -188,7 +112,78 @@ export const RoomList = ({ gameRooms }) => {
                     Join
                   </Button>
                 </Box>
-              </ListItemSecondaryAction>
+              }
+            >
+              <ListItemAvatar>
+                <Avatar
+                  sx={{
+                    bgcolor: `${getStatusColor(room.status)}`,
+                    color: "white",
+                  }}
+                >
+                  {getGameTypeIcon("Liga")}
+                </Avatar>
+              </ListItemAvatar>
+
+              <ListItemText
+                primary={
+                  <Typography variant="subtitle1" component="span" sx={{ fontWeight: "bold", mr: 1, color: "white" }}>
+                      {room.lobbyName}
+                  </Typography>
+                }
+                secondary={
+                  <>
+                    <Typography variant="body2" component="span" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                      Host: {room.creatorName}
+                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", mt: 0.5, flexWrap: "wrap" }}>
+                      <Chip
+                        label={`${room.players.length}/${room.maxPlayers}`}
+                        size="small"
+                        icon={<People fontSize="small" />}
+                        sx={{
+                          mr: 1,
+                          mb: { xs: 0.5, sm: 0 },
+                          bgcolor: "rgba(255, 255, 255, 0.1)",
+                          color: "white",
+                          "& .MuiChip-icon": {
+                            color: "white",
+                          },
+                        }}
+                      />
+                      <Chip
+                        label={room.status}
+                        size="small"
+                        sx={{
+                          mr: 1,
+                          mb: { xs: 0.5, sm: 0 },
+                          bgcolor: `${getStatusColor(room.status)}`,
+                          color: "white",
+                        }}
+                      />
+                      <Chip 
+                      icon={<CalendarMonthIcon />} 
+                      label={new Date(room.creationTime*1000).toLocaleString()} 
+                      size="small"
+                      variant="outlined" 
+                      sx={{
+                        mr: 1,
+                        mb: { xs: "0.5", sm: 0 },
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                        display: { xs: "none", sm: "flex" },
+                        color: "white",
+                        "& .MuiChip-icon": {
+                          color: "white",
+                        },
+                      }}/>
+                    </Box>
+                  </>
+                }
+                slotProps={{ 
+                  secondary: {
+                    component: "div", 
+                }, }}
+              />
             </ListItem>
             <Divider variant="inset" component="li" />
           </React.Fragment>

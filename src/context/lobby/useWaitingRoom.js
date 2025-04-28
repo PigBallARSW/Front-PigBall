@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLobbyService } from "../../Modules/useLobbyService";
 
 
@@ -17,7 +17,7 @@ export function useWaitingRoom (id) {
       }
       useEffect(() => {
         getAGame(func, id);
-      },[]);
+      },[getAGame, id]);
 
       return{roomData}
 

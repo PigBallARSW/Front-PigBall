@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 export default function Character({name}) {
 
     return (
-        <Grid item size={{
+        <Grid size={{
             xs: 12,
             sm: 4
           }}>

@@ -1,16 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Bungee+Spice&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap');
 body {
   background: repeating-linear-gradient(
         -45deg,
         transparent 0%, transparent 5%, #c2ebbd 5%, #c2ebbd 10%  
     ), url('../../public/images/cesped2.png');
-  background-blend-mode: multiply; 
+    background-blend-mode: multiply; 
   margin: 0;
   padding: 0;
-  background-size: auto; 
+  background-size: cover; 
   background-position: center; 
   background-repeat: no-repeat;
-  background-attachment: fixed;
   min-height: 100vh;
   z-index: -1;
   position: relative;
@@ -18,7 +17,14 @@ body {
 .containerField {
   width: 100vw;
   height: 100vh;
-  background-color: #2d6a31; /* Color de fondo */
+  background-color: #2d6a31; 
+}
+.title{
+  font-family: "Alfa Slab One", serif;
+  font-style: normal;
+}
+.mvp{
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
 }
 
 

@@ -1,9 +1,22 @@
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect } from "react";
+import isEqual from "lodash.isequal";
 
-export function useDraw (players, drawSoccerField) {
+export function useDraw (players, ball, drawSoccerField, borderX, borderY) {
     const canvasRef = useRef(null);
-    //Memorizar players para evitar renderizaciones innecesarias 
-    const memoizedPlayers = useMemo(() => players, [JSON.stringify(players)]);
+    
+    function useDeepCompareMemoize(value) {
+      const ref = useRef();
+    
+      if (!isEqual(ref.current, value)) {
+        ref.current = value;
+      }
+    
+      return ref.current;
+    }
+
+    const memoizedPlayers = useDeepCompareMemoize(players);
+    const memoizedBall = useDeepCompareMemoize(ball);
+
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -11,8 +24,8 @@ export function useDraw (players, drawSoccerField) {
         const handleResize = () => {
           if (!canvas) return;
     
-          const FIELD_WIDTH = 1200;
-          const FIELD_HEIGHT = 900;
+          const FIELD_WIDTH = borderX;
+          const FIELD_HEIGHT = borderY;
           const MARGIN = 30;
           const GOAL_WIDTH = 40;
     
@@ -36,12 +49,12 @@ export function useDraw (players, drawSoccerField) {
           canvas.height = CANVAS_HEIGHT;
     
           const ctx = canvas.getContext("2d");
-          if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, memoizedPlayers);
+          if (ctx) drawSoccerField(ctx, FIELD_WIDTH, FIELD_HEIGHT, MARGIN, GOAL_WIDTH, memoizedPlayers, memoizedBall);
         };
     
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
-    }, [memoizedPlayers]);
+    }, [memoizedPlayers, memoizedBall, drawSoccerField, borderX, borderY]);
   return {canvasRef}
 }
