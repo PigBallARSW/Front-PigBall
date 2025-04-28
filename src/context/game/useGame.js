@@ -74,14 +74,6 @@ export function useGame(id) {
     isConnected
   ]);
 
-  stompClient.current.onConnect = () => {
-    setIsConnected(true);
-  }
-
-  stompClient.current.onDisconnect = () => {
-    setIsConnected(false);
-  }
-
   useEffect(() => {
     //if (isConnected.current) return;
     if (sessionStorage.getItem("usarname") === null) {
@@ -128,7 +120,12 @@ export function useGame(id) {
       },
       onStompError: (frame) => console.error("Error STOMP:", frame.body),
       onWebSocketError: (error) => console.error("Error WebSocket:", error),
+      onDisconnect: () => {
+        setIsConnected(false);
+      },
     });
+
+
 
     client.activate();
     stompClient.current = client;
