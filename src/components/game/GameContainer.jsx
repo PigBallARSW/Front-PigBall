@@ -10,6 +10,7 @@ import GoalAnimation from "./GoalAnimation"
 import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
 import TeamDetails from "./TeamDetails"
+import { Field } from "./draw/Field"
 
 export default function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom }) {
   const [elapsedTime, setElapsedTime] = useState(0)
@@ -18,10 +19,8 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
   const [showGameOver, setShowGameOver] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const movementState = useRef({ up: false, down: false, left: false, right: false, isKicking: false });
-  useMoveGame(movePlayer, movementState);
   const { goalAnimation, addGoal, closeGoalAnimation, playersGoal } = useGoal();
-  const onMoveStart = (direction) => {
+  /*const onMoveStart = (direction) => {
     const key = direction.replace("Arrow", "").toLowerCase();
     movementState.current[key] = true;
   };
@@ -36,7 +35,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
 
   const onActionEnd = () => {
     movementState.current.isKicking = false;
-  };
+  };*/
   useEffect(() => {
     if (gameState?.events?.length) {
       addGoal(gameState);
@@ -51,14 +50,14 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
       const now = Date.now()
       const diff = Math.floor((now - startTime.getTime()) / 1000) 
       setElapsedTime(diff);
-      if (diff >= 300) { 
+      /*if (diff >= 300) { 
         setElapsedTime(300); 
         clearInterval(interval); 
         setShowGameOver(true);
         setHasFinished(true);
       } else {
         setElapsedTime(diff);
-      }
+      }*/
     }, 1000);
     return () => clearInterval(interval)
   }, [gameState?.creationTime, gameState?.startTime,id,hasFinished,finishRoom]);
@@ -121,34 +120,20 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
         </Box>*/}
     </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-        }}
-      >
-        <SoccerField
-          players={players}
-          ball={ball}
-          movePlayer={movePlayer}
-          borderX={gameState.borderX}
-          borderY={gameState.borderY}
-          movementState={movementState}
-        />
-      </Box>
+      <Field
+      players={players}
+      ball={ball}
+      movePlayer={movePlayer}
+      borderX={gameState.borderX}
+      borderY={gameState.borderY}
+      />
     {showGameOver && (
       <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
     )}
-    {isMobile && <MobileControls onMoveStart={onMoveStart}
+    {/*isMobile && <MobileControls onMoveStart={onMoveStart}
         onMoveEnd={onMoveEnd}
         onActionStart={onActionStart}
-        onActionEnd={onActionEnd} />}
+        onActionEnd={onActionEnd} />*/}
     </Box>
 
   )

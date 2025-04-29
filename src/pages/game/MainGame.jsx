@@ -20,4 +20,8 @@ export const MainGame = () => {
     </main>
   );
 };
-
+/*{gameStarted ? (
+        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame}/>
+      ) : (
+        <WaitingRoom  onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame} roomData={gameState}/>
+      )}*/

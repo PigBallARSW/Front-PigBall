@@ -207,7 +207,7 @@ export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,w
                 <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
                   <Typography variant="body2">0%</Typography>
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                    {winRate}%
+                    {winRate.toFixed(2)}%
                   </Typography>
                   <Typography variant="body2">100%</Typography>
                 </Box>
