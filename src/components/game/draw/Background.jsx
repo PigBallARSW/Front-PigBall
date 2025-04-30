@@ -17,3 +17,4 @@ const BackgroundSpriteComponent = ({width, height}) => {
 }
 
 export const BackgroundSprite = React.memo(BackgroundSpriteComponent);
+

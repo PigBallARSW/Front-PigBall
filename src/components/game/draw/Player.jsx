@@ -13,10 +13,6 @@ export const Player = ({ fieldX, fieldY, player }) => {
                 draw={g => {
                     g.clear();
 
-                    g.beginFill(0x000000, 0.5);
-                    g.drawCircle(2, 2, playerRadius); 
-                    g.endFill();
-
                     const fillColor = player.team === 0 ? 0x0000FF : 0xFF0000; 
                     g.beginFill(fillColor);
                     g.lineStyle(2, player.kicking ? 0xFFFFFF : 0x000000); 

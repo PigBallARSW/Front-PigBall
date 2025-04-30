@@ -75,13 +75,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     alert("Denuevoo");
   }
   return (
-    <Box
-      sx={{
-        mx: "auto",
-        position: "relative",
-      }}
-      className="containerField"
-    >
+    <>
       {goalAnimation.show && (
         <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
       )}
@@ -134,7 +128,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
         onMoveEnd={onMoveEnd}
         onActionStart={onActionStart}
         onActionEnd={onActionEnd} />*/}
-    </Box>
+    </>
 
   )
 }
