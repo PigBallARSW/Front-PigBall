@@ -19,6 +19,9 @@ export default function HomePage() {
   const handleClick = () => {
     navigation("/homepage/lobby")
   }
+  const handleCustom = () => {
+    navigation("/homepage/custom")
+  }
   return (
       <Box
         sx={{
@@ -47,7 +50,7 @@ export default function HomePage() {
 
           <Grid container spacing={4}>
             {/* Player Character */}
-            <Character name={playerStats.username} />
+            <Character name={playerStats.username} customPlayer={handleCustom}/>
 
             {/* Player Stats */}
             <Statistic matchesPlayed = {playerStats.gamesPlayed} 

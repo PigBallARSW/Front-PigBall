@@ -1,7 +1,7 @@
 import React from "react";
 import {Avatar} from "@mui/material"
  
-export const User = ({width, height, name, color, shadow, border}) => {
+export const User = ({width, height, name, color, shadow, border, children}) => {
   function stringAvatar() {
     const nameParts = name.split(" ");
     return {
@@ -15,6 +15,7 @@ export const User = ({width, height, name, color, shadow, border}) => {
   }
   
   return (
+    !children ? (
       <Avatar
       {...stringAvatar(`${name}`)}
       sx={{
@@ -28,6 +29,17 @@ export const User = ({width, height, name, color, shadow, border}) => {
         justifyContent: "center"
       }}
     >
-    </Avatar>
+    </Avatar>) : 
+    (<Avatar
+    sx={{
+      width: {width},
+      height: {height},
+      bgcolor: color ? color : "secondary.main",
+      border: border ? border : "3px solid white",
+      boxShadow: shadow ? shadow : "0 4px 8px rgba(0,0,0,0.2)",
+    }}
+    >
+      {children}
+  </Avatar>)
     )
 }

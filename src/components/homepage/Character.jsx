@@ -13,7 +13,7 @@ import { User } from "../../components/user/User"
 import { motion } from "framer-motion";
 
 
-export default function Character({name}) {
+export default function Character({name, customPlayer}) {
 
     return (
         <Grid size={{
@@ -44,7 +44,7 @@ export default function Character({name}) {
                 <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}>
                   {name}
                 </Typography>
-                <Button variant="outlined" startIcon={<CheckroomIcon />} color="secondary">
+                <Button variant="outlined" startIcon={<CheckroomIcon />} color="secondary" onClick={customPlayer}>
                   Customize
                 </Button>
               </CardContent>
