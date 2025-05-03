@@ -13,8 +13,8 @@ import { User } from "../user/User"
 import { useCalculateInfo } from "../../context/game/useCalculateInfo"
 
 export default function TeamDetails({gameState, playersGoal}) {
-    const user = useUser();
-    const currentUser = user?.username || sessionStorage.getItem("username");
+    const {playerData} = useUser();
+    const currentUser = playerData?.username || sessionStorage.getItem("username");
     const {teamAPlayers, teamBPlayers} = useTeams(gameState?.players, currentUser, gameState?.creatorName)
     const [selectedTeam, setSelectedTeam] = useState("blue")
     const [expanded, setExpanded] = useState(false)

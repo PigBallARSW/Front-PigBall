@@ -27,7 +27,7 @@ import {useLobbyService } from "../../Modules/useLobbyService";
 import { useUser } from "../../context/user/userContext";
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
   const {createNewRoom} = useLobbyService();
-    const playerStats = useUser();
+  const {playerData} = useUser();
     const [newRoom, setNewRoom] = useState({
       name: "",
       isPrivate: false,
@@ -86,7 +86,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         return;
       }
       handleCloseCreateDialog();
-      createNewRoom(newRoom, playerStats.username);
+      createNewRoom(newRoom, playerData.username);
     }
 
   return (

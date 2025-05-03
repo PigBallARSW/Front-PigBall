@@ -11,13 +11,16 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/user/userContext";
 
 export default function HomePage() {
-  const playerStats = useUser();
+  const {playerData} = useUser();
   const navigation = useNavigate();
-  if (!playerStats) {
+  if (!playerData) {
     return <p>Cargando jugador...</p>;
   }
   const handleClick = () => {
     navigation("/homepage/lobby")
+  }
+  const handleCustom = () => {
+    navigation("/homepage/custom")
   }
   return (
       <Box
@@ -47,14 +50,14 @@ export default function HomePage() {
 
           <Grid container spacing={4}>
             {/* Player Character */}
-            <Character name={playerStats.username} />
+            <Character player={playerData} customPlayer={handleCustom}/>
 
             {/* Player Stats */}
-            <Statistic matchesPlayed = {playerStats.gamesPlayed} 
-            matchesWon={playerStats.gamesWon} 
-            matchesLost={playerStats.lostGames} 
-            score={playerStats.totalScore} 
-            winRate={playerStats.winningPercentage} />
+            <Statistic matchesPlayed = {playerData.gamesPlayed} 
+            matchesWon={playerData.gamesWon} 
+            matchesLost={playerData.lostGames} 
+            score={playerData.totalScore} 
+            winRate={playerData.winningPercentage} />
           </Grid>
 
           <Box sx={{ mt: 6, textAlign: "center" }}>
