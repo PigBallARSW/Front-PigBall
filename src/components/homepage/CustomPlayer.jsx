@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
   Box,
   Button,
@@ -75,33 +75,15 @@ export default function CustomPlayer() {
   const [playerColor, setPlayerColor] = useState(playerData?.centerColor || "#ffc107")
   const [emblemType, setEmblemType] = useState(playerData?.iconType || "none")
   const [emblemColor, setEmblemColor] = useState(playerData?.iconColor || "#ffffff")
-  const [playerNumber, setPlayerNumber] = useState(10)
+  const [playerNumber, setPlayerNumber] = useState(playerData?.iconType === "number" ? playerData?.image : "10")
   const [borderColor, setBorderColor] = useState(playerData?.borderColor || "#ffffff")
-  const [selectedIcon, setSelectedIcon] = useState("football")
-  const [selectedEmoji, setSelectedEmoji] = useState("😎")
-  const [customImage, setCustomImage] = useState("")
+  const [selectedIcon, setSelectedIcon] = useState(playerData?.iconType === "icon" ? playerData?.image : "football")
+  const [selectedEmoji, setSelectedEmoji] = useState(playerData?.iconType === "emoji" ? playerData?.image : "😎")
+  const [customImage, setCustomImage] = useState(playerData?.iconType === "image" ? playerData?.image : "")
   const [playerName, setPlayerName] = useState(username || "")
   const [showField, setShowField] = useState(true)
   const [tabValue, setTabValue] = useState(0)
-
-  useEffect(() => {
-    switch (emblemType){
-        case "emoji":
-            setSelectedEmoji(playerData?.image)
-            break
-        case "number":
-            setPlayerNumber(playerData?.image)
-            break
-        case "icon":
-            setSelectedIcon(playerData?.image)
-            break
-        case "image":
-            setCustomImage(playerData?.image)
-            break
-        default:
-            break
-    }  
-  },[])
+  
   const icons = {
     football: <SportsSoccer fontSize="inherit" />,
     trophy: <EmojiEvents fontSize="inherit" />,
