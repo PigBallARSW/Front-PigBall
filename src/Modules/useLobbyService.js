@@ -51,12 +51,13 @@ export function useLobbyService() {
     },[getToken,showAlert]);
     const getAGame = useCallback(async (callback, id) => {
         try{
-            const response = await getGame(id);
+            const token = await getToken();
+            const response = await getGame(id, token);
             callback(response.data);
         }catch(error){
             showAlert("Could not load game", "error");
         }
-    },[showAlert]);
+    },[getToken, showAlert]);
 
     return {createNewRoom, joinRoom, getAllRooms, getAGame, finishRoom};
 

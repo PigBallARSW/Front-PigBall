@@ -7,6 +7,7 @@ import { Lobby } from './pages/lobby/Lobby';
 import { Main } from './components/main/Main';
 import { Login } from './pages/login/Login';
 import ProtectedRoutes from './utils/ProtectedRoutes';
+import CustomPlayer from './components/homepage/CustomPlayer';
 
 export default function App() {
 
@@ -18,9 +19,9 @@ export default function App() {
                     <Route path="/homepage" element={<Main />}>
                         <Route index element={<ProtectedRoutes><HomePage /></ProtectedRoutes>} />
                         <Route path="lobby" element={<Lobby />} />
+                        <Route path="custom" element={<CustomPlayer />} />
                     </Route>
                 </Routes>
-                
             </BrowserRouter>
     );
 }

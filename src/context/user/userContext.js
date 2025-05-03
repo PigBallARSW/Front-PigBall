@@ -11,6 +11,7 @@ export const UserProvider = ({ children }) => {
         const { getAUser, createNewUser } = useUserLogin();
         const prevAuthState = useRef(isAuthenticated);
         const setPlayer = (res) => {
+            console.log(res)
             setPlayerData(res);
         }
         useEffect(() => {
@@ -19,7 +20,7 @@ export const UserProvider = ({ children }) => {
                 if (!user) {
                     await createNewUser(id, name, setPlayer);
                 } 
-            };
+        };
     
             // Si cambió el estado de login, limpia el estado anterior
             if (prevAuthState.current !== isAuthenticated) {
@@ -44,12 +45,17 @@ export const UserProvider = ({ children }) => {
                     lostGames: 0,
                     totalScore: 0,
                     winningPercentage: 0,
+                    image: "none",
+                    borderColor: "#ffffff",
+                    centerColor: "#ffc107",
+                    iconType: "none",
+                    iconColor: "#ffffff"
                 });
             }
         }, [isAuthenticated, accounts, createNewUser, getAUser]);
 
     return (
-        <UserContext.Provider value={playerData}>
+        <UserContext.Provider value={{playerData, setPlayer}}>
             {children}
         </UserContext.Provider>
     );

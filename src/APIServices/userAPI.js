@@ -8,7 +8,12 @@ export async function createUser(id, name, token) {
         const endpoint = `${API}/user`;
         const requestBody = {
             id: id,
-            username: creatorName
+            username: creatorName,
+            image: "none",
+            borderColor: "#ffffff",
+            centerColor: "#ffc107",
+            iconType: "none",
+            iconColor: "#ffffff"
         };
         const response = await axios.post(endpoint, requestBody, {
             headers: {
@@ -50,6 +55,29 @@ export async function getUser(id, token) {
         return response;
     } catch (error) {
         console.error("Error user user:", error);
+        throw error;
+    }
+}
+
+export async function updateUserCharacter(id,username,image, centerColor, borderColor, iconColor, iconType, token) {
+    try {
+        const endpoint = `${API}/user/`;
+        const requestBody = {
+            username: username,
+            image: image,
+            centerColor: centerColor,
+            borderColor: borderColor,
+            iconColor: iconColor,
+            iconType: iconType
+        };
+        const response = await axios.put(endpoint+id, requestBody, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+            });
+        return response;
+    } catch (error) {
+        console.error("Error updating user:", error);
         throw error;
     }
 }
