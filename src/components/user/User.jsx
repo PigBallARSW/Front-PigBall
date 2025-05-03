@@ -24,9 +24,6 @@ export const User = ({width, height, name, color, shadow, border, children}) => 
         bgcolor: color ? color : "secondary.main",
         border: border ? border : "3px solid white",
         boxShadow: shadow ? shadow : "0 4px 8px rgba(0,0,0,0.2)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
       }}
     >
     </Avatar>) : 

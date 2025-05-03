@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Box,
   Button,
@@ -12,13 +12,10 @@ import {
   MenuItem,
   Paper,
   Select,
-  Slider,
   Tab,
   Tabs,
   TextField,
   Typography,
-  createTheme,
-  ThemeProvider,
   styled,
   CardHeader,
 } from "@mui/material"
@@ -36,8 +33,10 @@ import {
   SportsBasketball,
   SportsFootball,
 } from "@mui/icons-material"
-import { User } from "../user/User"
 import { useUser } from "../../context/user/userContext"
+import { useUserLogin } from "../../Modules/useUserLogin"
+import { useNavigate } from "react-router-dom"
+import { CustomizerUser } from "../user/CustomizerUser"
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -69,20 +68,40 @@ function TabPanel(props) {
 }
 
 export default function CustomPlayer() {
-  const user = useUser();
-  const username = user?.username || sessionStorage.getItem("usarname");
-  const [playerColor, setPlayerColor] = useState()
-  const [emblemType, setEmblemType] = useState()
-  const [emblemColor, setEmblemColor] = useState("#ffffff")
+    const navigate = useNavigate();
+  const {playerData, setPlayer} = useUser();
+  const {updateCharacter} = useUserLogin();
+  const username = playerData?.username || sessionStorage.getItem("usarname");
+  const [playerColor, setPlayerColor] = useState(playerData?.centerColor || "#ffc107")
+  const [emblemType, setEmblemType] = useState(playerData?.iconType || "none")
+  const [emblemColor, setEmblemColor] = useState(playerData?.iconColor || "#ffffff")
   const [playerNumber, setPlayerNumber] = useState(10)
-  const [borderColor, setBorderColor] = useState("#ffffff")
+  const [borderColor, setBorderColor] = useState(playerData?.borderColor || "#ffffff")
   const [selectedIcon, setSelectedIcon] = useState("football")
   const [selectedEmoji, setSelectedEmoji] = useState("😎")
   const [customImage, setCustomImage] = useState("")
-  const [playerName, setPlayerName] = useState(username)
+  const [playerName, setPlayerName] = useState(username || "")
   const [showField, setShowField] = useState(true)
   const [tabValue, setTabValue] = useState(0)
 
+  useEffect(() => {
+    switch (emblemType){
+        case "emoji":
+            setSelectedEmoji(playerData?.image)
+            break
+        case "number":
+            setPlayerNumber(playerData?.image)
+            break
+        case "icon":
+            setSelectedIcon(playerData?.image)
+            break
+        case "image":
+            setCustomImage(playerData?.image)
+            break
+        default:
+            break
+    }  
+  },[])
   const icons = {
     football: <SportsSoccer fontSize="inherit" />,
     trophy: <EmojiEvents fontSize="inherit" />,
@@ -136,6 +155,30 @@ export default function CustomPlayer() {
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue)
+  }
+
+  const getIcon = () => {
+    switch (emblemType){
+        case "emoji":
+            return selectedEmoji
+        case "number":
+            return playerNumber.toString()
+        case "icon":
+            return selectedIcon
+        case "image":
+            if(customImage || customImage!== "")  return customImage
+            return "none"
+        default:
+            return "none"
+    }
+  }
+
+  const saveCharacter = async () => {
+    let centerIcon = getIcon()
+    if(playerData?.id){
+        await updateCharacter(playerData.id, playerName, centerIcon, playerColor, borderColor,emblemColor,emblemType, setPlayer)
+        navigate("/homepage")
+    }
   }
 
   return (
@@ -213,49 +256,7 @@ export default function CustomPlayer() {
                             }}
                         >
                         <Box sx={{ display: "flex", justifyContent: "center" }}>
-                            <User name={playerName} width={80} height={80} color={playerColor} border={"3px solid " + borderColor}>
-                            {emblemType === "number" ? (
-                                <Typography
-                                variant="h5"
-                                component="span"
-                                sx={{
-                                    fontWeight: "bold",
-                                    color: emblemColor,
-                                }}
-                                >
-                                {playerNumber}
-                                </Typography>
-                            ) : emblemType === "icon" ? (
-                                <Box
-                                sx={{
-                                    width: 40,
-                                    height: 40,
-                                    color: emblemColor,
-                                    fontSize: 40,
-                                }}
-                                >
-                                {icons[selectedIcon]}
-                                </Box>
-                            ) : emblemType === "emoji" ? (
-                                <Typography variant="h4">{selectedEmoji}</Typography>
-                            ) : emblemType === "image" && customImage ? (
-                                <Box
-                                sx={{
-                                    width: 48,
-                                    height: 48,
-                                    borderRadius: "50%",
-                                    overflow: "hidden",
-                                }}
-                                >
-                                <Box
-                                    component="img"
-                                    src={customImage}
-                                    alt="Custom"
-                                    sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                />
-                                </Box>
-                            ) : null}
-                            </User>
+                           <CustomizerUser width={80} height={80} playerName={playerName} playerColor={playerColor} borderColor={borderColor} iconType={emblemType} iconColor={emblemColor} icon={getIcon()}/>
                             </Box>
                             <Paper
                             elevation={1}
@@ -277,49 +278,9 @@ export default function CustomPlayer() {
                         </Paper>
                     ) : (
                         <Box sx={{ mb: 2, textAlign: "center" }}>
-                        <User name={playerName} width={180} height={180} color={playerColor} border={"4px solid " + borderColor}>
-                            {emblemType === "number" ? (
-                            <Typography
-                                variant="h3"
-                                component="span"
-                                sx={{
-                                fontWeight: "bold",
-                                color: emblemColor,
-                                }}
-                            >
-                                {playerNumber}
-                            </Typography>
-                            ) : emblemType === "icon" ? (
-                            <Box
-                                sx={{
-                                width: 64,
-                                height: 64,
-                                color: emblemColor,
-                                fontSize: 64,
-                                }}
-                            >
-                                {icons[selectedIcon]}
+                             <Box sx={{ display: "flex", justifyContent: "center" }}>
+                             <CustomizerUser width={180} height={180} playerName={playerName} playerColor={playerColor} borderColor={borderColor} iconType={emblemType} iconColor={emblemColor} icon={getIcon()}/>
                             </Box>
-                            ) : emblemType === "emoji" ? (
-                            <Typography variant="h2">{selectedEmoji}</Typography>
-                            ) : emblemType === "image" && customImage ? (
-                            <Box
-                                sx={{
-                                width: 90,
-                                height: 90,
-                                borderRadius: "50%",
-                                overflow: "hidden",
-                                }}
-                            >
-                                <Box
-                                component="img"
-                                src={customImage}
-                                alt="Custom"
-                                sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                />
-                            </Box>
-                            ) : null}
-                        </User>
                         <Typography variant="h6" sx={{ mt: 2, fontWeight: "bold", color:"primary.dark" }}>
                             {playerName}
                         </Typography>
@@ -342,7 +303,7 @@ export default function CustomPlayer() {
                         </Button>
                     </Box>
 
-                    <Button variant="contained" color="secondary" startIcon={<Download />} sx={{ mt: 3, color: "secondary.light" }} fullWidth>
+                    <Button variant="contained" color="secondary" startIcon={<Download />} sx={{ mt: 3, color: "secondary.light" }} onClick={saveCharacter} fullWidth>
                         Save Player
                     </Button>
                     </CardContent>
@@ -351,7 +312,7 @@ export default function CustomPlayer() {
 
                 {/* Opciones de personalización */}
                 <Grid item xs={12} md={8} >
-                <Card elevation={4} sx={{bgcolor:"primary.more"}} >
+                <Card elevation={4} sx={{bgcolor:"primary.more", minHeight: 560, maxHeight: 670}} >
                     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                     <Tabs
                         value={tabValue}
@@ -372,6 +333,7 @@ export default function CustomPlayer() {
                         <Grid item xs={12}>
                         <TextField
                             fullWidth
+                            disabled = {true}
                             label="Player Name"
                             value={playerName}
                             onChange={(e) => setPlayerName(e.target.value)}
@@ -380,7 +342,7 @@ export default function CustomPlayer() {
                                 sx: {
                                   color: "#1b5e20",
                                 },
-                                maxLength: 20 
+                                maxLength: 50
                               }}
                         />
                         </Grid>
@@ -402,7 +364,7 @@ export default function CustomPlayer() {
                     </Grid>
                     </TabPanel>
 
-                    {/* Pestaña de equipo */}
+                    {/* Pestaña de colores */}
                     <TabPanel value={tabValue} index={1}>
                     <Typography variant="h6" sx={{color:"#1b5e20"}} gutterBottom>
                         Colors of Popular Teams
@@ -566,7 +528,9 @@ export default function CustomPlayer() {
                                     height: 64,
                                     fontSize: 32,
                                 }}
-                                onClick={() => setSelectedIcon(name)}
+                                onClick={() => {
+                                    setSelectedIcon(name)
+                                }}
                                 fullWidth
                                 >
                                 {icon}
@@ -592,7 +556,11 @@ export default function CustomPlayer() {
                                     height: 56,
                                     fontSize: 24,
                                 }}
-                                onClick={() => setSelectedEmoji(emoji)}
+                                onClick={
+                                    () => {
+                                        setSelectedEmoji(emoji)
+                                    }
+                                }
                                 fullWidth
                                 >
                                 {emoji}

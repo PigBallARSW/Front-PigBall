@@ -28,9 +28,9 @@ import { useUser } from "../../context/user/userContext";
 import { useAlert } from "../../context/alert/AlertContext";
 
 export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData }) => {
-  let user = useUser();
+  const {playerData} = useUser();
   const{showAlert} = useAlert();
-  const currentUser = user?.username || sessionStorage.getItem("username");
+  const currentUser = playerData?.username || sessionStorage.getItem("username");
   const{teamAPlayers, teamBPlayers, host} = useTeams(players, currentUser, roomData.creatorName);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);

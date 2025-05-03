@@ -6,7 +6,7 @@ import { useUser } from "../user/userContext";
 
 export function useGame(id) {
   const { showAlert } = useAlert();
-  const playerStats = useUser();
+  const {playerData} = useUser();
   const [players, setPlayers] = useState([]);
   const [ball, setBall] = useState(null);
   const [gameState, setGameState] = useState();
@@ -18,9 +18,9 @@ export function useGame(id) {
   const isConnected = useRef(false);
 
   const playerName = useMemo(() => {
-    const storedName = sessionStorage.getItem("username");
-    return playerStats?.username || storedName || `Guest${Math.floor(Math.random() * 10000000)}`;
-  }, [playerStats?.username]);
+    const storedName = sessionStorage.getItem("usarname");
+    return playerData?.username || storedName || `Guest${Math.floor(Math.random() * 10000000)}`;
+  }, [playerData?.username]);
 
   const handleStartGame = useCallback(() => {
     if (stompClient.current?.connected) {
@@ -74,10 +74,10 @@ export function useGame(id) {
   useEffect(() => {
     //if (isConnected.current) return;
     if (sessionStorage.getItem("usarname") === null) {
-      sessionStorage.setItem("usarname", playerStats?.username || "Guest" + Math.floor(Math.random() * 10000000));
+      sessionStorage.setItem("usarname", playerData?.username || "Guest" + Math.floor(Math.random() * 10000000));
     }
-    let playerName = playerStats?.username || sessionStorage.getItem("usarname")
-    let playerId = playerStats?.id || "123"
+    let playerName = playerData?.username || sessionStorage.getItem("usarname")
+    let playerId = playerData?.id || "123"
     const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://piggame.duckdns.org:8080/pigball";    
     
     const client = new Client({
@@ -128,7 +128,7 @@ export function useGame(id) {
         isConnected.current = false;
       }
     };
-  }, [id, playerStats?.username, playerStats?.id]);
+  }, [id, playerData?.username, playerData?.id]);
 
   return { players, ball, gameStarted, gameState, handleStartGame, handleLeaveGame, handleMovePlayer }
 
