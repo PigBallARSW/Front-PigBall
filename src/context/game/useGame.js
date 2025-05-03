@@ -78,7 +78,7 @@ export function useGame(id) {
     }
     let playerName = playerData?.username || sessionStorage.getItem("usarname")
     let playerId = playerData?.id || "123"
-    const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://piggame.duckdns.org:8080/pigball";    
+    const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://piggame.duckdns.org:8080";    
     
     const client = new Client({
       brokerURL: brokerUrl,
