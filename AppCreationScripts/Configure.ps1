@@ -36,7 +36,7 @@ Function ConfigureApplications {
         -SignInAudience AzureADandPersonalMicrosoftAccount `
          -Spa `
             @{ `
-                RedirectUris = "https://localhost:3000/"; `
+                RedirectUris = "http://localhost:3000"; `
             } `
 
 

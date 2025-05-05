@@ -12,8 +12,8 @@
         "Id": "spa",
         "Name": "ms-identity-javascript-react-spa",
         "Kind" :  "SinglePageApplication",
-        "HomePage": "https://localhost:3000/",
-        "ReplyUrls":"https://localhost:3000/",
+        "HomePage": "http://localhost:3000",
+        "ReplyUrls":"http://localhost:3000",
         "Audience": "AzureADandPersonalMicrosoftAccount",
         "RequiredResourcesAccess": [
           {

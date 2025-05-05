@@ -5,18 +5,23 @@ import {
   Box
 } from "@mui/material"
 import Grid from '@mui/material/Grid2';
-import { usePlayerStats } from "../../components/user/playerStats";
 import Character from '../../components/homepage/Character';
 import Statistic from '../../components/homepage/Statistic';
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/user/userContext";
 
 export default function HomePage() {
-  const playerStats = usePlayerStats();
+  const {playerData} = useUser();
   const navigation = useNavigate();
+  if (!playerData) {
+    return <p>Cargando jugador...</p>;
+  }
   const handleClick = () => {
     navigation("/homepage/lobby")
   }
-  
+  const handleCustom = () => {
+    navigation("/homepage/custom")
+  }
   return (
       <Box
         sx={{
@@ -45,14 +50,14 @@ export default function HomePage() {
 
           <Grid container spacing={4}>
             {/* Player Character */}
-            <Character name={playerStats.name} />
+            <Character player={playerData} customPlayer={handleCustom}/>
 
             {/* Player Stats */}
-            <Statistic matchesPlayed = {playerStats.matchesPlayed} 
-            matchesWon={playerStats.matchesWon} 
-            matchesLost={playerStats.matchesLost} 
-            score={playerStats.score} 
-            winRate={playerStats.winRate} />
+            <Statistic matchesPlayed = {playerData.gamesPlayed} 
+            matchesWon={playerData.gamesWon} 
+            matchesLost={playerData.lostGames} 
+            score={playerData.totalScore} 
+            winRate={playerData.winningPercentage} />
           </Grid>
 
           <Box sx={{ mt: 6, textAlign: "center" }}>

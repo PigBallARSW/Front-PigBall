@@ -1,6 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import {
   Box,
   Typography,
@@ -9,72 +8,40 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  ListItemSecondaryAction,
   Avatar,
-  IconButton,
   Divider,
   Chip,
   useTheme,
+  useMediaQuery,
 } from "@mui/material"
 import {
   SportsSoccer,
-  Lock,
-  Star,
-  StarBorder,
   People,
   EmojiEvents,
   AccessTime,
 } from "@mui/icons-material"
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { motion } from "framer-motion"
+import { useLobbyService } from "../../Modules/useLobbyService";
 
 
-export default function RoomList({ gameRooms }) {
-  const [rooms, setRooms] = useState(gameRooms);
-  const [filteredRooms, setFilteredRooms] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+export const RoomList = ({ gameRooms }) => {
+  const{joinRoom} = useLobbyService();
   const theme = useTheme();
-
-  useEffect(() => {
-    setRooms(gameRooms);
-  }, [gameRooms]);
-
-
-  useEffect(() => {
-    console.log("Updated Rooms:", rooms);
-
-    // Filtrar salas según el término de búsqueda
-    const filtered = rooms.filter(
-      (room) =>
-        room.gameName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        room.creatorName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    setFilteredRooms(filtered); // ✅ Guardamos el resultado en el estado
-  }, [rooms, searchTerm]); // ✅ Se ejecuta cuando `rooms` o `searchTerm` cambian
-
-
-  // Alternar favorito
-  const toggleFavorite = (id) => {
-    setRooms(rooms.map((room) => (room.id === id ? { ...room, isFavorite: !room.isFavorite } : room)))
-  }
-
-  // Obtener el color según el estado de la sala
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const getStatusColor = (status) => {
     switch (status) {
-      case "En espera":
-        return theme.palette.success.main
-      case "En progreso":
-        return theme.palette.warning.main
-      case "Completa":
-        return theme.palette.error.main
+      case "WAITING_FOR_PLAYERS":
+        return theme.palette.success.main;
+      case "IN_PROGRESS":
+        return theme.palette.warning.main;
+      case "ABANDONED":
+        return theme.palette.info.main;
       default:
-        return theme.palette.info.main
+        return theme.palette.error.main;
     }
   }
-
-  // Obtener el icono según el tipo de juego
   const getGameTypeIcon = (gameType) => {
-
     switch (gameType) {
       case "Liga":
         return <EmojiEvents fontSize="small" />
@@ -88,18 +55,10 @@ export default function RoomList({ gameRooms }) {
         return <SportsSoccer fontSize="small" />
     }
   }
-
-  const navigate = useNavigate();
-
-  const joinGame = (roomId) => {
-    navigate(`/game/${roomId}`);
-  };
-
   return (
     <List sx={{
       overflow: "auto",
-      maxHeight: "calc(100vh - 130px)",
-      bgcolor: "#0e250f",
+      maxHeight: "calc(100vh - 215px)",
       "& .MuiListItem-root": {
         borderBottom: "1px solid #333",
       },
@@ -114,32 +73,51 @@ export default function RoomList({ gameRooms }) {
         opacity: 0,
         transition: "opacity 0.3s ease",
       },
-      "&::-webkit-scrollbar-track": {
-        background: "transparent",
-      },
       "&::-webkit-scrollbar-thumb": {
-        background: "#0e250f",
+        background: "#315f33",
         borderRadius: "4px",
-      },
-      "&::-webkit-scrollbar-thumb:hover": {
-        background: "#2a552c",
-      },
+      }
     }}>
-      {filteredRooms.length > 0 ? (
-        filteredRooms.map((room) => (
+      {gameRooms.length > 0 ? (
+        gameRooms.map((room) => (
           <React.Fragment key={room.id}>
             <ListItem
+              onClick = {isMobile ? () => joinRoom(room.id) : undefined}
               component={motion.div}
               whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
               sx={{
                 cursor: "pointer",
                 py: 1.5,
               }}
+              secondaryAction = {
+                <Box sx={{ display: "flex", flexDirection: "column",  width: "auto" }}>
+                  <Button
+                    onClick={() => joinRoom(room.id)}
+                    variant="contained"
+                    size="small"
+                    disabled={room.status === "FINISHED"}
+                    sx={{
+                      ml: 1,
+                      display: { xs: "none", sm: "inline-flex" },
+                      bgcolor: "#4CAF50",
+                      "&:hover": {
+                        bgcolor: "#388E3C",
+                      },
+                      "&.Mui-disabled": {
+                        bgcolor: "rgba(255, 255, 255, 0.27)",
+                        color: "rgba(255, 255, 255, 0.49)",
+                      },
+                    }}
+                  >
+                    Join
+                  </Button>
+                </Box>
+              }
             >
               <ListItemAvatar>
                 <Avatar
                   sx={{
-                    bgcolor: getStatusColor(room.status),
+                    bgcolor: `${getStatusColor(room.status)}`,
                     color: "white",
                   }}
                 >
@@ -149,15 +127,12 @@ export default function RoomList({ gameRooms }) {
 
               <ListItemText
                 primary={
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography variant="subtitle1" component="span" sx={{ fontWeight: "bold", mr: 1 }}>
-                      {room.gameName}
-                    </Typography>
-                    {room.privateGame && <Lock fontSize="small" sx={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 16 }} />}
-                  </Box>
+                  <Typography variant="subtitle1" component="span" sx={{ fontWeight: "bold", mr: 1, color: "white" }}>
+                      {room.lobbyName}
+                  </Typography>
                 }
                 secondary={
-                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <>
                     <Typography variant="body2" component="span" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                       Host: {room.creatorName}
                     </Typography>
@@ -182,58 +157,33 @@ export default function RoomList({ gameRooms }) {
                         sx={{
                           mr: 1,
                           mb: { xs: 0.5, sm: 0 },
-                          bgcolor: getStatusColor(room.status),
+                          bgcolor: `${getStatusColor(room.status)}`,
                           color: "white",
                         }}
                       />
-                      <Typography
-                        variant="caption"
-                        component="span"
-                        color="text.secondary"
-                        sx={{
-                          ml: "auto",
-                          display: { xs: "none", sm: "block" },
-                          color: "rgba(255, 255, 255, 0.5)",
-                        }}
-                      >
-                        {new Date(room.creationTime*1000).toLocaleString()}
-                      </Typography>
+                      <Chip 
+                      icon={<CalendarMonthIcon />} 
+                      label={new Date(room.creationTime*1000).toLocaleString()} 
+                      size="small"
+                      variant="outlined" 
+                      sx={{
+                        mr: 1,
+                        mb: { xs: "0.5", sm: 0 },
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                        display: { xs: "none", sm: "flex" },
+                        color: "white",
+                        "& .MuiChip-icon": {
+                          color: "white",
+                        },
+                      }}/>
                     </Box>
-                  </Box>
+                  </>
                 }
+                slotProps={{ 
+                  secondary: {
+                    component: "div", 
+                }, }}
               />
-
-              <ListItemSecondaryAction>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <IconButton
-                    edge="end"
-                    onClick={() => toggleFavorite(room.id)}
-                    sx={{ color: room.isFavorite ? "#FFD700" : "rgba(255, 255, 255, 0.5)" }}
-                  >
-                    {room.isFavorite ? <Star /> : <StarBorder />}
-                  </IconButton>
-                  <Button
-                    onClick={() => joinGame(room.id)}
-                    variant="contained"
-                    size="small"
-                    disabled={room.status === "Completa" || room.status === "En progreso"}
-                    sx={{
-                      ml: 1,
-                      display: { xs: "none", sm: "inline-flex" },
-                      bgcolor: "#4CAF50",
-                      "&:hover": {
-                        bgcolor: "#388E3C",
-                      },
-                      "&.Mui-disabled": {
-                        bgcolor: "rgba(255, 255, 255, 0.27)",
-                        color: "rgba(255, 255, 255, 0.49)",
-                      },
-                    }}
-                  >
-                    Join
-                  </Button>
-                </Box>
-              </ListItemSecondaryAction>
             </ListItem>
             <Divider variant="inset" component="li" />
           </React.Fragment>

@@ -9,14 +9,13 @@ import {
 } from "@mui/material"
 import Grid from '@mui/material/Grid2';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
-import { User } from "../../components/user/User"
 import { motion } from "framer-motion";
+import { CustomizerUser } from "../user/CustomizerUser";
 
 
-export default function Character({name}) {
-
+export default function Character({player, customPlayer}) {
     return (
-        <Grid item size={{
+        <Grid size={{
             xs: 12,
             sm: 4
           }}>
@@ -38,13 +37,14 @@ export default function Character({name}) {
                   ease: "easeInOut", 
                 }}
               >
-                <User width={120} height={120} name={name} move={false} border={"white"} />
+                <CustomizerUser width={120} height={120} playerName={player.username} playerColor={player.centerColor} borderColor={player.borderColor} iconType={player.iconType} iconColor={player.iconColor} icon={player.image}/>
+                
               </motion.div>
                 </Box>
                 <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}>
-                  {name}
+                  {player.username}
                 </Typography>
-                <Button variant="outlined" startIcon={<CheckroomIcon />} color="secondary">
+                <Button variant="outlined" startIcon={<CheckroomIcon />} color="secondary" onClick={customPlayer}>
                   Customize
                 </Button>
               </CardContent>
