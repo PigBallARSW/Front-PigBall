@@ -11,7 +11,6 @@ export const UserProvider = ({ children }) => {
         const { getAUser, createNewUser } = useUserLogin();
         const prevAuthState = useRef(isAuthenticated);
         const setPlayer = (res) => {
-            console.log(res)
             setPlayerData(res);
         }
         useEffect(() => {

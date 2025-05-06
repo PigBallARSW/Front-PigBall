@@ -10,6 +10,7 @@ import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
 import {TeamDetails} from "./TeamDetails"
 import { Field } from "./draw/Field"
+import FPSMeter from "../fps/FPSMeter";
 
 export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom }) {
   const [elapsedTime, setElapsedTime] = useState(0)
@@ -19,6 +20,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { goalAnimation, addGoal, closeGoalAnimation, playersGoal } = useGoal();
+  const fieldWrapperRef = useRef();
   /*const onMoveStart = (direction) => {
     const key = direction.replace("Arrow", "").toLowerCase();
     movementState.current[key] = true;
@@ -49,14 +51,14 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       const now = Date.now()
       const diff = Math.floor((now - startTime.getTime()) / 1000) 
       setElapsedTime(diff);
-      /*if (diff >= 300) { 
+      if (diff >= 300) { 
         setElapsedTime(300); 
         clearInterval(interval); 
         setShowGameOver(true);
         setHasFinished(true);
       } else {
         setElapsedTime(diff);
-      }*/
+      }
     }, 1000);
     return () => clearInterval(interval)
   }, [gameState?.creationTime, gameState?.startTime,id,hasFinished,finishRoom]);
@@ -107,19 +109,30 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
             gameTime={formatGameTime()}
           />
         </Box>
-        
-        {/*<Box sx={{width: "15%"}}>
-          <Spectators />
-        </Box>*/}
+        <FPSMeter />
     </Box>
 
-      <Field
+    <div
+    ref={fieldWrapperRef}
+    style={{
+      width: '100vw',
+      height: '100vh',
+      overflow: 'hidden',
+      margin: 0,
+      padding: 0,
+      backgroundColor: 'transparent'
+    }}
+  >
+    <Field
+      wrapperRef={fieldWrapperRef}
       players={players}
       ball={ball}
       movePlayer={movePlayer}
       borderX={gameState.borderX}
       borderY={gameState.borderY}
-      />
+    />
+  </div>
+
     {showGameOver && (
       <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
     )}

@@ -11,13 +11,15 @@ export const MainGame = () => {
     return <p>Cargando...</p>
   }
   return (
-    <main>
+    <>
       {gameStarted ? (
+        <>
         <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame}/>
+        </>
       ) : (
         <WaitingRoom  onStartGame={handleStartGame} players={players} leaveRoom={handleLeaveGame} roomData={gameState}/>
       )}
-    </main>
+    </>
   );
 };
 
