@@ -1,18 +1,17 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import {  Box, useTheme, useMediaQuery} from "@mui/material"
-import Scoreboard from "./Scoreboard"
+import {Scoreboard} from "./Scoreboard"
 import { SoccerField } from "./SoccerField"
 import {useLobbyService } from "../../Modules/useLobbyService";
 import MobileControls from "./MobileControls"
 import { useMoveGame } from "../../context/game/useMoveGame"
-import GoalAnimation from "./GoalAnimation"
+import {GoalAnimation} from "./GoalAnimation"
 import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
-import TeamDetails from "./TeamDetails"
+import {TeamDetails} from "./TeamDetails"
 import { Field } from "./draw/Field"
 
-export default function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom }) {
+export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom }) {
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
@@ -131,4 +130,4 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     </>
 
   )
-}
+})

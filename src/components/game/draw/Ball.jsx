@@ -1,6 +1,7 @@
 import { Graphics } from '@pixi/react';
+import React from 'react';
 
-export const Ball = ({ fieldX, fieldY, ball }) => {
+export const Ball = React.memo(({ fieldX, fieldY, ball }) => {
     if (!ball) return null;
     const ballRadius = 10;
     const xPos = fieldX + ball.x;
@@ -18,4 +19,4 @@ export const Ball = ({ fieldX, fieldY, ball }) => {
             }}
         />
     );
-};
+})

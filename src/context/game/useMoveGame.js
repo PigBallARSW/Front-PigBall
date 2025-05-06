@@ -31,5 +31,5 @@ export function useMoveGame(movePlayer) {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [movePlayer, movementState]);
+  }, [movePlayer]);
 }

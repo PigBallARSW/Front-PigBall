@@ -1,7 +1,7 @@
 import { Container, Sprite } from "@pixi/react";
 import { Texture } from "@pixi/core"
 import backgroundAsset from '../../../assets/images/cesped2.png'
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { FieldDraw } from "./FieldDraw";
 import { MoveContainer } from "./MoveContainer";
 import { Player } from "./Player";
@@ -9,7 +9,7 @@ import { Ball } from "./Ball";
 import { Camera } from "./Camera";
 import { Background, BackgroundSprite } from "./Background";
 
-export const ContainerField = ({canvasSize,borderX, borderY, movePlayer, players, ball, children}) => {
+export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY, movePlayer, players, ball, children}) {
     const MARGIN = 0;
     const GOAL_WIDTH = borderX * 0.03;
     const CANVAS_WIDTH = borderX + MARGIN * 2 + GOAL_WIDTH * 2;
@@ -40,4 +40,4 @@ export const ContainerField = ({canvasSize,borderX, borderY, movePlayer, players
             </Camera>
         </Container>
     )
-}
+})

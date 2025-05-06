@@ -1,11 +1,11 @@
-"use client"
 import { Box, Typography, Paper } from "@mui/material"
 import { alpha } from "@mui/material/styles"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import ShieldIcon from "@mui/icons-material/Shield"
+import React from "react"
 
-export default function Scoreboard({
+export const Scoreboard = React.memo(function({
   blueScore,
   redScore,
   gameTime,
@@ -125,4 +125,4 @@ export default function Scoreboard({
     </Paper>
   
   )
-}
+})

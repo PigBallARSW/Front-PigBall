@@ -1,5 +1,4 @@
-"use client"
-import { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Box, Typography, Paper, Tabs, Tab, Chip, Grid, Divider, IconButton, Tooltip } from "@mui/material"
 import { alpha } from "@mui/material/styles"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
@@ -12,7 +11,7 @@ import { useTeams } from "../../context/lobby/useTeams"
 import { User } from "../user/User"
 import { useCalculateInfo } from "../../context/game/useCalculateInfo"
 
-export default function TeamDetails({gameState, playersGoal}) {
+export const TeamDetails = React.memo(function TeamDetails({gameState, playersGoal}) {
     const {playerData} = useUser();
     const currentUser = playerData?.username || sessionStorage.getItem("username");
     const {teamAPlayers, teamBPlayers} = useTeams(gameState?.players, currentUser, gameState?.creatorName)
@@ -20,14 +19,15 @@ export default function TeamDetails({gameState, playersGoal}) {
     const [expanded, setExpanded] = useState(false)
     const [currentTeam, setCurrentTeam] = useState([]);
     const {playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
-    const handleTeamChange = (event, newValue) => {
+    const handleTeamChange = (newValue) => {
         setSelectedTeam(newValue)
     }
     const toggleExpand = () => {
         setExpanded(!expanded)
     }
-    const teamColor = selectedTeam === "blue" ? "#1976d2" : "#dc004e"
-    const teamName = selectedTeam === "blue" ? "Team A" : "Team B"
+    const teamColor = useMemo(() => selectedTeam === "blue" ? "#1976d2" : "#dc004e", [selectedTeam]);
+    const teamName = useMemo(() => selectedTeam === "blue" ? "Team A" : "Team B", [selectedTeam]);
+
     const calculateTeam = useCallback(() => {
         const current = selectedTeam === "blue" ? teamAPlayers : teamBPlayers
         const updatedTeam = current.map((player) => {
@@ -46,7 +46,7 @@ export default function TeamDetails({gameState, playersGoal}) {
 
     useEffect(() => {
         calculateTeam();
-    },[selectedTeam, gameState?.events?.length, playersGoal, calculateTeam])
+    },[calculateTeam])
 
   return (
     <Paper
@@ -226,4 +226,4 @@ export default function TeamDetails({gameState, playersGoal}) {
       )}
     </Paper>
   )
-}
+})

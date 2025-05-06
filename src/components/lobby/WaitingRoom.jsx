@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -27,7 +27,7 @@ import { useTeams } from "../../context/lobby/useTeams";
 import { useUser } from "../../context/user/userContext";
 import { useAlert } from "../../context/alert/AlertContext";
 
-export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData }) => {
+export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, players, leaveRoom, roomData }) {
   const {playerData} = useUser();
   const{showAlert} = useAlert();
   const currentUser = playerData?.username || sessionStorage.getItem("username");
@@ -324,6 +324,6 @@ export const WaitingRoom = ({ onStartGame, players, leaveRoom, roomData }) => {
       </Dialog>
     </Box>
   )
-}
+})
 
 

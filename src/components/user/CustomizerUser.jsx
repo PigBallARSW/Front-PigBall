@@ -25,7 +25,7 @@ export const CustomizerUser = ({ width, height, playerName, playerColor, borderC
             color={playerColor}
             border={borderColor ? "3px solid " + borderColor : null}
         >
-            {iconType !== "none" && icon !== "none" ? 
+            {(iconType !== "none" && icon !== "none" && iconType && icon)  ? 
             <Box
                 sx={{
                     width: "100%",

@@ -1,7 +1,8 @@
 import { Graphics, Text } from '@pixi/react';
 import * as PIXI from 'pixi.js';
+import React from 'react';
 
-export const Player = ({ fieldX, fieldY, player }) => {
+export const Player =  React.memo(({ fieldX, fieldY, player }) => {
     const playerRadius = 20;
     const xPos = fieldX + player.x;
     const yPos = fieldY + player.y;
@@ -36,5 +37,5 @@ export const Player = ({ fieldX, fieldY, player }) => {
             />
         </>
     );
-};
+})
 

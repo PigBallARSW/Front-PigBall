@@ -1,5 +1,5 @@
 import { Stage } from "@pixi/react";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ContainerField } from "./ContainerField";
 
 export const Field = ({ players, ball, borderX, borderY, movePlayer }) => {
@@ -24,4 +24,4 @@ export const Field = ({ players, ball, borderX, borderY, movePlayer }) => {
             <ContainerField canvasSize={canvasSize} borderX={borderX} borderY={borderY} movePlayer={movePlayer} players={players} ball={ball} />
         </Stage>
     );
-};
+}
