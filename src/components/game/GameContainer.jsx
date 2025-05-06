@@ -103,7 +103,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       overflow: 'hidden',
       margin: 0,
       padding: 0,
-      backgroundColor: 'transparent'
+      backgroundColor: '#67a454'
     }}
   >
     <Field

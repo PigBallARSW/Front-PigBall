@@ -13,13 +13,6 @@ const FieldDrawComponent = ({ fieldWidth, fieldHeight, goalWidth }) => {
         const goalColor = 0xFFFFFF;
         const goalNetColor = 0xF5F5F5;
 
-        
-        const stripeWidth = fieldWidth / 8;
-        for (let i = 0; i < 8; i++) {
-            g.beginFill(i % 2 === 0 ? fieldColorLight : fieldColorDark,0.3);
-            g.drawRect(fieldX + i * stripeWidth, fieldY, stripeWidth, fieldHeight);
-            g.endFill();
-        }
 
         // Líneas del campo
         g.lineStyle(3, lineColor);
