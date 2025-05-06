@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-// Importa los componentes específicos que usas de Material UI
-// Por ejemplo:
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { 
   Paper, 
   Typography, 
@@ -9,7 +7,8 @@ import {
   Box, 
   Collapse 
 } from '@mui/material';
-import BarChartIcon from '@mui/icons-material/BarChart';
+import BarChartIcon from '@mui/icons-material/BarChart'
+import { alpha } from "@mui/material/styles"
 
 export default function FPSCounter() {
   const [fps, setFps] = useState(0);
@@ -22,21 +21,17 @@ export default function FPSCounter() {
   const MAX_DATA_POINTS = 30;
 
   const TARGET_FPS = 60;
-  const FRAME_RATE = 60; 
+  //const FRAME_RATE = 60; 
 
-  const calculateFps = () => {
+  const calculateFps = useCallback(() => {
     frameCount.current++;
     const now = performance.now();
     const delta = now - lastTime.current;
     
     if (delta >= 1000) {
       const currentFps = Math.round((frameCount.current * 1000) / delta);
-      
-      const efficiency = Math.min(100, Math.round((currentFps / TARGET_FPS) * 100));
-      
       setFps(currentFps);
       
-      // Update history for the graph
       setFpsHistory(prevHistory => {
         const timestamp = new Date().toLocaleTimeString('en-US', { 
           hour12: false,
@@ -64,7 +59,7 @@ export default function FPSCounter() {
     }
     
     animationRef.current = requestAnimationFrame(calculateFps);
-  };
+  },[])
 
   useEffect(() => {
     animationRef.current = requestAnimationFrame(calculateFps);
@@ -73,19 +68,16 @@ export default function FPSCounter() {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-    };
-  }, []);
+    }
+  }, [calculateFps]);
 
   return (
     <Paper
       elevation={3}
-      style={{
-        position: 'fixed',
-        top: 16,
-        right: 16,
-        zIndex: 1300,
+      sx={{
+        bgcolor: alpha("#000000", 0.65),
+        border: "2px solid rgba(255, 255, 255, 0.1)",
         backgroundColor: 'rgba(33, 33, 33, 0.9)',
-        padding: 8,
         minWidth: showGraph ? 300 : 100,
         transition: 'min-width 0.3s ease'
       }}

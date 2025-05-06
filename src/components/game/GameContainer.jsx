@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
-import {  Box, useTheme, useMediaQuery} from "@mui/material"
+import {  Box, useMediaQuery, useTheme } from "@mui/material"
 import {Scoreboard} from "./Scoreboard"
-import { SoccerField } from "./SoccerField"
 import {useLobbyService } from "../../Modules/useLobbyService";
-import MobileControls from "./MobileControls"
-import { useMoveGame } from "../../context/game/useMoveGame"
 import {GoalAnimation} from "./GoalAnimation"
 import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
@@ -17,26 +14,10 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
   const [showGameOver, setShowGameOver] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { goalAnimation, addGoal, closeGoalAnimation, playersGoal } = useGoal();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const fieldWrapperRef = useRef();
-  /*const onMoveStart = (direction) => {
-    const key = direction.replace("Arrow", "").toLowerCase();
-    movementState.current[key] = true;
-  };
-  const onMoveEnd = (direction) => {
-    const key = direction.replace("Arrow", "").toLowerCase();
-    movementState.current[key] = false;
-  };
-
-  const onActionStart = () => {
-    movementState.current.isKicking = true;
-  };
-
-  const onActionEnd = () => {
-    movementState.current.isKicking = false;
-  };*/
   useEffect(() => {
     if (gameState?.events?.length) {
       addGoal(gameState);
@@ -80,6 +61,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       {goalAnimation.show && (
         <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
       )}
+      {!isMobile &&
         <Box 
         sx={{ 
           display: "flex", 
@@ -91,6 +73,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
           overflow: "hidden"
         }}
       >
+        
         <Box sx={{width: "18%"}}>
           <TeamDetails gameState={gameState} playersGoal={playersGoal} />
         </Box>
@@ -110,7 +93,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
           />
         </Box>
         <FPSMeter />
-    </Box>
+    </Box>}
 
     <div
     ref={fieldWrapperRef}
@@ -136,10 +119,6 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
     {showGameOver && (
       <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
     )}
-    {/*isMobile && <MobileControls onMoveStart={onMoveStart}
-        onMoveEnd={onMoveEnd}
-        onActionStart={onActionStart}
-        onActionEnd={onActionEnd} />*/}
     </>
 
   )

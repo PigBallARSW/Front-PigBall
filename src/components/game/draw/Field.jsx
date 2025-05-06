@@ -3,20 +3,20 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ContainerField } from "./ContainerField";
 
 export const Field = ({ players, ball, borderX, borderY, movePlayer, wrapperRef }) => {
-    const calculateCanvasSize = () => {
+    const calculateCanvasSize = useCallback(() => {
       if (!wrapperRef.current) return { width: window.innerWidth, height: window.innerHeight, options: {} };
       const { width, height } = wrapperRef.current.getBoundingClientRect();
       const options = { backgroundColor: 0x3a642d, antialias: true };
       return { width, height, options };
-    };
+    },[wrapperRef]);
   
     const [canvasSize, setCanvasSize] = useState(calculateCanvasSize);
     const updateCanvasSize = useCallback(() => {
       setCanvasSize(calculateCanvasSize());
-    }, [wrapperRef]);
+    }, [calculateCanvasSize]);
   
     useEffect(() => {
-      updateCanvasSize(); // Initial resize
+      updateCanvasSize(); 
       window.addEventListener('resize', updateCanvasSize);
       return () => window.removeEventListener('resize', updateCanvasSize);
     }, [updateCanvasSize]);

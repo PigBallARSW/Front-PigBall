@@ -92,13 +92,6 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   const winnerColor = blueWins ? "#1976d2" : redWins ? "#dc004e" : "#4caf50"
   const winnerTeam = blueWins ? "A" : redWins ? "B" : "DRAW"
 
-  const gameStats = {
-    possession: { blue: 55, red: 45 },
-    shots: { blue: 12, red: 9 },
-    passes: { blue: 87, red: 72 },
-    fouls: { blue: 3, red: 4 },
-  }
-
   const topScorer = players.length > 0
   ? players.reduce((max, player) => player.goal > max.goal ? player : max)
   : null;
@@ -382,80 +375,6 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
                       }}
                     >
                       <Typography variant="h6">{playersGoals.red}</Typography>
-                      <ShieldIcon fontSize="small" sx={{ ml: 0.5 }} />
-                    </Box>
-                  </Box>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    bgcolor: alpha("#333", 0.5),
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography variant="subtitle2" sx={{ color: "white", mb: 1 }}>
-                  Completed passes
-                  </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#1976d2",
-                      }}
-                    >
-                      <ShieldIcon fontSize="small" sx={{ mr: 0.5 }} />
-                      <Typography variant="h6">{gameStats.passes.blue}</Typography>
-                    </Box>
-                    <Box sx={{ mx: 2, color: "white" }}>-</Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#dc004e",
-                      }}
-                    >
-                      <Typography variant="h6">{gameStats.passes.red}</Typography>
-                      <ShieldIcon fontSize="small" sx={{ ml: 0.5 }} />
-                    </Box>
-                  </Box>
-                </Paper>
-              </Grid>
-
-              {/* Faltas */}
-              <Grid item xs={12} sm={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    bgcolor: alpha("#333", 0.5),
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography variant="subtitle2" sx={{ color: "white", mb: 1 }}>
-                  Fouls
-                  </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#1976d2",
-                      }}
-                    >
-                      <ShieldIcon fontSize="small" sx={{ mr: 0.5 }} />
-                      <Typography variant="h6">{gameStats.fouls.blue}</Typography>
-                    </Box>
-                    <Box sx={{ mx: 2, color: "white" }}>-</Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#dc004e",
-                      }}
-                    >
-                      <Typography variant="h6">{gameStats.fouls.red}</Typography>
                       <ShieldIcon fontSize="small" sx={{ ml: 0.5 }} />
                     </Box>
                   </Box>
