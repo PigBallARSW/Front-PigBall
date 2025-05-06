@@ -22,13 +22,16 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
     );
     const scale = Math.max(0.45, Math.min(baseScale, 1));
 
+    const EXTRA_MARGIN_FACTOR = 0.08; 
+    const MAP_WIDTH = CANVAS_WIDTH * (1 + EXTRA_MARGIN_FACTOR);
+    const MAP_HEIGHT = CANVAS_HEIGHT * (1 + EXTRA_MARGIN_FACTOR);
+
     return (
         <Container>
-            <Camera players={players} canvasSize={canvasSize} CANVAS_WIDTH={borderX} CANVAS_HEIGHT={borderY} scale={scale}>
-                <Container x={fieldX} y={fieldY}>
+            <Camera players={players} canvasSize={canvasSize} CANVAS_WIDTH={CANVAS_WIDTH} CANVAS_HEIGHT={CANVAS_HEIGHT} MAP_WIDTH={MAP_WIDTH} MAP_HEIGHT={MAP_HEIGHT} scale={scale}>
+                <Container x={fieldX + (MAP_WIDTH - CANVAS_WIDTH) / 2} y={fieldY + (MAP_HEIGHT - CANVAS_HEIGHT) / 2}>
                     <BackgroundSprite width={borderX} height={borderY} />
                     <FieldDraw fieldWidth={borderX} fieldHeight={borderY} goalWidth={GOAL_WIDTH} />
-                </Container>
                 <MoveContainer 
                     movePlayer={movePlayer}
                 >
@@ -37,6 +40,7 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
                 ))}
                     <Ball fieldX={fieldX} fieldY={fieldY} ball={ball} />
                 </MoveContainer>
+                </Container>
             </Camera>
         </Container>
     )

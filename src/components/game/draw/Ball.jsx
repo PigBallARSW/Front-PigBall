@@ -4,8 +4,8 @@ import React from 'react';
 export const Ball = React.memo(({ fieldX, fieldY, ball }) => {
     if (!ball) return null;
     const ballRadius = 10;
-    const xPos = fieldX + ball.x;
-    const yPos = fieldY + ball.y;
+    const xPos = ball.x;
+    const yPos = ball.y;
     return (
         <Graphics
             x={xPos}

@@ -19,7 +19,7 @@ export const TeamDetails = React.memo(function TeamDetails({gameState, playersGo
     const [expanded, setExpanded] = useState(false)
     const [currentTeam, setCurrentTeam] = useState([]);
     const {playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
-    const handleTeamChange = (newValue) => {
+    const handleTeamChange = (e,newValue) => {
         setSelectedTeam(newValue)
     }
     const toggleExpand = () => {

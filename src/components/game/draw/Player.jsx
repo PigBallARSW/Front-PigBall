@@ -2,10 +2,10 @@ import { Graphics, Text } from '@pixi/react';
 import * as PIXI from 'pixi.js';
 import React from 'react';
 
-export const Player =  React.memo(({ fieldX, fieldY, player }) => {
+export const Player =  React.memo(({ player }) => {
     const playerRadius = 20;
-    const xPos = fieldX + player.x;
-    const yPos = fieldY + player.y;
+    const xPos = player.x;
+    const yPos = player.y;
     return (
         <>
             <Graphics

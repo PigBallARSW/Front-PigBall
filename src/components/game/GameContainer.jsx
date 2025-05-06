@@ -95,9 +95,9 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
         <FPSMeter />
     </Box>}
 
-    <div
+    <Box
     ref={fieldWrapperRef}
-    style={{
+    sx={{
       width: '100vw',
       height: '100vh',
       overflow: 'hidden',
@@ -114,7 +114,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       borderX={gameState.borderX}
       borderY={gameState.borderY}
     />
-  </div>
+  </Box>
 
     {showGameOver && (
       <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
