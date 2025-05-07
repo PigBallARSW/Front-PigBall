@@ -14,15 +14,10 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
   const [showGameOver, setShowGameOver] = useState(false);
-  const { goalAnimation, addGoal, closeGoalAnimation, playersGoal } = useGoal();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const fieldWrapperRef = useRef();
-  useEffect(() => {
-    if (gameState?.events?.length) {
-      addGoal(gameState);
-    }
-  }, [gameState, addGoal,gameState?.events]);
+
 
   useEffect(() => {
     if (!gameState?.creationTime) return
@@ -58,9 +53,6 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   }
   return (
     <>
-      {goalAnimation.show && (
-        <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
-      )}
       {!isMobile &&
         <Box 
         sx={{ 
@@ -74,9 +66,6 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
         }}
       >
         
-        <Box sx={{width: "18%"}}>
-          <TeamDetails gameState={gameState} playersGoal={playersGoal} />
-        </Box>
         {/* Centro */}
         <Box 
           sx={{ 
@@ -117,7 +106,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   </Box>
 
     {showGameOver && (
-      <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
+      <Summary gameState={gameState} onExit={exitGame} onPlayAgain={playAgain} />
     )}
     </>
 

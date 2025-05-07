@@ -4,9 +4,6 @@ import React, { useCallback } from "react";
 const FieldDrawComponent = ({ fieldWidth, fieldHeight, goalWidth }) => {
     const draw = useCallback((g) => {
         g.clear();
-
-        const fieldColorDark = 0x559243;
-        const fieldColorLight = 0x6dbe55;
         const fieldX = 0; 
         const fieldY = 0;
         const lineColor = 0xb4d6a8;
@@ -33,11 +30,11 @@ const FieldDrawComponent = ({ fieldWidth, fieldHeight, goalWidth }) => {
         g.drawCircle(centerX, centerY, centerCircleRadius * 0.09);
         g.endFill();
 
+
         // Áreas de penalti
         const penaltyAreaWidth = fieldWidth * 0.16;
         const penaltyAreaHeight = fieldHeight * 0.5;
         const penaltyAreaY = fieldY + (fieldHeight - penaltyAreaHeight) / 2;
-
         // Izquierda
         g.lineStyle(3, lineColor);
         g.drawRect(fieldX, penaltyAreaY, penaltyAreaWidth, penaltyAreaHeight);

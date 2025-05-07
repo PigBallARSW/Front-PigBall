@@ -25,6 +25,7 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows"
 import { User } from "../user/User"
 import { motion } from "framer-motion";
 import { useCalculateInfo } from "../../context/game/useCalculateInfo"
+import { useGoal } from "../../context/game/useGoal"
 
 const scrollbarStyles = {
     // Estilos para webkit (Chrome, Safari, Edge)
@@ -81,7 +82,8 @@ const rotate = keyframes`
   }
 `
 
-export default function Summary({ gameState, players, onExit, onPlayAgain }) {
+export default function Summary({ gameState, onExit, onPlayAgain }) {
+  const {playersGoal, updatesGoal} = useGoal()
   const [showContent, setShowContent] = useState(false)
   const {assists, playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
 
@@ -92,8 +94,8 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   const winnerColor = blueWins ? "#1976d2" : redWins ? "#dc004e" : "#4caf50"
   const winnerTeam = blueWins ? "A" : redWins ? "B" : "DRAW"
 
-  const topScorer = players.length > 0
-  ? players.reduce((max, player) => player.goal > max.goal ? player : max)
+  const topScorer = playersGoal.length > 0
+  ? playersGoal.reduce((max, player) => player.goal > max.goal ? player : max)
   : null;
 
   useEffect(() => {
@@ -105,9 +107,10 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   }, [])
 
   useEffect(() => {
-    calculateGoalNumber(players);
+    updatesGoal(gameState)
+    calculateGoalNumber(playersGoal);
     calculateAssistNumber(gameState);
-  }, [calculateAssistNumber, calculateGoalNumber, gameState, players])
+  }, [calculateAssistNumber, calculateGoalNumber, gameState, playersGoal])
 
   return (
     <Box
@@ -467,13 +470,13 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
                 <SportsSoccerIcon sx={{ mr: 1 }} />
                 GOAL SCORES
                 </Typography>
-                {players.length > 0 ? (
+                {playersGoal.length > 0 ? (
                 <List sx={{ bgcolor: alpha("#333", 0.3), borderRadius: 2 }}>
-                {players.map((scorer, index) => (
+                {playersGoal.map((scorer, index) => (
                     <ListItem
                     key={index}
                     sx={{
-                        borderBottom: index < players.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
+                        borderBottom: index < playersGoal.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
                     }}
                     >
                     <ListItemAvatar>
@@ -535,7 +538,7 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
                     <ListItem
                     key={index}
                     sx={{
-                        borderBottom: index < players.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
+                        borderBottom: index < playersGoal.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
                     }}
                     >
                     <ListItemAvatar>

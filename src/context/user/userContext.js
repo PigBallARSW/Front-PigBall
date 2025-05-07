@@ -21,7 +21,6 @@ export const UserProvider = ({ children }) => {
                 } 
         };
     
-            // Si cambió el estado de login, limpia el estado anterior
             if (prevAuthState.current !== isAuthenticated) {
                 setPlayerData(null);
                 prevAuthState.current = isAuthenticated;

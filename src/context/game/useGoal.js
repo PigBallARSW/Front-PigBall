@@ -26,20 +26,30 @@ export function useGoal () {
         team: player.team,
         event: playerGoal
       });
-      setPlayersGoal((prevGoals) => {
-        const existing = prevGoals.find((p) => p.id === player.id);
-        if (existing) {
-          return prevGoals.map((p) =>
-            p.id === player.id ? { ...p, goal: p.goal + 1 } : p
-          );
-        } else {
-          return [...prevGoals, { id: player.id, name: player.name, team: player.team, x: player.x, y: player.y, goal: 1 }];
-        }
-      });
     } else {
       console.warn("Jugador no encontrado");
     }
   },[]);
+
+  const updatesGoal = useCallback((state) => {
+    const goals = []
+    const goalEvents = state?.events?.filter(
+      (e) => e.second === "GOAL_SCORED" || e.second === "SELF_GOAL_SCORED"
+    );
+
+    goalEvents?.forEach((p) => {
+      const player = state.players.find((pl) => p.first === pl.id)
+      const exist = goals.find((g) => g.id === player.id)
+      if(exist){
+        exist.goal += 1
+      }else{
+        goals.push({...player, goal: 1})
+      }
+    })
+    console.log(goals)
+    setPlayersGoal(goals)
+  },[]);
+
 
   const closeGoalAnimation = useCallback(() => {
     setGoalAnimation((prev) => ({
@@ -49,6 +59,6 @@ export function useGoal () {
   },[]);
 
   
-  return {goalAnimation, addGoal, closeGoalAnimation, playersGoal};
+  return {goalAnimation, addGoal, closeGoalAnimation, playersGoal, updatesGoal};
 };
 

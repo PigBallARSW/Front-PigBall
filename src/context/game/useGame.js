@@ -5,7 +5,7 @@ import { useAlert } from "../alert/AlertContext";
 import { useUser } from "../user/userContext";
 import _ from "lodash";
 
-export function useGame(id) {
+export function useGame(id, addGoal) {
   const { showAlert } = useAlert();
   const { playerData } = useUser();
   const [players, setPlayers] = useState([]);
@@ -62,6 +62,7 @@ export function useGame(id) {
         client.subscribe(`/topic/goal/${id}`, (message) => {
           const newState = JSON.parse(message.body);
           setGameState(prev => _.isEqual(prev, newState) ? prev : newState);
+          addGoal(newState)
         });
       },
       onStompError: (frame) => {
