@@ -31,14 +31,14 @@ export function useGoal () {
     }
   },[]);
 
-  const updatesGoal = useCallback((state) => {
+  const updatesGoal = useCallback((state, players) => {
     const goals = []
     const goalEvents = state?.events?.filter(
       (e) => e.second === "GOAL_SCORED" || e.second === "SELF_GOAL_SCORED"
     );
 
     goalEvents?.forEach((p) => {
-      const player = state.players.find((pl) => p.first === pl.id)
+      const player = players.find((pl) => p.first === pl.id)
       const exist = goals.find((g) => g.id === player.id)
       if(exist){
         exist.goal += 1
@@ -46,7 +46,6 @@ export function useGoal () {
         goals.push({...player, goal: 1})
       }
     })
-    console.log(goals)
     setPlayersGoal(goals)
   },[]);
 

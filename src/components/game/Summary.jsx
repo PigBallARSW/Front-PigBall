@@ -26,6 +26,8 @@ import { User } from "../user/User"
 import { motion } from "framer-motion";
 import { useCalculateInfo } from "../../context/game/useCalculateInfo"
 import { useGoal } from "../../context/game/useGoal"
+import { useUserLogin } from "../../Modules/useUserLogin"
+import { CustomizerUser } from "../user/CustomizerUser"
 
 const scrollbarStyles = {
     // Estilos para webkit (Chrome, Safari, Edge)
@@ -83,6 +85,7 @@ const rotate = keyframes`
 `
 
 export default function Summary({ gameState, onExit, onPlayAgain }) {
+  const {usersCharacters} = useUserLogin();
   const {playersGoal, updatesGoal} = useGoal()
   const [showContent, setShowContent] = useState(false)
   const {assists, playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
@@ -107,10 +110,35 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
   }, [])
 
   useEffect(() => {
-    updatesGoal(gameState)
-    calculateGoalNumber(playersGoal);
-    calculateAssistNumber(gameState);
-  }, [calculateAssistNumber, calculateGoalNumber, gameState, playersGoal])
+    const fetchCustomizations = async () => {
+      const players = []
+      const users = gameState.players.map((p) => p.id)
+      let characters = await usersCharacters(users)
+      if(characters){
+        console.log(characters)
+          gameState.players.forEach((player) => {
+              const custom = characters.find((p) => p.id === player.id);
+              const data = {
+                  id: player.id,
+                  name: player.name,
+                  team: player.team,
+                  x: player.x,
+                  y: player.y,
+                  image: custom.image,
+                  borderColor: custom.borderColor,
+                  centerColor: custom.centerColor,
+                  iconType: custom.iconType,
+                  iconColor: custom.iconColor
+              };
+              players.push(data)
+          });
+          updatesGoal(gameState, players)
+          calculateGoalNumber(playersGoal);
+          calculateAssistNumber(gameState, players);
+      }
+    }
+    fetchCustomizations()
+  }, [])
 
   return (
     <Box
@@ -429,7 +457,16 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
                   ease: "easeInOut", 
                   }}
               >
-                <User width={80} height={80} name={topScorer.name} color={topScorer.team === 0 ? "#1976d2" : "#dc004e"} shadow={"0 0 15px rgba(255, 215, 0, 0.5)"} border={"3px solid #FFD700"}/>
+                <CustomizerUser 
+                width={80} 
+                height={80} 
+                playerName={topScorer.name} 
+                playerColor={topScorer.centerColor || topScorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                borderColor={"#FFD700"} 
+                iconType={topScorer.iconType} 
+                iconColor={topScorer.iconColor} 
+                icon={topScorer.image}
+                shadow={"0 0 15px rgba(255, 215, 0, 0.5)"} />
                 </motion.div>
               <Box sx={{ textAlign: { xs: "center", sm: "left" }, ml: { xs: 0, sm: 3 } }}>
                 <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
@@ -480,7 +517,15 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
                     }}
                     >
                     <ListItemAvatar>
-                        <User width={40} height={40} name={scorer.name} color={scorer.team === 0 ? "#1976d2" : "#dc004e"} />
+                    <CustomizerUser 
+                      width={40} 
+                      height={40} 
+                      playerName={scorer.name} 
+                      playerColor={scorer.centerColor || scorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                      borderColor={scorer.borderColor} 
+                      iconType={scorer.iconType} 
+                      iconColor={scorer.iconColor} 
+                      icon={scorer.image}/>
                     </ListItemAvatar>
                     <ListItemText
                         primary={
@@ -542,7 +587,15 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
                     }}
                     >
                     <ListItemAvatar>
-                        <User width={40} height={40} name={scorer.name} color={scorer.team === 0 ? "#1976d2" : "#dc004e"} />
+                    <CustomizerUser 
+                      width={40} 
+                      height={40} 
+                      playerName={scorer.name} 
+                      playerColor={scorer.centerColor || scorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                      borderColor={scorer.borderColor} 
+                      iconType={scorer.iconType} 
+                      iconColor={scorer.iconColor} 
+                      icon={scorer.image}/>
                     </ListItemAvatar>
                     <ListItemText
                         primary={

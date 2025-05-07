@@ -1,5 +1,5 @@
 import { useAlert } from "../context/alert/AlertContext";
-import { createUser, getUser, sendStats, updateUserCharacter } from "../APIServices/userAPI";
+import { createUser, getUser, getUsersCharacters, sendStats, updateUserCharacter } from "../APIServices/userAPI";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth/AuthContext";
 
@@ -53,6 +53,17 @@ export function useUserLogin() {
         }
         
     },[getToken,showAlert]);
+
+    const usersCharacters = useCallback(async (users) => {
+        try{
+            const token = await getToken();
+            const response = await getUsersCharacters(users,token);
+            return response.data 
+        }catch(error){
+            showAlert("Could not get character", "error");
+        }
+        
+    },[getToken,showAlert]);
     
-    return {createNewUser, getAUser, sendStatsUser,updateCharacter};
+    return {createNewUser, getAUser, sendStatsUser,updateCharacter, usersCharacters};
 }
