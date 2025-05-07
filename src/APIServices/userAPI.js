@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER_URL_LOCAL;
+const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER_URL_LOCAL || "https://piguser.duckdns.org:8082";
+
 
 export async function createUser(id, name, token) {
     try {
