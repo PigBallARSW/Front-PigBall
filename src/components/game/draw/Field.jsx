@@ -4,7 +4,7 @@ import { ContainerField } from "./ContainerField";
 
 export const Field = ({ players, ball, borderX, borderY, movePlayer, wrapperRef }) => {
     const calculateCanvasSize = useCallback(() => {
-      const options = { antialias: true };
+      const options = { backgroundColor: 0x477339, antialias: true };
       if (!wrapperRef.current) return { width: window.innerWidth, height: window.innerHeight, options: options };
       const { width, height } = wrapperRef.current.getBoundingClientRect();
       return { width, height, options };

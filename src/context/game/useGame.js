@@ -4,6 +4,7 @@ import { Client } from "@stomp/stompjs";
 import { useAlert } from "../alert/AlertContext";
 import { useUser } from "../user/userContext";
 import _ from "lodash";
+import { useFpsTracker } from './useFpsTracker';
 
 export function useGame(id, addGoal) {
   const { showAlert } = useAlert();
@@ -15,7 +16,9 @@ export function useGame(id, addGoal) {
   const stompClient = useRef(null);
   const isConnected = useRef(false);
   const navigate = useNavigate();
+  const messageCountRef = useRef(0);
   const FRAME_RATE = 60;
+  const { signalFramesReached, fps, fpsHistory } = useFpsTracker();
 
   const playerName = useMemo(() => {
     const storedName = sessionStorage.getItem("usarname") || `Guest${Math.floor(Math.random() * 10000000)}`;
@@ -57,6 +60,12 @@ export function useGame(id, addGoal) {
           const data = JSON.parse(message.body);
           setPlayers(prev => _.isEqual(prev, data.players) ? prev : data.players);
           setBall(prev => _.isEqual(prev, data.ball) ? prev : data.ball);
+
+          messageCountRef.current += 1;
+          if (messageCountRef.current >= FRAME_RATE) {
+            signalFramesReached();
+            messageCountRef.current = 0;
+          }
         });
 
         client.subscribe(`/topic/goal/${id}`, (message) => {
@@ -78,7 +87,7 @@ export function useGame(id, addGoal) {
 
     client.activate();
     stompClient.current = client;
-  }, [id, playerName, playerId]);
+  }, [id, playerName, playerId, signalFramesReached]);
 
 
   const handleStartGame = useCallback(() => {
@@ -133,6 +142,8 @@ export function useGame(id, addGoal) {
     ball,
     gameStarted,
     gameState,
+    fps,
+    fpsHistory,
     handleStartGame,
     handleLeaveGame,
     handleMovePlayer,

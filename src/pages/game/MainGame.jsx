@@ -10,7 +10,7 @@ export const MainGame = () => {
   const { id } = useParams();
   const { goalAnimation, playersGoal, addGoal, closeGoalAnimation } = useGoal();
   
-  const {players, ball, gameStarted, gameState, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal);
+  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal);
   
   if(!gameState){
     return <p>Cargando...</p>
@@ -19,7 +19,7 @@ export const MainGame = () => {
     <>
       {gameStarted ? (
         <>
-        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} playersGoal={playersGoal}/>
+        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} playersGoal={playersGoal} fps={fps} fpsHistory={fpsHistory}/>
         {goalAnimation.show && (
           <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
         )}

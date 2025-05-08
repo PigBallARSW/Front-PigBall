@@ -46,7 +46,6 @@ export function useGoal () {
         goals.push({...player, goal: 1})
       }
     })
-    console.log(goals)
     setPlayersGoal(goals)
   },[]);
 

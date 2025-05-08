@@ -7,9 +7,10 @@ import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
 import {TeamDetails} from "./TeamDetails"
 import { Field } from "./draw/Field"
-import FPSMeter from "../fps/FPSMeter";
+//import FPSMeter from "../fps/FPSMeter";
+import FPSMeter from "../fps/FPSCounter";
 
-export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom }) {
+export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
@@ -81,7 +82,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
             gameTime={formatGameTime()}
           />
         </Box>
-        <FPSMeter />
+        <FPSMeter fps={fps} fpsHistory={fpsHistory} />
     </Box>}
 
     <Box
