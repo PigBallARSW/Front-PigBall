@@ -28,6 +28,7 @@ import { useCalculateInfo } from "../../context/game/useCalculateInfo"
 import { useGoal } from "../../context/game/useGoal"
 import { useUserLogin } from "../../Modules/useUserLogin"
 import { CustomizerUser } from "../user/CustomizerUser"
+import { useUser } from "../../context/user/userContext"
 
 const scrollbarStyles = {
     // Estilos para webkit (Chrome, Safari, Edge)
@@ -89,7 +90,7 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
   const {playersGoal, updatesGoal} = useGoal()
   const [showContent, setShowContent] = useState(false)
   const {assists, playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
-
+  const {playerData} = useUser();
   const blueWins = gameState?.teams.first > gameState?.teams.second || 0
   const redWins = gameState?.teams.second > gameState?.teams.first || 0
   const isDraw = gameState?.teams.first === gameState?.teams.second || 0
@@ -112,30 +113,62 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
   useEffect(() => {
     const fetchCustomizations = async () => {
       const players = []
-      const users = gameState.players.map((p) => p.id)
-      let characters = await usersCharacters(users)
-      if(characters){
-        console.log(characters)
-          gameState.players.forEach((player) => {
-              const custom = characters.find((p) => p.id === player.id);
-              const data = {
-                  id: player.id,
-                  name: player.name,
-                  team: player.team,
-                  x: player.x,
-                  y: player.y,
-                  image: custom.image,
-                  borderColor: custom.borderColor,
-                  centerColor: custom.centerColor,
-                  iconType: custom.iconType,
-                  iconColor: custom.iconColor
-              };
-              players.push(data)
-          });
-          updatesGoal(gameState, players)
-          calculateGoalNumber(playersGoal);
-          calculateAssistNumber(gameState, players);
+      if(playerData.authenticated){
+        const users = gameState.players.map((p) => p.id)
+        console.log(users)
+        let characters = await usersCharacters(users)
+        if(characters){
+            gameState.players.forEach((player) => {
+                let customization = {}
+                const custom = characters.find((p) => p.id === player.id);
+                if(custom){
+                  customization = {
+                    image: custom.image,
+                    borderColor: custom.borderColor,
+                    centerColor: custom.centerColor,
+                    iconType: custom.iconType,
+                    iconColor: custom.iconColor
+                  };
+                }else{
+                  customization = {
+                    image: null,
+                    borderColor: null,
+                    centerColor: null,
+                    iconType: null,
+                    iconColor: null
+                  };
+                }
+                const data = {
+                    id: player.id,
+                    name: player.name,
+                    team: player.team,
+                    x: player.x,
+                    y: player.y,
+                    ...customization
+                };
+                players.push(data)
+            });
+        }
+      }else{
+        gameState.players.forEach((player) => {
+          const data = {
+              id: player.id,
+              name: player.name,
+              team: player.team,
+              x: player.x,
+              y: player.y,
+              image: null,
+              borderColor: null,
+              centerColor: null,
+              iconType: null,
+              iconColor: null
+          };
+          players.push(data)
+        });
       }
+      updatesGoal(gameState, players)
+      calculateGoalNumber(playersGoal);
+      calculateAssistNumber(gameState, players);
     }
     fetchCustomizations()
   }, [])

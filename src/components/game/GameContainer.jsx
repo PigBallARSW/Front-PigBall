@@ -54,7 +54,6 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   }
   return (
     <>
-      {!isMobile &&
         <Box 
         sx={{ 
           display: "flex", 
@@ -66,8 +65,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
           overflow: "hidden"
         }}
       >
-        
-        {/* Centro */}
+        {!isMobile &&
         <Box 
           sx={{ 
             position: "absolute", 
@@ -81,9 +79,9 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
             redScore={gameState?.teams.second || 0}
             gameTime={formatGameTime()}
           />
-        </Box>
+        </Box>}
         <FPSMeter fps={fps} fpsHistory={fpsHistory} />
-    </Box>}
+    </Box>
 
     <Box
     ref={fieldWrapperRef}

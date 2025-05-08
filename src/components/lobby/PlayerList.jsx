@@ -213,7 +213,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Games won:  {player?.gamesWon ? player.gamesWon : 0}
+                              Games won:  {player?.gamesWon || 0}
                             </Typography>
                           }
                         />

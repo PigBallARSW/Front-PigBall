@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
         const { getAUser, createNewUser } = useUserLogin();
         const prevAuthState = useRef(isAuthenticated);
         const setPlayer = (res) => {
-            setPlayerData(res);
+            setPlayerData({...res,authenticated: true});
         }
         useEffect(() => {
             const fetchOrCreateUser = async (id, name) => {
@@ -47,7 +47,8 @@ export const UserProvider = ({ children }) => {
                     borderColor: "#ffffff",
                     centerColor: "#ffc107",
                     iconType: "none",
-                    iconColor: "#ffffff"
+                    iconColor: "#ffffff",
+                    authenticated: false
                 });
             }
         }, [isAuthenticated, accounts, createNewUser, getAUser]);
