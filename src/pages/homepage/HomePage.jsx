@@ -9,13 +9,11 @@ import Character from '../../components/homepage/Character';
 import Statistic from '../../components/homepage/Statistic';
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/user/userContext";
+import { LoadingPage } from "../../components/homepage/LoadingPage";
 
 export default function HomePage() {
   const {playerData} = useUser();
   const navigation = useNavigate();
-  if (!playerData) {
-    return <p>Cargando jugador...</p>;
-  }
   const handleClick = () => {
     navigation("/homepage/lobby")
   }
@@ -47,7 +45,7 @@ export default function HomePage() {
               Dominate the court with your skill!
             </Typography>
           </Box>
-
+            {!playerData ? <LoadingPage /> :
           <Grid container spacing={4}>
             {/* Player Character */}
             <Character player={playerData} customPlayer={handleCustom}/>
@@ -59,7 +57,7 @@ export default function HomePage() {
             score={playerData.totalScore} 
             winRate={playerData.winningPercentage} />
           </Grid>
-
+        }
           <Box sx={{ mt: 6, textAlign: "center" }}>
             <Button
               variant="contained"

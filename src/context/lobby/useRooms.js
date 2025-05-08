@@ -18,5 +18,5 @@ export function useRooms () {
         getRooms();
     }, [getRooms]); 
 
-    return {rooms, isRefreshing, getRooms};
+    return {rooms, isRefreshing, getRooms, setIsRefreshing};
 }

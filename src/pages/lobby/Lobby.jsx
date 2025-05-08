@@ -22,6 +22,7 @@ import { CreateRoom } from "../../components/lobby/CreateRoom";
 import { JoinRoom } from "../../components/lobby/JoinRoom";
 import { useRooms } from "../../context/lobby/useRooms";
 import { useLobby } from "../../context/lobby/useLobby";
+import Loading from "../../components/Load/Loading";
 
 export const Lobby = () => {
   const {rooms, isRefreshing, getRooms} = useRooms();
@@ -39,6 +40,9 @@ export const Lobby = () => {
   }
   function hideFormJoin() {
     setOpenJoinDialog(false);
+  }
+  if (isRefreshing) {
+    return <Loading />
   }
 
   return (

@@ -10,7 +10,7 @@ export function useTeams() {
     const fetchCustomizations = async (players) => {
         const teamA = []
         const teamB = []
-        if (players && playerData.authenticated) {
+        if (players && playerData?.authenticated) {
             const users = players.map((p) => p.id)
             let characters = await usersCharacters(users)
             if(characters){

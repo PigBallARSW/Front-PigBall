@@ -20,8 +20,6 @@ import { useUser } from "../../context/user/userContext";
 import { CustomizerUser } from "../user/CustomizerUser";
   
 export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, host})  => {  
-  console.log("team A: ", teamAPlayers)
-  console.log("team B: ",teamBPlayers)
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     return (
