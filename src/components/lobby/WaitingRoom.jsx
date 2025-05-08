@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -31,9 +31,17 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, player
   const {playerData} = useUser();
   const{showAlert} = useAlert();
   const currentUser = playerData?.username || sessionStorage.getItem("username");
-  const{teamAPlayers, teamBPlayers, host} = useTeams(players, currentUser, roomData.creatorName);
+  const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams();
+  const [host, setHost] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+
+  useEffect(() => {
+          fetchCustomizations(players);
+          const isHost = currentUser === roomData.creatorName;
+          setHost(isHost);
+  }, [players, currentUser]);
+
   const startGame = () => {
     if (players.length > 1) {
       onStartGame();

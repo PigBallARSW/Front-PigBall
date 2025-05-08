@@ -16,8 +16,12 @@ import {
 } from "@mui/icons-material"
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import { User } from "../user/User"
+import { useUser } from "../../context/user/userContext";
+import { CustomizerUser } from "../user/CustomizerUser";
   
 export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, host})  => {  
+  console.log("team A: ", teamAPlayers)
+  console.log("team B: ",teamBPlayers)
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     return (
@@ -88,7 +92,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                         }}
                       >
                         <ListItemAvatar>
-                            <User width={36} height={36} name={player.name} color={"#2196f3"}/>
+                          <CustomizerUser width={36} height={36} playerName={player.name} playerColor={player.centerColor || '#2196f3'} borderColor={player.borderColor} iconType={player.iconType} iconColor={player.iconColor} icon={player.image}/>
                         </ListItemAvatar>
                         <ListItemText
                           primary={
@@ -113,7 +117,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Games won: {player?.won ? player.won : 0}
+                              Games won: {player?.gamesWon ? player.gamesWon : 0}
                             </Typography>
                           }
                         />
@@ -184,7 +188,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                         }}
                       >
                         <ListItemAvatar>
-                            <User width={36} height={36} name={player.name} color={"#f44336"}/>
+                          <CustomizerUser width={36} height={36} playerName={player.name} playerColor={player.centerColor || '#f44336'} borderColor={player.borderColor} iconType={player.iconType} iconColor={player.iconColor} icon={player.image}/>
                         </ListItemAvatar>
                         <ListItemText
                           primary={
@@ -209,7 +213,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Games won:  {player?.won ? player.won : 0}
+                              Games won:  {player?.gamesWon ? player.gamesWon : 0}
                             </Typography>
                           }
                         />

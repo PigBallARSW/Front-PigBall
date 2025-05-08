@@ -82,3 +82,18 @@ export async function updateUserCharacter(id,username,image, centerColor, border
         throw error;
     }
 }
+
+export async function getUsersCharacters(users, token) {
+    try {
+        const endpoint = `${API}/user/summary`;
+        const response = await axios.post(endpoint, users, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+            });
+        return response;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        throw error;
+    }
+}

@@ -3,7 +3,7 @@ import { User } from "./User";
 import { Box, Typography } from "@mui/material";
 import { Bolt, EmojiEvents, Favorite, Flag, Shield, SportsBasketball, SportsFootball, SportsSoccer, SportsTennis, Star } from "@mui/icons-material";
  
-export const CustomizerUser = ({ width, height, playerName, playerColor, borderColor, iconType, iconColor, icon }) => {
+export const CustomizerUser = ({ width, height, playerName, playerColor, borderColor, iconType, iconColor, icon, shadow }) => {
     const icons = {
         football: <SportsSoccer fontSize="inherit" />,
         trophy: <EmojiEvents fontSize="inherit" />,
@@ -24,6 +24,7 @@ export const CustomizerUser = ({ width, height, playerName, playerColor, borderC
             height={height}
             color={playerColor}
             border={borderColor ? "3px solid " + borderColor : null}
+            shadow={shadow}
         >
             {(iconType !== "none" && icon !== "none" && iconType && icon)  ? 
             <Box
@@ -40,8 +41,8 @@ export const CustomizerUser = ({ width, height, playerName, playerColor, borderC
                 {iconType === "image" ? (
                     <Box
                     sx={{
-                        width: "60%",
-                        height: "60%",
+                        width: "100%",
+                        height: "100%",
                         borderRadius: "50%",
                         overflow: "hidden",
                     }}
