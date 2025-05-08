@@ -25,6 +25,10 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows"
 import { User } from "../user/User"
 import { motion } from "framer-motion";
 import { useCalculateInfo } from "../../context/game/useCalculateInfo"
+import { useGoal } from "../../context/game/useGoal"
+import { useUserLogin } from "../../Modules/useUserLogin"
+import { CustomizerUser } from "../user/CustomizerUser"
+import { useUser } from "../../context/user/userContext"
 
 const scrollbarStyles = {
     // Estilos para webkit (Chrome, Safari, Edge)
@@ -81,10 +85,12 @@ const rotate = keyframes`
   }
 `
 
-export default function Summary({ gameState, players, onExit, onPlayAgain }) {
+export default function Summary({ gameState, onExit, onPlayAgain }) {
+  const {usersCharacters} = useUserLogin();
+  const {playersGoal, updatesGoal} = useGoal()
   const [showContent, setShowContent] = useState(false)
   const {assists, playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
-
+  const {playerData} = useUser();
   const blueWins = gameState?.teams.first > gameState?.teams.second || 0
   const redWins = gameState?.teams.second > gameState?.teams.first || 0
   const isDraw = gameState?.teams.first === gameState?.teams.second || 0
@@ -92,15 +98,8 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   const winnerColor = blueWins ? "#1976d2" : redWins ? "#dc004e" : "#4caf50"
   const winnerTeam = blueWins ? "A" : redWins ? "B" : "DRAW"
 
-  const gameStats = {
-    possession: { blue: 55, red: 45 },
-    shots: { blue: 12, red: 9 },
-    passes: { blue: 87, red: 72 },
-    fouls: { blue: 3, red: 4 },
-  }
-
-  const topScorer = players.length > 0
-  ? players.reduce((max, player) => player.goal > max.goal ? player : max)
+  const topScorer = playersGoal.length > 0
+  ? playersGoal.reduce((max, player) => player.goal > max.goal ? player : max)
   : null;
 
   useEffect(() => {
@@ -112,9 +111,67 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
   }, [])
 
   useEffect(() => {
-    calculateGoalNumber(players);
-    calculateAssistNumber(gameState);
-  }, [calculateAssistNumber, calculateGoalNumber, gameState, players])
+    const fetchCustomizations = async () => {
+      const players = []
+      if(playerData.authenticated){
+        const users = gameState.players.map((p) => p.id)
+        console.log(users)
+        let characters = await usersCharacters(users)
+        if(characters){
+            gameState.players.forEach((player) => {
+                let customization = {}
+                const custom = characters.find((p) => p.id === player.id);
+                if(custom){
+                  customization = {
+                    image: custom.image,
+                    borderColor: custom.borderColor,
+                    centerColor: custom.centerColor,
+                    iconType: custom.iconType,
+                    iconColor: custom.iconColor
+                  };
+                }else{
+                  customization = {
+                    image: null,
+                    borderColor: null,
+                    centerColor: null,
+                    iconType: null,
+                    iconColor: null
+                  };
+                }
+                const data = {
+                    id: player.id,
+                    name: player.name,
+                    team: player.team,
+                    x: player.x,
+                    y: player.y,
+                    ...customization
+                };
+                players.push(data)
+            });
+        }
+      }else{
+        gameState.players.forEach((player) => {
+          const data = {
+              id: player.id,
+              name: player.name,
+              team: player.team,
+              x: player.x,
+              y: player.y,
+              image: null,
+              borderColor: null,
+              centerColor: null,
+              iconType: null,
+              iconColor: null
+          };
+          players.push(data)
+        });
+      }
+      updatesGoal(gameState, players)
+      calculateGoalNumber(playersGoal);
+      calculateAssistNumber(gameState, players);
+    }
+    fetchCustomizations()
+  }, [])
 
   return (
     <Box
@@ -387,80 +444,6 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
                   </Box>
                 </Paper>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    bgcolor: alpha("#333", 0.5),
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography variant="subtitle2" sx={{ color: "white", mb: 1 }}>
-                  Completed passes
-                  </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#1976d2",
-                      }}
-                    >
-                      <ShieldIcon fontSize="small" sx={{ mr: 0.5 }} />
-                      <Typography variant="h6">{gameStats.passes.blue}</Typography>
-                    </Box>
-                    <Box sx={{ mx: 2, color: "white" }}>-</Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#dc004e",
-                      }}
-                    >
-                      <Typography variant="h6">{gameStats.passes.red}</Typography>
-                      <ShieldIcon fontSize="small" sx={{ ml: 0.5 }} />
-                    </Box>
-                  </Box>
-                </Paper>
-              </Grid>
-
-              {/* Faltas */}
-              <Grid item xs={12} sm={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    bgcolor: alpha("#333", 0.5),
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography variant="subtitle2" sx={{ color: "white", mb: 1 }}>
-                  Fouls
-                  </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#1976d2",
-                      }}
-                    >
-                      <ShieldIcon fontSize="small" sx={{ mr: 0.5 }} />
-                      <Typography variant="h6">{gameStats.fouls.blue}</Typography>
-                    </Box>
-                    <Box sx={{ mx: 2, color: "white" }}>-</Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#dc004e",
-                      }}
-                    >
-                      <Typography variant="h6">{gameStats.fouls.red}</Typography>
-                      <ShieldIcon fontSize="small" sx={{ ml: 0.5 }} />
-                    </Box>
-                  </Box>
-                </Paper>
-              </Grid>
             </Grid>
           </Box>
 
@@ -507,7 +490,16 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
                   ease: "easeInOut", 
                   }}
               >
-                <User width={80} height={80} name={topScorer.name} color={topScorer.team === 0 ? "#1976d2" : "#dc004e"} shadow={"0 0 15px rgba(255, 215, 0, 0.5)"} border={"3px solid #FFD700"}/>
+                <CustomizerUser 
+                width={80} 
+                height={80} 
+                playerName={topScorer.name} 
+                playerColor={topScorer.centerColor || topScorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                borderColor={"#FFD700"} 
+                iconType={topScorer.iconType} 
+                iconColor={topScorer.iconColor} 
+                icon={topScorer.image}
+                shadow={"0 0 15px rgba(255, 215, 0, 0.5)"} />
                 </motion.div>
               <Box sx={{ textAlign: { xs: "center", sm: "left" }, ml: { xs: 0, sm: 3 } }}>
                 <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
@@ -548,17 +540,25 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
                 <SportsSoccerIcon sx={{ mr: 1 }} />
                 GOAL SCORES
                 </Typography>
-                {players.length > 0 ? (
+                {playersGoal.length > 0 ? (
                 <List sx={{ bgcolor: alpha("#333", 0.3), borderRadius: 2 }}>
-                {players.map((scorer, index) => (
+                {playersGoal.map((scorer, index) => (
                     <ListItem
                     key={index}
                     sx={{
-                        borderBottom: index < players.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
+                        borderBottom: index < playersGoal.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
                     }}
                     >
                     <ListItemAvatar>
-                        <User width={40} height={40} name={scorer.name} color={scorer.team === 0 ? "#1976d2" : "#dc004e"} />
+                    <CustomizerUser 
+                      width={40} 
+                      height={40} 
+                      playerName={scorer.name} 
+                      playerColor={scorer.centerColor || scorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                      borderColor={scorer.borderColor} 
+                      iconType={scorer.iconType} 
+                      iconColor={scorer.iconColor} 
+                      icon={scorer.image}/>
                     </ListItemAvatar>
                     <ListItemText
                         primary={
@@ -616,11 +616,19 @@ export default function Summary({ gameState, players, onExit, onPlayAgain }) {
                     <ListItem
                     key={index}
                     sx={{
-                        borderBottom: index < players.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
+                        borderBottom: index < playersGoal.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
                     }}
                     >
                     <ListItemAvatar>
-                        <User width={40} height={40} name={scorer.name} color={scorer.team === 0 ? "#1976d2" : "#dc004e"} />
+                    <CustomizerUser 
+                      width={40} 
+                      height={40} 
+                      playerName={scorer.name} 
+                      playerColor={scorer.centerColor || scorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                      borderColor={scorer.borderColor} 
+                      iconType={scorer.iconType} 
+                      iconColor={scorer.iconColor} 
+                      icon={scorer.image}/>
                     </ListItemAvatar>
                     <ListItemText
                         primary={

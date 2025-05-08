@@ -1,5 +1,4 @@
-"use client"
-import { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Box, Typography, Paper, Tabs, Tab, Chip, Grid, Divider, IconButton, Tooltip } from "@mui/material"
 import { alpha } from "@mui/material/styles"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
@@ -11,23 +10,26 @@ import { useUser } from "../../context/user/userContext"
 import { useTeams } from "../../context/lobby/useTeams"
 import { User } from "../user/User"
 import { useCalculateInfo } from "../../context/game/useCalculateInfo"
+import { useGoal } from "../../context/game/useGoal"
 
-export default function TeamDetails({gameState, playersGoal}) {
+export const TeamDetails = React.memo(function TeamDetails({gameState}) {
     const {playerData} = useUser();
     const currentUser = playerData?.username || sessionStorage.getItem("username");
     const {teamAPlayers, teamBPlayers} = useTeams(gameState?.players, currentUser, gameState?.creatorName)
     const [selectedTeam, setSelectedTeam] = useState("blue")
     const [expanded, setExpanded] = useState(false)
     const [currentTeam, setCurrentTeam] = useState([]);
+    const {playersGoal, updatesGoal} = useGoal()
     const {playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
-    const handleTeamChange = (event, newValue) => {
+    const handleTeamChange = (e,newValue) => {
         setSelectedTeam(newValue)
     }
     const toggleExpand = () => {
         setExpanded(!expanded)
     }
-    const teamColor = selectedTeam === "blue" ? "#1976d2" : "#dc004e"
-    const teamName = selectedTeam === "blue" ? "Team A" : "Team B"
+    const teamColor = useMemo(() => selectedTeam === "blue" ? "#1976d2" : "#dc004e", [selectedTeam]);
+    const teamName = useMemo(() => selectedTeam === "blue" ? "Team A" : "Team B", [selectedTeam]);
+
     const calculateTeam = useCallback(() => {
         const current = selectedTeam === "blue" ? teamAPlayers : teamBPlayers
         const updatedTeam = current.map((player) => {
@@ -45,8 +47,9 @@ export default function TeamDetails({gameState, playersGoal}) {
     },[calculateAssistNumber, calculateGoalNumber, gameState, playersGoal, selectedTeam, teamAPlayers, teamBPlayers]);
 
     useEffect(() => {
+      updatesGoal(gameState)
         calculateTeam();
-    },[selectedTeam, gameState?.events?.length, playersGoal, calculateTeam])
+    },[calculateTeam, gameState?.events])
 
   return (
     <Paper
@@ -226,4 +229,4 @@ export default function TeamDetails({gameState, playersGoal}) {
       )}
     </Paper>
   )
-}
+})

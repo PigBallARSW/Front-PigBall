@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER_URL_LOCAL || "https://piguser.duckdns.org:8082";
 
+
 export async function createUser(id, name, token) {
     try {
         const creatorName = name || "default";
@@ -71,6 +72,21 @@ export async function updateUserCharacter(id,username,image, centerColor, border
             iconType: iconType
         };
         const response = await axios.put(endpoint+id, requestBody, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+            });
+        return response;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        throw error;
+    }
+}
+
+export async function getUsersCharacters(users, token) {
+    try {
+        const endpoint = `${API}/user/summary`;
+        const response = await axios.post(endpoint, users, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

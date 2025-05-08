@@ -3,7 +3,7 @@ body {
   background: repeating-linear-gradient(
         -45deg,
         transparent 0%, transparent 5%, #c2ebbd 5%, #c2ebbd 10%  
-    ), url('../../public/images/cesped2.png');
+    ), url('../assets/images/cesped2.png');
     background-blend-mode: multiply; 
   margin: 0;
   padding: 0;
@@ -17,7 +17,10 @@ body {
 .containerField {
   width: 100vw;
   height: 100vh;
-  background-color: #2d6a31; 
+  background-color: transparent !important; 
+  overflow: 'hidden';
+  margin: 0;
+  padding: 0;
 }
 .title{
   font-family: "Alfa Slab One", serif;

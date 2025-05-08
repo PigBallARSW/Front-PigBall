@@ -11,8 +11,7 @@ export const UserProvider = ({ children }) => {
         const { getAUser, createNewUser } = useUserLogin();
         const prevAuthState = useRef(isAuthenticated);
         const setPlayer = (res) => {
-            console.log(res)
-            setPlayerData(res);
+            setPlayerData({...res,authenticated: true});
         }
         useEffect(() => {
             const fetchOrCreateUser = async (id, name) => {
@@ -22,7 +21,6 @@ export const UserProvider = ({ children }) => {
                 } 
         };
     
-            // Si cambió el estado de login, limpia el estado anterior
             if (prevAuthState.current !== isAuthenticated) {
                 setPlayerData(null);
                 prevAuthState.current = isAuthenticated;
@@ -49,7 +47,8 @@ export const UserProvider = ({ children }) => {
                     borderColor: "#ffffff",
                     centerColor: "#ffc107",
                     iconType: "none",
-                    iconColor: "#ffffff"
+                    iconColor: "#ffffff",
+                    authenticated: false
                 });
             }
         }, [isAuthenticated, accounts, createNewUser, getAUser]);

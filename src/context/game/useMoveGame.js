@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-export function useMoveGame(movePlayer, movementState) {
+export function useMoveGame(movePlayer) {
+  const movementState = useRef({ up: false, down: false, left: false, right: false, isKicking: false });
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key) || e.code === "Space") {
@@ -30,5 +31,5 @@ export function useMoveGame(movePlayer, movementState) {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [movePlayer, movementState]);
+  }, [movePlayer]);
 }

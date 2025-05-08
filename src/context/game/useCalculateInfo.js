@@ -26,13 +26,13 @@ export function useCalculateInfo () {
         setPlayersGoals(goalsNumber);
       },[]);
     
-      const calculateAssistNumber = useCallback((gameState) => {
+      const calculateAssistNumber = useCallback((gameState, players) => {
         const assistEvents = gameState.events?.filter((e) => e.second === "GOAL_ASSIST") || [];
         const assistsByTeam = { blue: 0, red: 0 };
         const assistList = [];
       
         assistEvents.forEach((event) => {
-          const player = gameState.players?.find((p) => p.id === event.first);
+          const player = players.find((p) => p.id === event.first);
           if (player) {
             if (player.team === 0) assistsByTeam.blue++;
             else if (player.team === 1) assistsByTeam.red++;
@@ -40,7 +40,7 @@ export function useCalculateInfo () {
             if (existing) {
                 existing.assist++;
             } else {
-                assistList.push({ id: player.id, name: player.name, team: player.team, assist: 1 });
+                assistList.push({ ...player, assist: 1 });
             }
           }
         });

@@ -1,8 +1,6 @@
 import React from 'react';
 import {Court} from '../../components/game/Court';
-import { alpha } from "@mui/material/styles"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline"
 import MicrosoftLoginButton from '../../components/login/MicrosoftLoginButton';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '../../authConfig';
@@ -11,7 +9,6 @@ import {
   Typography,
   Button,
   Paper,
-  Divider,
   Container
 } from "@mui/material"
 import { useNavigate } from 'react-router-dom';
@@ -28,9 +25,6 @@ export const Login = () => {
       console.error("Error durante login con Microsoft:", e);
     }
   };
-  const handleGuestLogin =  () => {
-    navigate("/homepage");
-  }
   return (
     <>
     <Court />
@@ -62,7 +56,7 @@ export const Login = () => {
               Get ready for action on the field!
             </Typography>
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 4 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems:"center", mt: 4 }}>
             <Button
               variant="contained"
               size="large"
@@ -77,25 +71,6 @@ export const Login = () => {
               }}
             >
               Sign in with Microsoft
-            </Button>
-            <Divider sx={{ my: 2, color: "rgba(255,255,255,0.5)" }}>or</Divider>
-            <Button
-              variant="outlined"
-              size="large"
-              startIcon={<PersonOutlineIcon />}
-              onClick={handleGuestLogin}
-              sx={{
-                py: 1.5,
-                color: "white",
-                borderColor: "rgba(255,255,255,0.3)",
-                "&:hover": {
-                  borderColor: "white",
-                  bgcolor: alpha("#ffffff", 0.1),
-                },
-                borderRadius: 2,
-              }}
-            >
-              Enter as a guest
             </Button>
           </Box>
           <Box sx={{ mt: 4, textAlign: "center" }}>

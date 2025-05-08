@@ -15,7 +15,7 @@ export const msalConfig = {
     auth: {
         clientId: "0ec0b8e9-6ffe-4f29-b165-db122f202eaf",
         authority: "https://login.microsoftonline.com/common",
-        redirectUri: "https://nice-forest-015f0871e.6.azurestaticapps.net"
+        redirectUri: "https://front-pig-ball.vercel.app/", // You must register this URI on Azure portal
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored

@@ -80,6 +80,7 @@ export const RoomList = ({ gameRooms }) => {
     }}>
       {gameRooms.length > 0 ? (
         gameRooms.map((room) => (
+          room.status !== "ABANDONED" && room.status !== "FINISHED" &&
           <React.Fragment key={room.id}>
             <ListItem
               onClick = {isMobile ? () => joinRoom(room.id) : undefined}

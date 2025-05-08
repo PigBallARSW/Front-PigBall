@@ -1,47 +1,24 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import {  Box, useTheme, useMediaQuery} from "@mui/material"
-import Scoreboard from "./Scoreboard"
-import { SoccerField } from "./SoccerField"
+import React, { useState, useEffect, useRef } from "react"
+import {  Box, useMediaQuery, useTheme } from "@mui/material"
+import {Scoreboard} from "./Scoreboard"
 import {useLobbyService } from "../../Modules/useLobbyService";
-import MobileControls from "./MobileControls"
-import { useMoveGame } from "../../context/game/useMoveGame"
-import GoalAnimation from "./GoalAnimation"
+import {GoalAnimation} from "./GoalAnimation"
 import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
-import TeamDetails from "./TeamDetails"
+import {TeamDetails} from "./TeamDetails"
+import { Field } from "./draw/Field"
+//import FPSMeter from "../fps/FPSMeter";
+import FPSMeter from "../fps/FPSCounter";
 
-export default function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom }) {
+export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
   const [showGameOver, setShowGameOver] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const movementState = useRef({ up: false, down: false, left: false, right: false, isKicking: false });
-  useMoveGame(movePlayer, movementState);
-  const { goalAnimation, addGoal, closeGoalAnimation, playersGoal } = useGoal();
-  const onMoveStart = (direction) => {
-    const key = direction.replace("Arrow", "").toLowerCase();
-    movementState.current[key] = true;
-  };
-  const onMoveEnd = (direction) => {
-    const key = direction.replace("Arrow", "").toLowerCase();
-    movementState.current[key] = false;
-  };
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const fieldWrapperRef = useRef();
 
-  const onActionStart = () => {
-    movementState.current.isKicking = true;
-  };
-
-  const onActionEnd = () => {
-    movementState.current.isKicking = false;
-  };
-  useEffect(() => {
-    if (gameState?.events?.length) {
-      addGoal(gameState);
-    }
-  }, [gameState, addGoal,gameState?.events]);
 
   useEffect(() => {
     if (!gameState?.creationTime) return
@@ -76,16 +53,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
     alert("Denuevoo");
   }
   return (
-    <Box
-      sx={{
-        mx: "auto",
-        position: "relative",
-      }}
-      className="containerField"
-    >
-      {goalAnimation.show && (
-        <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
-      )}
+    <>
         <Box 
         sx={{ 
           display: "flex", 
@@ -97,10 +65,7 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
           overflow: "hidden"
         }}
       >
-        <Box sx={{width: "18%"}}>
-          <TeamDetails gameState={gameState} playersGoal={playersGoal} />
-        </Box>
-        {/* Centro */}
+        {!isMobile &&
         <Box 
           sx={{ 
             position: "absolute", 
@@ -114,42 +79,34 @@ export default function GameContainer({ id, players, ball, movePlayer, gameState
             redScore={gameState?.teams.second || 0}
             gameTime={formatGameTime()}
           />
-        </Box>
-        
-        {/*<Box sx={{width: "15%"}}>
-          <Spectators />
-        </Box>*/}
+        </Box>}
+        <FPSMeter fps={fps} fpsHistory={fpsHistory} />
     </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-        }}
-      >
-        <SoccerField
-          players={players}
-          ball={ball}
-          movePlayer={movePlayer}
-          borderX={gameState.borderX}
-          borderY={gameState.borderY}
-          movementState={movementState}
-        />
-      </Box>
+    <Box
+    ref={fieldWrapperRef}
+    sx={{
+      width: '100vw',
+      height: '100vh',
+      overflow: 'hidden',
+      margin: 0,
+      padding: 0,
+    }}
+  >
+    <Field
+      wrapperRef={fieldWrapperRef}
+      players={players}
+      ball={ball}
+      movePlayer={movePlayer}
+      borderX={gameState.borderX}
+      borderY={gameState.borderY}
+    />
+  </Box>
+
     {showGameOver && (
-      <Summary gameState={gameState} players={playersGoal} onExit={exitGame} onPlayAgain={playAgain} />
+      <Summary gameState={gameState} onExit={exitGame} onPlayAgain={playAgain} />
     )}
-    {isMobile && <MobileControls onMoveStart={onMoveStart}
-        onMoveEnd={onMoveEnd}
-        onActionStart={onActionStart}
-        onActionEnd={onActionEnd} />}
-    </Box>
+    </>
 
   )
-}
+})

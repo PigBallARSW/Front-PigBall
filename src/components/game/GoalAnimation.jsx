@@ -3,7 +3,7 @@ import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import Confetti from "react-confetti";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const waveVariants = {
   animate: {
@@ -25,7 +25,7 @@ const letterVariants = {
   },
 };
 
-export default function GoalAnimation({ player, team, onClose, goalState }) {
+export const GoalAnimation = React.memo(function GoalAnimation({ player, team, onClose, goalState }) {
   const [showConfetti, setShowConfetti] = useState(true);
 
   const text = goalState === "GOAL_SCORED" ? "¡GOAL!": "SELF GOAL";
@@ -177,4 +177,4 @@ export default function GoalAnimation({ player, team, onClose, goalState }) {
       </Box>
     </AnimatePresence>
   );
-}
+})
