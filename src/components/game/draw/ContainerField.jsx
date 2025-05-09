@@ -1,15 +1,11 @@
-import { Container, Sprite } from "@pixi/react";
-import { Texture } from "@pixi/core"
-import backgroundAsset from '../../../assets/images/cesped2.png'
-import React, { useMemo } from "react";
+import { Container } from "@pixi/react";
+import React from "react";
 import { FieldDraw } from "./FieldDraw";
 import { MoveContainer } from "./MoveContainer";
 import { Player } from "./Player";
 import { Ball } from "./Ball";
 import { Camera } from "./Camera";
-import { Background, BackgroundSprite } from "./Background";
 import TileSpriteComponent from "./TileImage";
-import { useUser } from "../../../context/user/userContext";
 
 export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY, movePlayer, players, ball, children}) {
     const MARGIN = 0;
