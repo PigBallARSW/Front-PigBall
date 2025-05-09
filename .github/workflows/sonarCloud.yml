@@ -1,17 +1,17 @@
- name: SonarCloud Analysis for React
+name: SonarCloud Analysis for React
+
+on:
+  pull_request:
+    branches:
+      - main
   
-  on:
-    pull_request:
-      branches:
-        - main
-  
-  jobs:
-    sonarcloud:
-      uses: PigBallARSW/React-pipeline/.github/workflows/sonarcloud-analysis.yml@V0.1.0
-      with:
-        node-version: '18'
-        branch-name: 'main'
-      secrets:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+jobs:
+  sonarcloud:
+    uses: PigBallARSW/React-pipeline/.github/workflows/sonarcloud-analysis.yml@V0.1.0
+    with:
+      node-version: '18'
+      branch-name: 'main'
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
