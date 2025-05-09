@@ -29,7 +29,6 @@ import { useAlert } from "../../context/alert/AlertContext";
 
 export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, players, leaveRoom, roomData }) {
   const {playerData} = useUser();
-  const{showAlert} = useAlert();
   const currentUser = playerData?.username || sessionStorage.getItem("username");
   const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams();
   const [host, setHost] = useState(false);
@@ -42,13 +41,6 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, player
           setHost(isHost);
   }, [players, currentUser]);
 
-  const startGame = () => {
-    if (players.length > 1) {
-      onStartGame();
-    } else {
-      showAlert("There must be at least two members","warning");
-    }
-  }
   const handleCopyInviteCode = () => {
     navigator.clipboard.writeText(roomData.id);
   }
@@ -200,7 +192,7 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, player
               }}
             />
           </Box>
-          <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={startGame} host={roomData.creatorName} isHost={host} />
+          <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={onStartGame} host={roomData.creatorName} isHost={host} />
         </Paper>
       </Box>
       <Dialog

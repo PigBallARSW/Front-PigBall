@@ -48,21 +48,26 @@ const loadingMessages = [
   "Adjusting the heels of the boots...",
 ]
 
-export default function Loading() {
+export default function LoadingGame({ }) {
   const [progress, setProgress] = useState(0)
   const [messageIndex, setMessageIndex] = useState(0)
 
   useEffect(() => {
+    const duration = 5000; 
+    const interval = 50; 
+    const increment = 100 / (duration / interval); 
+  
     const messageTimer = setInterval(() => {
       setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
     }, 2000);
+  
     const progressTimer = setInterval(() => {
-      setProgress((prevProgress) => {
-        const next = prevProgress + Math.random() * 5;
-        return next < 95 ? next : 95; 
+      setProgress((prev) => {
+        const next = prev + increment;
+        return next >= 100 ? 100 : next;
       });
-    }, 500);
-
+    }, interval);
+  
     return () => {
       clearInterval(messageTimer);
       clearInterval(progressTimer);
