@@ -1,6 +1,5 @@
-import { Container, Sprite } from "@pixi/react";
+import { Container} from "@pixi/react";
 import { useMoveGame } from "../../../context/game/useMoveGame";
-import { Camera } from "./Camera";
 import React from "react";
 
 

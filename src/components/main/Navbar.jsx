@@ -12,6 +12,7 @@ import {
   SportsSoccer,
   Home,
   Logout,
+  PersonAdd,
 } from "@mui/icons-material"
 import { useMsal } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +35,9 @@ export const Navbar = () => {
     };
     const handleGoHome = () => {
       navigation("/homepage");
+    }
+    const handleAddFriends = () => {
+      navigation("/homepage/addfriends");
     }
     return (
       <AppBar
@@ -63,6 +67,11 @@ export const Navbar = () => {
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: "flex" }}>
+            <Tooltip title="Add Friends">
+              <IconButton size="small" onClick={handleAddFriends} sx={{ color: "white", ml: 1 }}>
+                <PersonAdd fontSize="small" />
+              </IconButton>
+            </Tooltip>
           <Tooltip title="Go Home">
             <IconButton size="small" onClick={handleGoHome} sx={{ color: "white" }}>
               <Home fontSize="small" />
