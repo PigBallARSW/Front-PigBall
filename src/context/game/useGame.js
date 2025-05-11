@@ -6,7 +6,7 @@ import { useUser } from "../user/userContext";
 import _ from "lodash";
 import { useFpsTracker } from './useFpsTracker';
 
-export function useGame(id, addGoal) {
+export function useGame(id, addGoal, setLoading) {
   const { showAlert } = useAlert();
   const { playerData } = useUser();
   const [players, setPlayers] = useState([]);
@@ -52,6 +52,7 @@ export function useGame(id, addGoal) {
         });
 
         client.subscribe(`/topic/started/${id}`, (message) => {
+          setLoading(false)
           setGameState(JSON.parse(message.body));
           setGameStarted(true);
         });
@@ -91,12 +92,13 @@ export function useGame(id, addGoal) {
 
 
   const handleStartGame = useCallback(() => {
+    setLoading(true)
     if (stompClient.current?.connected) {
       stompClient.current.publish({ destination: `/app/start/${id}` });
     } else {
       showAlert("Not connected to broker, game could not be started.", "error");
     }
-  }, [id, showAlert]);
+  }, [id, showAlert, setLoading]);
 
   const handleLeaveGame = useCallback(() => {
     if (stompClient.current?.connected) {
