@@ -1,5 +1,14 @@
 import { useAlert } from "../context/alert/AlertContext";
-import { createUser, getUser, getUsersCharacters, sendStats, updateUserCharacter } from "../APIServices/userAPI";
+import { 
+    createUser, 
+    getUser, 
+    getUsersCharacters, 
+    sendStats, 
+    updateUserCharacter,
+    getPotentialFriends,
+    getFriends,
+    addFriend,
+    removeFriend } from "../APIServices/userAPI";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth/AuthContext";
 
@@ -64,6 +73,62 @@ export function useUserLogin() {
         }
         
     },[getToken,showAlert]);
+
+    const getFriendSuggestions = useCallback(async (userId, params = {}) => {
+    try {
+        const token = await getToken();
+        console.log(params);
+        const response = await getPotentialFriends(userId, token, params);
+        console.log(response.data.users);
+        return response.data.users;
+    } catch (error) {
+        showAlert("Could not fetch friend suggestions", "error");
+        return [];
+    }
+    }, [getToken, showAlert]);
+
+    const fetchFriends = useCallback(async (userId, callback) => {
+        try {
+            const token = await getToken();
+            const response = await getFriends(userId, token);
+            console.log(response)
+            callback(response.data.users);
+        } catch (error) {
+            showAlert("Could not fetch friends", "error");
+        }
+    }, [getToken, showAlert]);
+
+    const sendFriendRequest = useCallback(async (userId, friendId, callback) => {
+        try {
+            const token = await getToken();
+            const response = await addFriend(userId, friendId, token);
+            callback?.(response.data);
+            showAlert("Friend added successfully!", "success");
+        } catch (error) {
+            showAlert("Could not add friend", "error");
+        }
+    }, [getToken, showAlert]);
+
+    const deleteFriend = useCallback(async (userId, friendId, callback) => {
+        try {
+            const token = await getToken();
+            const response = await removeFriend(userId, friendId, token);
+            callback?.(response.data);
+            showAlert("Friend removed successfully!", "success");
+        } catch (error) {
+            showAlert("Could not remove friend", "error");
+        }
+    }, [getToken, showAlert]);
     
-    return {createNewUser, getAUser, sendStatsUser,updateCharacter, usersCharacters};
+    return {
+        createNewUser,
+        getAUser,
+        sendStatsUser,
+        updateCharacter,
+        usersCharacters,
+        getFriendSuggestions,
+        fetchFriends,
+        sendFriendRequest,
+        deleteFriend
+    };
 }

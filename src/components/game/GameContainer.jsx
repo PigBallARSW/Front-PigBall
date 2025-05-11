@@ -2,10 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import {  Box, useMediaQuery, useTheme } from "@mui/material"
 import {Scoreboard} from "./Scoreboard"
 import {useLobbyService } from "../../Modules/useLobbyService";
-import {GoalAnimation} from "./GoalAnimation"
-import { useGoal } from "../../context/game/useGoal"
 import Summary from "./Summary"
-import {TeamDetails} from "./TeamDetails"
 import { Field } from "./draw/Field"
 //import FPSMeter from "../fps/FPSMeter";
 import FPSMeter from "../fps/FPSCounter";

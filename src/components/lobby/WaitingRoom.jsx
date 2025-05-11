@@ -39,7 +39,7 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, player
           fetchCustomizations(players);
           const isHost = currentUser === roomData.creatorName;
           setHost(isHost);
-  }, [players, currentUser]);
+  }, [players, currentUser, roomData.creatorName, fetchCustomizations]);
 
   const handleCopyInviteCode = () => {
     navigator.clipboard.writeText(roomData.id);

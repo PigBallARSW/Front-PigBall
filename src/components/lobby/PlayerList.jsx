@@ -15,8 +15,6 @@ import {
   PlayArrow,
 } from "@mui/icons-material"
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
-import { User } from "../user/User"
-import { useUser } from "../../context/user/userContext";
 import { CustomizerUser } from "../user/CustomizerUser";
   
 export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, host})  => {  

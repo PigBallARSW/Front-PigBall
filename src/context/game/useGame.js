@@ -88,7 +88,7 @@ export function useGame(id, addGoal, setLoading) {
 
     client.activate();
     stompClient.current = client;
-  }, [id, playerName, playerId, signalFramesReached, addGoal, setLoading]);
+  }, [id, playerName, playerId, signalFramesReached, addGoal]);
 
 
   const handleStartGame = useCallback(() => {

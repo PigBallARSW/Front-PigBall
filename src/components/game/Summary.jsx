@@ -22,7 +22,6 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import BarChartIcon from "@mui/icons-material/BarChart"
 import ReplayIcon from "@mui/icons-material/Replay"
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows"
-import { User } from "../user/User"
 import { motion } from "framer-motion";
 import { useCalculateInfo } from "../../context/game/useCalculateInfo"
 import { useGoal } from "../../context/game/useGoal"
@@ -171,7 +170,7 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
       calculateAssistNumber(gameState, players);
     }
     fetchCustomizations()
-  }, [])
+  }, [calculateAssistNumber, calculateGoalNumber, gameState, playerData.authenticated, playersGoal, updatesGoal, usersCharacters])
 
   return (
     <Box
