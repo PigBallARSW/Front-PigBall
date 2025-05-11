@@ -2,7 +2,79 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_USER_URL || process.env.REACT_APP_API_USER_URL_LOCAL || "https://piguser.duckdns.org:8082";
 
+export async function getPotentialFriends(currentUserId, token, {
+    search = "",
+    pageNo = 0,
+    pageSize = 10,
+    sortBy = "username",
+    sortDir = "asc"
+} = {}) {
+    try {
+        const endpoint = `${API}/user/potential-friends/${currentUserId}`;
+        const params = new URLSearchParams({
+            search,
+            pageNo,
+            pageSize,
+            sortBy,
+            sortDir
+        }).toString();
 
+        const response = await axios.get(`${endpoint}?${params}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error getting potential friends:", error);
+        throw error;
+    }
+}
+
+export async function getFriends(userId, token) {
+    try {
+        const endpoint = `${API}/user/${userId}/friends`;
+        const response = await axios.get(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error getting friends:", error);
+        throw error;
+    }
+}
+
+export async function addFriend(userId, friendId, token) {
+    try {
+        const endpoint = `${API}/user/${userId}/friends/${friendId}`;
+        const response = await axios.post(endpoint, null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error adding friend:", error);
+        throw error;
+    }
+}
+
+export async function removeFriend(userId, friendId, token) {
+    try {
+        const endpoint = `${API}/user/${userId}/friends/${friendId}`;
+        const response = await axios.delete(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error removing friend:", error);
+        throw error;
+    }
+}
 export async function createUser(id, name, token) {
     try {
         const creatorName = name || "default";
