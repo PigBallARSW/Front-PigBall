@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
-import {  Box, useMediaQuery, useTheme } from "@mui/material"
+import {  Box, Fab, useMediaQuery, useTheme } from "@mui/material"
 import {Scoreboard} from "./Scoreboard"
 import {useLobbyService } from "../../Modules/useLobbyService";
 import Summary from "./Summary"
@@ -9,6 +9,8 @@ import FPSMeter from "../fps/FPSCounter";
 import { useMoveGame } from "../../context/game/useMoveGame";
 import { useIsTouchDevice } from "../../context/game/useIsTouchDevice";
 import MobileControls from "./MobileControls";
+import { ExitToApp } from "@mui/icons-material";
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
 export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
   const isTouch = useIsTouchDevice();
@@ -30,14 +32,14 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       const now = Date.now()
       const diff = Math.floor((now - startTime.getTime()) / 1000) 
       setElapsedTime(diff);
-      if (diff >= 300) { 
-        /*setElapsedTime(300); 
+      /*if (diff >= 300) { 
+        setElapsedTime(300); 
         clearInterval(interval); 
         setShowGameOver(true);
-        setHasFinished(true);*/
+        setHasFinished(true);
       } else {
         setElapsedTime(diff);
-      }
+      }*/
     }, 1000);
     return () => clearInterval(interval)
   }, [gameState?.creationTime, gameState?.startTime,id,hasFinished,finishRoom]);
@@ -51,28 +53,13 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
     finishRoom(id);
     leaveRoom();
   }
-  const playAgain = () => {
-    alert("Denuevoo");
-  }
   return (
     <>
-        <Box 
-        sx={{ 
-          display: "flex", 
-          alignItems: "flex-start", 
-          width: "100%", 
-          justifyContent: "space-between",
-          position: "absolute",
-          zIndex: 10,
-          overflow: "hidden"
-        }}
-      >
-        <Box 
+      <Box 
           sx={{ 
             position: "absolute", 
             left: "50%", 
             transform: "translateX(-50%)",
-            zIndex: 1
           }}
         >
           <Scoreboard
@@ -80,35 +67,63 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
             redScore={gameState?.teams.second || 0}
             gameTime={formatGameTime()}
           />
-        </Box>
-        <FPSMeter fps={fps} fpsHistory={fpsHistory} />
+      </Box>
+
+      <Box 
+          sx={{ 
+          position: "absolute", 
+          top: 0,
+          left: 0,
+        }}
+        >
+          <FPSMeter fps={fps} fpsHistory={fpsHistory} showGraph={!isMobile}/>
+      </Box>
+      <Box 
+        sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 20,
+              display: "flex",
+              gap: 1,
+            }}
+          >
+            <Fab
+            color="error"
+          >
+            <ExitToApp />
+          </Fab>
+          <Fab
+            color="success"
+          >
+            <VolumeOffIcon />
+          </Fab>
     </Box>
 
     <Box
-    ref={fieldWrapperRef}
-    sx={{
-      width: '100vw',
-      height: '100vh',
-      overflow: 'hidden',
-      margin: 0,
-      padding: 0,
-    }}
-  >
-    <Field
-      wrapperRef={fieldWrapperRef}
-      players={players}
-      ball={ball}
-      movePlayer={movePlayer}
-      borderX={gameState.borderX}
-      borderY={gameState.borderY}
-    />
-  </Box>
+      ref={fieldWrapperRef}
+      sx={{
+        width: '100vw',
+        height: '100vh',
+        overflow: 'hidden',
+        margin: 0,
+        padding: 0,
+      }}
+    >
+      <Field
+        wrapperRef={fieldWrapperRef}
+        players={players}
+        ball={ball}
+        movePlayer={movePlayer}
+        borderX={gameState.borderX}
+        borderY={gameState.borderY}
+      />
+    </Box>
 
     {showGameOver && (
-      <Summary gameState={gameState} onExit={exitGame} onPlayAgain={playAgain} />
+      <Summary gameState={gameState} onExit={exitGame} />
     )}
     {isTouch && <MobileControls onMoveStart={onMoveStart} onMoveEnd={onMoveEnd} onActionStart={onActionStart} onActionEnd={onActionEnd} />}
     </>
-
   )
 })

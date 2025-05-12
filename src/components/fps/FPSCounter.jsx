@@ -4,8 +4,7 @@ import { Paper, Typography, IconButton, Box, Collapse } from '@mui/material';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { alpha } from '@mui/material/styles';
 
-export default function FPSCounter({ fps, fpsHistory }) {
-  const [showGraph, setShowGraph] = useState(true);
+export default function FPSCounter({ fps, fpsHistory, showGraph }) {
 
   return (
     <Paper
@@ -14,11 +13,11 @@ export default function FPSCounter({ fps, fpsHistory }) {
         bgcolor: alpha("#000000", 0.65),
         border: "2px solid rgba(255, 255, 255, 0.1)",
         backgroundColor: 'rgba(33, 33, 33, 0.9)',
-        minWidth: showGraph ? 300 : 100,
+        minWidth: showGraph ? 300 : 50,
         transition: 'min-width 0.3s ease'
       }}
     >
-      <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Box display="flex" alignItems="center" justifyContent="space-between" >
         <Box>
           <Typography variant="h6" sx={{ fontFamily: 'monospace', color: 'white' }}>
             {fps} FPS
@@ -27,13 +26,7 @@ export default function FPSCounter({ fps, fpsHistory }) {
             Target: 60 FPS
           </Typography>
         </Box>
-        <IconButton 
-          size="small" 
-          onClick={() => setShowGraph(!showGraph)}
-          sx={{ color: showGraph ? '#2196f3' : 'white' }}
-        >
-          <BarChartIcon />
-        </IconButton>
+          <BarChartIcon  sx={{ color: "#2196f3" }}/>
       </Box>
 
       <Collapse in={showGraph}>

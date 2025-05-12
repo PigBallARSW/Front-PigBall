@@ -27,7 +27,6 @@ import { useTeams } from "../../context/lobby/useTeams";
 import { useUser } from "../../context/user/userContext";
 
 export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveRoom, roomData }) {
-  console.log("Waiting Room")
   const {playerData} = useUser();
   const currentUser = playerData?.username || sessionStorage.getItem("username");
   const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams();
@@ -36,7 +35,6 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveR
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
 
   useEffect(() => {
-     console.log("usefect")
       fetchCustomizations(roomData.players);
       const isHost = currentUser === roomData.creatorName;
       setHost(isHost);

@@ -153,8 +153,8 @@ export default function MobileControls({ onMoveStart, onMoveEnd, onActionStart, 
             width: 70,
             height: 70,
             bgcolor: alpha("#ffc107", 0.8),
-            "&:hover": { bgcolor: alpha("#1976d2", 0.9) },
-            boxShadow: "0 0 15px rgba(25, 118, 210, 0.5)",
+            "&:hover": { bgcolor: alpha("#f9d466", 0.9) },
+            boxShadow: "0 0 15px rgba(192, 210, 25, 0.5)",
           }}
         >
           <SportsSoccerIcon sx={{ fontSize: 40 }} />
