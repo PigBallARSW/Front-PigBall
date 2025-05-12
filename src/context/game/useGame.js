@@ -40,6 +40,7 @@ export function useGame(id, addGoal, setLoading) {
         isConnected.current = true;
         client.subscribe(`/topic/players/${id}`, (message) => {
           const body = JSON.parse(message.body);
+          console.log(body)
           setGameState(body);
           if (body.startTime !== null) setGameStarted(true);
         });

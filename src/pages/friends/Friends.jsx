@@ -17,18 +17,25 @@ import {
   IconButton,
   Avatar,
   InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material"
 import {
   PersonAdd as PersonAddIcon,
   PersonRemove as PersonRemoveIcon,
   Search as SearchIcon,
-  Person as PersonIcon
+  Person as PersonIcon,
+  PersonAdd,
+  Search
 } from "@mui/icons-material"
 import { motion, AnimatePresence } from "framer-motion"
 import { useUserLogin } from "../../Modules/useUserLogin"
 import { useUser } from "../../context/user/userContext"
+import StarIcon from '@mui/icons-material/Star';
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 
-export default function Friends() {
+export default function Friends({closeDialog, isOpen}) {
   const [tab, setTab] = useState(0)
   const [query, setQuery] = useState("")
   const [suggestions, setSuggestions] = useState([])
@@ -72,65 +79,35 @@ export default function Friends() {
   }
 
   return (
-    <Container
-      disableGutters
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        mt: 4,
-        px: 2,
+    <Dialog
+      open={isOpen}
+      onClose={closeDialog}
+      fullWidth
+      slotProps={{
+      paper: {
+        sx: {
+            bgcolor: "#222",
+            color: "white",
+            borderRadius: 2,
+            border: "2px solid #4CAF50",
+            height: "100%"
+        },
+      },
       }}
     >
-
-      <Typography
-              variant="h2"
-              component="h1"
-              sx={{
-                fontWeight: "bold",
-                color: "secondary.main",
-                textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
-                mb: 1,
-              }}
-            >
-              FRIENDS
-            </Typography>
-
-
-      <Card
-        elevation={4}
-        sx={{
-          width: "80%",
-          maxWidth: 800,
-          height: "70vh",
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: 2,
-        }}
-      >
-
-        <Tabs
+      <DialogTitle sx={{ bgcolor: "rgba(27, 94, 32, 0.9)", display: "flex", alignItems: "center" }}>
+         <Tabs
           value={tab}
           onChange={(_, v) => setTab(v)}
           indicatorColor="secondary"
           textColor="inherit"
-          sx={{ bgcolor: "primary.dark", color: "white" }}
+          sx={{ color: "white" }}
         >
           <Tab label="Add Friend" />
           <Tab label="My Friends" />
         </Tabs>
-
-        <CardContent
-          sx={{
-            flex: 1,
-            minHeight: 0,
-            display: "flex",
-            flexDirection: "column",
-            p: 2,
-            bgcolor: "background.paper",
-          }}
-        >
-
+      </DialogTitle>
+      <DialogContent sx={{ mt: 2 }}>
           <Box
             sx={{
               display: tab === 0 ? "flex" : "none",
@@ -149,11 +126,34 @@ export default function Friends() {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon color="disabled" />
+                    <Search sx={{ color: "white" }} />
                   </InputAdornment>
                 ),
+                sx: {
+                  color: "white",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.8)",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                  "&::placeholder": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                  },
+                }
               }}
-              sx={{ mb: 2 }}
+              sx={{
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiInputBase-input::placeholder": {
+                color: "rgb(255, 255, 255)",
+                opacity: 1,
+              },
+            }}
             />
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Suggestions:
@@ -192,13 +192,24 @@ export default function Friends() {
                           </ListItemAvatar>
                           <ListItemText
                             primary={f.username}
-                            secondary={`Games: ${f.gamesPlayed ?? 0} • Win Rate: ${(f.winningPercentage ?? 0).toFixed(0)}%`}
-                            sx={{ ml: 2 }}
+                            secondary={
+                              <Box sx={{display: "flex", color:"white"}}>
+                                <EmojiEventsIcon sx={{color: "#FFD700"}} />
+                                <Typography>
+                                {f.gamesPlayed}
+                                </Typography>
+                                <StarIcon sx={{color: "#FFD700"}}/>
+                                <Typography>
+                                {f.gamesWon}
+                                </Typography>
+                              </Box>
+                            }
+                            sx={{ ml: 2, color:"white" }}
                           />
                           <ListItemSecondaryAction>
                             <IconButton
                               edge="end"
-                              color="secondary"
+                              color="primary"
                               onClick={() => handleAddFriend(f.id)}
                               sx={{ width: 48, height: 48 }}
                             >
@@ -256,7 +267,18 @@ export default function Friends() {
                       </ListItemAvatar>
                       <ListItemText
                         primary={f.username}
-                        secondary={`Games: ${f.gamesPlayed ?? 0} • Win Rate: ${(f.winningPercentage ?? 0).toFixed(0)}%`}
+                        secondary={
+                        <Box sx={{display: "flex", color:"white"}}>
+                        <EmojiEventsIcon sx={{color: "#FFD700"}} />
+                        <Typography>
+                        {f.gamesPlayed}
+                        </Typography>
+                        <StarIcon sx={{color: "#FFD700"}}/>
+                        <Typography>
+                        {f.gamesWon}
+                        </Typography>
+                      </Box>
+                              }
                         sx={{ ml: 2 }}
                       />
                       <ListItemSecondaryAction>
@@ -279,8 +301,7 @@ export default function Friends() {
               </List>
             </Box>
           </Box>
-        </CardContent>
-      </Card>
-    </Container>
+      </DialogContent>
+    </Dialog>
   )
 }
