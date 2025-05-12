@@ -34,9 +34,9 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
                 <MoveContainer 
                     movePlayer={movePlayer}
                 >
-                {players.map((player, index) => (
+                {players.map((player) => (
                     <>
-                    <Player key={index} player={player} />
+                    <Player key={player.id} player={player} />
                     <BallDirectionArrow player={player} ball={ball} />
                     </>
                 ))}

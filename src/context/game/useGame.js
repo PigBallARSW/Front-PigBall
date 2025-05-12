@@ -38,10 +38,8 @@ export function useGame(id, addGoal, setLoading) {
       brokerURL: brokerUrl,
       onConnect: () => {
         isConnected.current = true;
-
         client.subscribe(`/topic/players/${id}`, (message) => {
           const body = JSON.parse(message.body);
-          setPlayers(prev => _.isEqual(prev, body.players) ? prev : body.players);
           setGameState(body);
           if (body.startTime !== null) setGameStarted(true);
         });

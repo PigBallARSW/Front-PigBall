@@ -25,9 +25,9 @@ import {
 import { PlayerList } from "./PlayerList";
 import { useTeams } from "../../context/lobby/useTeams";
 import { useUser } from "../../context/user/userContext";
-import { useAlert } from "../../context/alert/AlertContext";
 
-export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, players, leaveRoom, roomData }) {
+export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveRoom, roomData }) {
+  console.log("Waiting Room")
   const {playerData} = useUser();
   const currentUser = playerData?.username || sessionStorage.getItem("username");
   const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams();
@@ -36,10 +36,11 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, player
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
 
   useEffect(() => {
-          fetchCustomizations(players);
-          const isHost = currentUser === roomData.creatorName;
-          setHost(isHost);
-  }, [players, currentUser, roomData.creatorName, fetchCustomizations]);
+     console.log("usefect")
+      fetchCustomizations(roomData.players);
+      const isHost = currentUser === roomData.creatorName;
+      setHost(isHost);
+  }, [currentUser, roomData.players, fetchCustomizations]);
 
   const handleCopyInviteCode = () => {
     navigator.clipboard.writeText(roomData.id);
@@ -178,7 +179,7 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, player
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: "bold", display: "flex", alignItems: "center" }}>
-              <People sx={{ mr: 1 }} /> Players ({players.length}/{roomData.maxPlayers})
+              <People sx={{ mr: 1 }} /> Players ({roomData.players.length}/{roomData.maxPlayers})
             </Typography>
 
             <Chip

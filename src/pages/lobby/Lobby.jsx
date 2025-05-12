@@ -26,6 +26,7 @@ import LoadResponse from "../../components/Load/LoadResponse";
 import { useNavigate } from "react-router-dom";
 
 export const Lobby = () => {
+  console.log("Renddderrrrr lobby")
   const navigate = useNavigate()
   const {rooms, isRefreshing, getRooms} = useRooms();
   const {filteredRooms, searchTerm, setSearchTerm} = useLobby(rooms);

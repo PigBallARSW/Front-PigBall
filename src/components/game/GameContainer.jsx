@@ -7,8 +7,11 @@ import { Field } from "./draw/Field"
 //import FPSMeter from "../fps/FPSMeter";
 import FPSMeter from "../fps/FPSCounter";
 import { useMoveGame } from "../../context/game/useMoveGame";
+import { useIsTouchDevice } from "../../context/game/useIsTouchDevice";
+import MobileControls from "./MobileControls";
 
 export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
+  const isTouch = useIsTouchDevice();
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
@@ -16,7 +19,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const fieldWrapperRef = useRef();
-  useMoveGame(movePlayer);
+  const {onMoveStart,onMoveEnd, onActionStart, onActionEnd} = useMoveGame(movePlayer);
 
 
   useEffect(() => {
@@ -28,10 +31,10 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       const diff = Math.floor((now - startTime.getTime()) / 1000) 
       setElapsedTime(diff);
       if (diff >= 300) { 
-        setElapsedTime(300); 
+        /*setElapsedTime(300); 
         clearInterval(interval); 
         setShowGameOver(true);
-        setHasFinished(true);
+        setHasFinished(true);*/
       } else {
         setElapsedTime(diff);
       }
@@ -64,7 +67,6 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
           overflow: "hidden"
         }}
       >
-        {!isMobile &&
         <Box 
           sx={{ 
             position: "absolute", 
@@ -78,7 +80,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
             redScore={gameState?.teams.second || 0}
             gameTime={formatGameTime()}
           />
-        </Box>}
+        </Box>
         <FPSMeter fps={fps} fpsHistory={fpsHistory} />
     </Box>
 
@@ -105,6 +107,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
     {showGameOver && (
       <Summary gameState={gameState} onExit={exitGame} onPlayAgain={playAgain} />
     )}
+    {isTouch && <MobileControls onMoveStart={onMoveStart} onMoveEnd={onMoveEnd} onActionStart={onActionStart} onActionEnd={onActionEnd} />}
     </>
 
   )
