@@ -6,6 +6,7 @@ import Summary from "./Summary"
 import { Field } from "./draw/Field"
 //import FPSMeter from "../fps/FPSMeter";
 import FPSMeter from "../fps/FPSCounter";
+import { useMoveGame } from "../../context/game/useMoveGame";
 
 export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
   const [elapsedTime, setElapsedTime] = useState(0)
@@ -15,6 +16,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const fieldWrapperRef = useRef();
+  useMoveGame(movePlayer);
 
 
   useEffect(() => {

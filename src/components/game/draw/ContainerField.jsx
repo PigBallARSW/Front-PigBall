@@ -6,6 +6,7 @@ import { Player } from "./Player";
 import { Ball } from "./Ball";
 import { Camera } from "./Camera";
 import TileSpriteComponent from "./TileImage";
+import { BallDirectionArrow } from "./BallDirectionArrow";
 
 export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY, movePlayer, players, ball, children}) {
     const MARGIN = 0;
@@ -34,7 +35,10 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
                     movePlayer={movePlayer}
                 >
                 {players.map((player, index) => (
+                    <>
                     <Player key={index} player={player} />
+                    <BallDirectionArrow player={player} ball={ball} />
+                    </>
                 ))}
                     <Ball fieldX={fieldX} fieldY={fieldY} ball={ball} />
                 </MoveContainer>

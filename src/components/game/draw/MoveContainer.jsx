@@ -4,8 +4,7 @@ import React from "react";
 
 
 
-export const MoveContainer = React.memo(({ movePlayer, children }) => {
-    useMoveGame(movePlayer);
+export const MoveContainer = React.memo(({ children }) => {
     return (
         <Container>
             {children}
