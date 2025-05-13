@@ -69,6 +69,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 20,
+        top: 8
       }}
     >
       <Scoreboard
@@ -77,24 +78,9 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
         gameTime={formatGameTime()}
       />
     </Box>
-
-    {isMobile ? (
-      <Box
-        sx={{
-          position: "absolute",
-          top: 100,
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          gap: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          zIndex: 20,
-        }}
-      >
-        <Box
+    <Box
           sx={{
+            position: "absolute",
             top: 8,
             right: 8,
             display: "flex",
@@ -102,48 +88,53 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
             zIndex: 20,
           }}
         >
-          <Fab color="error" onClick={OpenLeaveRoom}>
+          <Fab color="error" onClick={OpenLeaveRoom}
+          sx={{
+            width: {
+              xs: 40,   
+              sm: 48,   
+              md: 56,   
+            },
+            height: {
+              xs: 40,
+              sm: 48,
+              md: 56,
+            },
+            minHeight: "unset", 
+          }}>
             <ExitToApp />
           </Fab>
-          <Fab color="success">
+          <Fab color="success"
+          sx={{
+            width: {
+              xs: 40,   
+              sm: 48,   
+              md: 56,   
+            },
+            height: {
+              xs: 40,
+              sm: 48,
+              md: 56,
+            },
+            minHeight: "unset", 
+          }}>
             <VolumeOffIcon />
           </Fab>
         </Box>
-      </Box>
-    ) : (
-      <>
-        {/* 🖥️ FPS en esquina superior izquierda */}
+
+    {!isMobile && 
         <Box
           sx={{
             position: "absolute",
             left: 8,
             zIndex: 20,
-            bottom: 8,
+            bottom: isTouch ? "none" : 8,
+            top: isTouch ? 8 : "none"
           }}
         >
           <FPSMeter fps={fps} fpsHistory={fpsHistory} showGraph={!isMobile} />
         </Box>
-
-        {/* 🖥️ Botones en esquina superior derecha */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            display: "flex",
-            gap: 1,
-            zIndex: 20,
-          }}
-        >
-          <Fab color="error" onClick={OpenLeaveRoom}>
-            <ExitToApp />
-          </Fab>
-          <Fab color="success">
-            <VolumeOffIcon />
-          </Fab>
-        </Box>
-      </>
-    )}
+    }
  
     <Box
       ref={fieldWrapperRef}

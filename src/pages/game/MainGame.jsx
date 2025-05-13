@@ -42,9 +42,8 @@ export const MainGame = () => {
       {gameStarted ? (
         <>
         <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} playersGoal={playersGoal} fps={fps} fpsHistory={fpsHistory}/>
-        {goalAnimation.show && (
-          <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
-        )}
+        
+        <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
         </>
       ) : (
         <WaitingRoom  onStartGame={startGame} leaveRoom={handleLeaveGame} roomData={gameState}/>
