@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - dev
 jobs:
   sonarcloud:
     uses: PigBallARSW/React-pipeline/.github/workflows/sonarcloud-analysis.yml@V0.1.0

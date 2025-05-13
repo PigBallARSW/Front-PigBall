@@ -77,9 +77,7 @@ export function useUserLogin() {
     const getFriendSuggestions = useCallback(async (userId, params = {}) => {
     try {
         const token = await getToken();
-        console.log(params);
         const response = await getPotentialFriends(userId, token, params);
-        console.log(response.data.users);
         return response.data.users;
     } catch (error) {
         showAlert("Could not fetch friend suggestions", "error");
@@ -91,7 +89,6 @@ export function useUserLogin() {
         try {
             const token = await getToken();
             const response = await getFriends(userId, token);
-            console.log(response)
             callback(response.data.users);
         } catch (error) {
             showAlert("Could not fetch friends", "error");

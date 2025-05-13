@@ -1,6 +1,6 @@
 import { TilingSprite } from '@pixi/react';
 import { Texture } from "@pixi/core";
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import backgroundAsset from '../../../assets/images/tile2.png'; 
 
 const TileSpriteComponent = ({ width, height }) => {
@@ -18,4 +18,4 @@ const TileSpriteComponent = ({ width, height }) => {
   );
 };
 
-export default TileSpriteComponent;
+export default React.memo(TileSpriteComponent);

@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useState } from "react"
 import {
   Box,
   Typography,
@@ -17,8 +17,10 @@ import {
 import { useMsal } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
 import { useIsAuthenticated } from '@azure/msal-react';
+import Friends from "../../pages/friends/Friends";
 
 export const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false)
     const navigation = useNavigate();
     const { instance } = useMsal();
     const isAuthenticated = useIsAuthenticated();
@@ -39,7 +41,14 @@ export const Navbar = () => {
     const handleAddFriends = () => {
       navigation("/homepage/addfriends");
     }
+    const openFriends = () =>{
+      setIsOpen(true)
+    }
+    const closeFriends = () => {
+      setIsOpen(false)
+    }
     return (
+      <>
       <AppBar
       position="static"
       elevation={0}
@@ -68,7 +77,7 @@ export const Navbar = () => {
 
         <Box sx={{ display: "flex" }}>
             <Tooltip title="Add Friends">
-              <IconButton size="small" onClick={handleAddFriends} sx={{ color: "white", ml: 1 }}>
+              <IconButton size="small" onClick={openFriends} sx={{ color: "white", ml: 1 }}>
                 <PersonAdd fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -85,5 +94,7 @@ export const Navbar = () => {
         </Box>
       </Toolbar>
     </AppBar>
+    <Friends isOpen={isOpen} closeDialog={closeFriends} />
+    </>
     )
 }

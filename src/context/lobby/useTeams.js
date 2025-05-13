@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useUserLogin } from "../../Modules/useUserLogin";
 import { useUser } from "../user/userContext";
 
@@ -7,7 +7,7 @@ export function useTeams() {
     const [teamAPlayers, setTeamAPlayers] = useState([]);
     const [teamBPlayers, setTeamBPlayers] = useState([]);
     const {usersCharacters} = useUserLogin();
-    const fetchCustomizations = async (players) => {
+    const fetchCustomizations = useCallback(async (players) => {
         const teamA = []
         const teamB = []
         if (players && playerData?.authenticated) {
@@ -68,7 +68,7 @@ export function useTeams() {
         }
         setTeamAPlayers(teamA);
         setTeamBPlayers(teamB);
-    }
+    },[])
 
     return {teamAPlayers, teamBPlayers, fetchCustomizations}
 }
