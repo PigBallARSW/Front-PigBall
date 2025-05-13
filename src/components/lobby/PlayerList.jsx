@@ -16,6 +16,7 @@ import {
 } from "@mui/icons-material"
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import { CustomizerUser } from "../user/CustomizerUser";
+import { scrollbarStyles } from "../themes/ScrollTheme";
   
 export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, host})  => {  
   const theme = useTheme();
@@ -40,6 +41,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                   borderRight: { xs: "none", md: "1px solid rgba(255,255,255,0.1)" },
                   borderBottom: { xs: "1px solid rgba(255,255,255,0.1)", md: "none" },
                   overflow: "auto",
+                  ...scrollbarStyles
               }}
             >
               <Box sx={{ p: 2 }}>
@@ -135,6 +137,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                   display: "flex",
                   flexDirection: "column",
                   overflow: "auto",
+                  ...scrollbarStyles
                 }}
               >
                 <Box sx={{ p: 2 }}>

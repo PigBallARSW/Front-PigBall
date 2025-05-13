@@ -40,13 +40,14 @@ export function useGame(id, addGoal, setLoading) {
         isConnected.current = true;
         client.subscribe(`/topic/players/${id}`, (message) => {
           const body = JSON.parse(message.body);
+          console.log(body)
           setGameState(body);
           if (body.startTime !== null) setGameStarted(true);
         });
 
         client.publish({
           destination: `/app/join/${id}`,
-          body: JSON.stringify({ name: playerName, id: playerId }),
+          body: JSON.stringify({ name: playerName, id: playerId })
         });
 
         client.subscribe(`/topic/started/${id}`, (message) => {

@@ -28,30 +28,8 @@ import { useGoal } from "../../context/game/useGoal"
 import { useUserLogin } from "../../Modules/useUserLogin"
 import { CustomizerUser } from "../user/CustomizerUser"
 import { useUser } from "../../context/user/userContext"
+import { scrollbarStyles } from "../themes/ScrollTheme"
 
-const scrollbarStyles = {
-    // Estilos para webkit (Chrome, Safari, Edge)
-    "&::-webkit-scrollbar": {
-      width: "10px",
-      height: "10px",
-    },
-    "&::-webkit-scrollbar-track": {
-      background: "rgb(109, 110, 109)",
-      borderRadius: "8px",
-    },
-    "&::-webkit-scrollbar-thumb": {
-      background: "rgba(90, 90, 90, 0.8)",
-      borderRadius: "5px",
-      border: "2px solid rgba(30, 30, 30, 0.8)",
-      "&:hover": {
-        background: "rgba(120, 120, 120, 0.8)",
-      },
-    },
-    // Estilos para Firefox
-    scrollbarWidth: "thin",
-    scrollbarColor: "rgba(90, 90, 90, 0.8) rgba(30, 30, 30, 0.8)",
-  }
-// Definir animaciones
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -84,7 +62,7 @@ const rotate = keyframes`
   }
 `
 
-export default function Summary({ gameState, onExit, onPlayAgain }) {
+export default function Summary({ gameState, onExit }) {
   const {usersCharacters} = useUserLogin();
   const {playersGoal, updatesGoal} = useGoal()
   const [showContent, setShowContent] = useState(false)
@@ -114,7 +92,6 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
       const players = []
       if(playerData.authenticated){
         const users = gameState.players.map((p) => p.id)
-        console.log(users)
         let characters = await usersCharacters(users)
         if(characters){
             gameState.players.forEach((player) => {
@@ -170,7 +147,7 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
       calculateAssistNumber(gameState, players);
     }
     fetchCustomizations()
-  }, [calculateAssistNumber, calculateGoalNumber, gameState, playerData.authenticated, playersGoal, updatesGoal, usersCharacters])
+  }, [])
 
   return (
     <Box
@@ -661,39 +638,13 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
             </Box>
             </Grid>
             </Grid>
-
-          {/* Botones de acción */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: { xs: "column", sm: "row" },
-              mt: 4,
-              gap: 2,
-              animation: showContent ? `${fadeIn} 2.2s ease-out` : "none",
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              startIcon={<ReplayIcon />}
-              onClick={onPlayAgain}
-              sx={{
-                py: 1.5,
-                px: 4,
-                borderRadius: 2,
-                fontWeight: "bold",
-              }}
-            >
-              Play again
-            </Button>
-            <Button
+          <Button
               variant="outlined"
               size="large"
               startIcon={<ExitToAppIcon />}
               onClick={onExit}
               sx={{
+                width: "100%",
                 py: 1.5,
                 px: 4,
                 borderRadius: 2,
@@ -707,7 +658,6 @@ export default function Summary({ gameState, onExit, onPlayAgain }) {
             >
               Go out
             </Button>
-          </Box>
         </Box>
       </Paper>
     </Box>

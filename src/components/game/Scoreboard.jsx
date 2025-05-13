@@ -17,8 +17,7 @@ export const Scoreboard = React.memo(function({
         sx={{
           width: "100%",
           p: 1,
-          bgcolor: alpha("#000000", 0.85),
-          backdropFilter: "blur(8px)",
+          bgcolor: alpha("#000000", 0.75),
           borderRadius: 2,
           border: "2px solid rgba(255, 255, 255, 0.1)",
           boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3)",
