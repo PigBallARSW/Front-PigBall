@@ -34,6 +34,8 @@ import { useUserLogin } from "../../Modules/useUserLogin"
 import { useUser } from "../../context/user/userContext"
 import StarIcon from '@mui/icons-material/Star';
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
+import { CustomizerUser } from "../../components/user/CustomizerUser"
+import { scrollbarStyles } from "../../components/themes/ScrollTheme"
 
 export default function Friends({closeDialog, isOpen}) {
   const [tab, setTab] = useState(0)
@@ -49,8 +51,8 @@ export default function Friends({closeDialog, isOpen}) {
   } = useUserLogin()
   const { playerData } = useUser()
 
-  //Carga sugerencias
   useEffect(() => {
+    if (!playerData?.id || tab !== 0) return;
     if (!playerData?.id) return
     const timeout = setTimeout(() => {
       getFriendSuggestions(playerData.id, { search: query })
@@ -58,7 +60,7 @@ export default function Friends({closeDialog, isOpen}) {
         .catch(() => setSuggestions([]))
     }, 500)
     return () => clearTimeout(timeout)
-  }, [query, playerData, getFriendSuggestions])
+  }, [query, playerData, getFriendSuggestions, tab])
 
 
   useEffect(() => {
@@ -83,6 +85,7 @@ export default function Friends({closeDialog, isOpen}) {
       open={isOpen}
       onClose={closeDialog}
       fullWidth
+      maxWidth="md" 
       slotProps={{
       paper: {
         sx: {
@@ -90,7 +93,8 @@ export default function Friends({closeDialog, isOpen}) {
             color: "white",
             borderRadius: 2,
             border: "2px solid #4CAF50",
-            height: "100%"
+            height: "100%",
+            bgcolor: "#0e250f",
         },
       },
       }}
@@ -107,20 +111,21 @@ export default function Friends({closeDialog, isOpen}) {
           <Tab label="My Friends" />
         </Tabs>
       </DialogTitle>
-      <DialogContent sx={{ mt: 2 }}>
-          <Box
+      <DialogContent sx={{ mt: 3,overflow: "hidden"}}>
+        <Box
             sx={{
               display: tab === 0 ? "flex" : "none",
               flex: 1,
               minHeight: 0,
               flexDirection: "column",
+              height: "100%",
             }}
           >
             <TextField
-              variant="outlined"
-              size="medium"
               fullWidth
-              label="Search Friends"
+              placeholder="Search for a room by name, host, or type..."
+              variant="outlined"
+              size="small"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               InputProps={{
@@ -143,90 +148,90 @@ export default function Friends({closeDialog, isOpen}) {
                   "&::placeholder": {
                     color: "rgba(255, 255, 255, 0.7)",
                   },
-                }
+                },
               }}
               sx={{
-              "& .MuiInputBase-input": {
-                color: "white",
-              },
-              "& .MuiInputBase-input::placeholder": {
-                color: "rgb(255, 255, 255)",
-                opacity: 1,
-              },
-            }}
+                "& .MuiInputBase-input": {
+                  color: "white",
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  opacity: 1,
+                },
+                mb: 2
+              }}
             />
+        {suggestions.length > 0 ? (
+          <>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Suggestions:
             </Typography>
-            <Box
-              sx={{
-                flex: 1,
-                minHeight: 0,
-                overflowY: "auto",
-                pr: 1,
-              }}
-            >
-              <List disablePadding>
-                <AnimatePresence>
-                  {suggestions.length > 0 ? (
-                    suggestions.map((f) => (
-                      <motion.div
-                        key={f.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, x: 100 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <ListItem
-                          sx={{
-                            mb: 1,
-                            borderRadius: 1,
-                            py: 2,
-                            "&:hover": { bgcolor: "action.hover" },
-                          }}
+              <List disablePadding sx={{overflow: "auto", 
+                "&::-webkit-scrollbar": {
+                  width: "8px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent", 
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#254626",
+                  borderRadius: "4px",
+                }
+              }} >
+              {suggestions.map((f) => (
+                  <motion.div
+                    key={f.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: 100 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ListItem
+                      sx={{
+                        mb: 1,
+                        borderRadius: 1,
+                        py: 2,
+                        "&:hover": { bgcolor: "action.hover" },
+                      }}
+                    >
+                      <ListItemAvatar>
+                        <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.playerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={f.username}
+                        secondary={
+                          <Box sx={{display: "flex", color:"white"}}>
+                            <EmojiEventsIcon sx={{color: "#FFD700"}} />
+                            <Typography>
+                            {f.gamesPlayed}
+                            </Typography>
+                            <StarIcon sx={{color: "#FFD700"}}/>
+                            <Typography>
+                            {f.gamesWon}
+                            </Typography>
+                          </Box>
+                        }
+                        sx={{ ml: 2, color:"white" }}
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton
+                          edge="end"
+                          onClick={() => handleAddFriend(f.id)}
+                          sx={{ width: 48, height: 48, color:"primary.light" }}
                         >
-                          <ListItemAvatar>
-                            <Avatar sx={{ width: 40, height: 40 }}>
-                              <PersonIcon sx={{ fontSize: 28 }} />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={f.username}
-                            secondary={
-                              <Box sx={{display: "flex", color:"white"}}>
-                                <EmojiEventsIcon sx={{color: "#FFD700"}} />
-                                <Typography>
-                                {f.gamesPlayed}
-                                </Typography>
-                                <StarIcon sx={{color: "#FFD700"}}/>
-                                <Typography>
-                                {f.gamesWon}
-                                </Typography>
-                              </Box>
-                            }
-                            sx={{ ml: 2, color:"white" }}
-                          />
-                          <ListItemSecondaryAction>
-                            <IconButton
-                              edge="end"
-                              color="primary"
-                              onClick={() => handleAddFriend(f.id)}
-                              sx={{ width: 48, height: 48 }}
-                            >
-                              <PersonAddIcon sx={{ fontSize: 28 }} />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      </motion.div>
-                    ))
-                  ) : (
-                    <Typography sx={{ p: 2, textAlign: "center", color: "text.disabled" }}>
-                      No suggestions found.
-                    </Typography>
-                  )}
-                </AnimatePresence>
+                          <PersonAddIcon sx={{ fontSize: 28 }} />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  </motion.div>
+              ))}
               </List>
-            </Box>
+            </>
+            ) : 
+          <Typography sx={{ p: 2, textAlign: "center", color: "white" }}>
+            No suggestions found.
+          </Typography>
+          }
           </Box>
 
           <Box
@@ -235,20 +240,24 @@ export default function Friends({closeDialog, isOpen}) {
               flex: 1,
               minHeight: 0,
               flexDirection: "column",
+              height: "100%"
             }}
           >
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Your Friends:
             </Typography>
-            <Box
-              sx={{
-                flex: 1,
-                minHeight: 0,
-                overflowY: "auto",
-                pr: 1,
-              }}
-            >
-              <List disablePadding>
+              <List disablePadding sx={{overflow: "auto", 
+               "&::-webkit-scrollbar": {
+                  width: "8px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent", 
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#315f33",
+                  borderRadius: "4px",
+                },
+              }}>
                 {friends.length > 0 ? (
                   friends.map((f) => (
                     <ListItem
@@ -261,9 +270,7 @@ export default function Friends({closeDialog, isOpen}) {
                       }}
                     >
                       <ListItemAvatar>
-                        <Avatar sx={{ width: 40, height: 40 }}>
-                          <PersonIcon sx={{ fontSize: 28 }} />
-                        </Avatar>
+                        <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.playerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
                       </ListItemAvatar>
                       <ListItemText
                         primary={f.username}
@@ -299,7 +306,6 @@ export default function Friends({closeDialog, isOpen}) {
                   </Typography>
                 )}
               </List>
-            </Box>
           </Box>
       </DialogContent>
     </Dialog>

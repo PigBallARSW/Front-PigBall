@@ -11,6 +11,7 @@ import { useIsTouchDevice } from "../../context/game/useIsTouchDevice";
 import MobileControls from "./MobileControls";
 import { ExitToApp } from "@mui/icons-material";
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import { LeaveDialog } from "../dialog/LeaveDialog";
 
 export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
   const isTouch = useIsTouchDevice();
@@ -22,7 +23,14 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const fieldWrapperRef = useRef();
   const {onMoveStart,onMoveEnd, onActionStart, onActionEnd} = useMoveGame(movePlayer);
-
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+  const handleLeaveRoom = () => {
+    setIsLeaveDialogOpen(false);
+    leaveRoom();
+  }
+  const OpenLeaveRoom = () => {
+    setIsLeaveDialogOpen(true);
+  }
 
   useEffect(() => {
     if (!gameState?.creationTime) return
@@ -55,51 +63,88 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   }
   return (
     <>
-      <Box 
-          sx={{ 
-            position: "absolute", 
-            left: "50%", 
-            transform: "translateX(-50%)",
-          }}
-        >
-          <Scoreboard
-            blueScore={gameState?.teams.first || 0}
-            redScore={gameState?.teams.second || 0}
-            gameTime={formatGameTime()}
-          />
-      </Box>
-
-      <Box 
-          sx={{ 
-          position: "absolute", 
-          top: 0,
-          left: 0,
-        }}
-        >
-          <FPSMeter fps={fps} fpsHistory={fpsHistory} showGraph={!isMobile}/>
-      </Box>
-      <Box 
-        sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              zIndex: 20,
-              display: "flex",
-              gap: 1,
-            }}
-          >
-            <Fab
-            color="error"
-          >
-            <ExitToApp />
-          </Fab>
-          <Fab
-            color="success"
-          >
-            <VolumeOffIcon />
-          </Fab>
+    <Box
+      sx={{
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 20,
+      }}
+    >
+      <Scoreboard
+        blueScore={gameState?.teams.first || 0}
+        redScore={gameState?.teams.second || 0}
+        gameTime={formatGameTime()}
+      />
     </Box>
 
+    {isMobile ? (
+      <Box
+        sx={{
+          position: "absolute",
+          top: 100,
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          zIndex: 20,
+        }}
+      >
+        <Box
+          sx={{
+            top: 8,
+            right: 8,
+            display: "flex",
+            gap: 1,
+            zIndex: 20,
+          }}
+        >
+          <Fab color="error" onClick={OpenLeaveRoom}>
+            <ExitToApp />
+          </Fab>
+          <Fab color="success">
+            <VolumeOffIcon />
+          </Fab>
+        </Box>
+      </Box>
+    ) : (
+      <>
+        {/* 🖥️ FPS en esquina superior izquierda */}
+        <Box
+          sx={{
+            position: "absolute",
+            left: 8,
+            zIndex: 20,
+            bottom: 8,
+          }}
+        >
+          <FPSMeter fps={fps} fpsHistory={fpsHistory} showGraph={!isMobile} />
+        </Box>
+
+        {/* 🖥️ Botones en esquina superior derecha */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            display: "flex",
+            gap: 1,
+            zIndex: 20,
+          }}
+        >
+          <Fab color="error" onClick={OpenLeaveRoom}>
+            <ExitToApp />
+          </Fab>
+          <Fab color="success">
+            <VolumeOffIcon />
+          </Fab>
+        </Box>
+      </>
+    )}
+ 
     <Box
       ref={fieldWrapperRef}
       sx={{
@@ -124,6 +169,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       <Summary gameState={gameState} onExit={exitGame} />
     )}
     {isTouch && <MobileControls onMoveStart={onMoveStart} onMoveEnd={onMoveEnd} onActionStart={onActionStart} onActionEnd={onActionEnd} />}
+    <LeaveDialog leaveRoom={handleLeaveRoom} isLeaveDialogOpen={isLeaveDialogOpen} setIsLeaveDialogOpen={setIsLeaveDialogOpen} />
     </>
   )
 })

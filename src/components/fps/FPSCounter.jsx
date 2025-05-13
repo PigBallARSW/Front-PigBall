@@ -13,26 +13,29 @@ export default function FPSCounter({ fps, fpsHistory, showGraph }) {
         bgcolor: alpha("#000000", 0.65),
         border: "2px solid rgba(255, 255, 255, 0.1)",
         backgroundColor: 'rgba(33, 33, 33, 0.9)',
-        minWidth: showGraph ? 300 : 50,
-        transition: 'min-width 0.3s ease'
+        width: "fit-content",            
+        px: 1.5,                          
+        py: 1,                           
+        transition: 'min-width 0.3s ease',
       }}
     >
-      <Box display="flex" alignItems="center" justifyContent="space-between" >
-        <Box>
-          <Typography variant="h6" sx={{ fontFamily: 'monospace', color: 'white' }}>
+
+      <Box display="flex" alignItems="start" justifyContent="space-between" flexDirection="column" >
+        <Box  sx={{display:"flex", alignItems:"center", justifyContent:"space-between", width: "100%"}}>
+          <Typography variant="body" sx={{ fontFamily: 'monospace', color: 'white' }}>
             {fps} FPS
           </Typography>
+          <BarChartIcon  sx={{ color: "#2196f3" }}/>
+        </Box>
           <Typography variant="caption" sx={{ fontFamily: 'monospace', color: '#aaa' }}>
             Target: 60 FPS
           </Typography>
-        </Box>
-          <BarChartIcon  sx={{ color: "#2196f3" }}/>
       </Box>
 
       <Collapse in={showGraph}>
         {fpsHistory.length > 1 && (
-          <Box sx={{ height: 150, mt: 1 }}>
-            <ResponsiveContainer width="100%" height="100%">
+          <Box sx={{ height: 100, mt: 1 }}>
+            <ResponsiveContainer>
               <LineChart data={fpsHistory}>
                 <XAxis dataKey="time" tick={{ fill: 'white', fontSize: 10 }} tickFormatter={() => ''} />
                 <YAxis domain={[0, 70]} tick={{ fill: 'white', fontSize: 10 }} />
