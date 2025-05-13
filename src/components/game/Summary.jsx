@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import {
   Box,
@@ -20,16 +19,13 @@ import ShieldIcon from "@mui/icons-material/Shield"
 import StarIcon from "@mui/icons-material/Star"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import BarChartIcon from "@mui/icons-material/BarChart"
-import ReplayIcon from "@mui/icons-material/Replay"
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows"
 import { motion } from "framer-motion";
-import { useCalculateInfo } from "../../context/game/useCalculateInfo"
-import { useGoal } from "../../context/game/useGoal"
-import { useUserLogin } from "../../Modules/useUserLogin"
 import { CustomizerUser } from "../user/CustomizerUser"
-import { useUser } from "../../context/user/userContext"
 import { scrollbarStyles } from "../themes/ScrollTheme"
-
+import PropTypes from 'prop-types';
+import { useSummary } from "../../context/game/useSummary"
+import { colors, winner } from "../../context/color/teamCustom"
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -61,23 +57,32 @@ const rotate = keyframes`
     transform: rotate(360deg);
   }
 `
-
+/**
+ * Componente para resumir el juego
+ * @param {Object} props - Propiedades del componente
+ * @param {Object} props.gameState - Configuracion del juego
+ * @param {function} props.onExit - Función para salir del juego
+ * @returns {JSX.Element} Resume el juego
+ */
 export default function Summary({ gameState, onExit }) {
-  const {usersCharacters} = useUserLogin();
-  const {playersGoal, updatesGoal} = useGoal()
   const [showContent, setShowContent] = useState(false)
-  const {assists, playersAssist, playersGoals, calculateGoalNumber, calculateAssistNumber} = useCalculateInfo();
-  const {playerData} = useUser();
-  const blueWins = gameState?.teams.first > gameState?.teams.second || 0
-  const redWins = gameState?.teams.second > gameState?.teams.first || 0
-  const isDraw = gameState?.teams.first === gameState?.teams.second || 0
+  const {playersGoal, assists, playersAssist, playersGoals} = useSummary(gameState)
+  const blueWins = (gameState?.teams.first || 0) > (gameState?.teams.second || 0);
+  const redWins = (gameState?.teams.second || 0) > (gameState?.teams.first || 0);
+  const isDraw = (gameState?.teams.first || 0) === (gameState?.teams.second || 0);
 
   const winnerColor = blueWins ? "#1976d2" : redWins ? "#dc004e" : "#4caf50"
   const winnerTeam = blueWins ? "A" : redWins ? "B" : "DRAW"
 
-  const topScorer = playersGoal.length > 0
+  const topScorer = playersGoal?.length
   ? playersGoal.reduce((max, player) => player.goal > max.goal ? player : max)
   : null;
+
+
+  const totalAssists = playersAssist.blue + playersAssist.red;
+  const blueAssistPct = totalAssists > 0 ? Math.round((playersAssist.blue * 100) / totalAssists) : 0;
+  const redAssistPct = totalAssists > 0 ? 100 - blueAssistPct : 0;
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -87,67 +92,6 @@ export default function Summary({ gameState, onExit }) {
     return () => clearTimeout(timer)
   }, [])
 
-  useEffect(() => {
-    const fetchCustomizations = async () => {
-      const players = []
-      if(playerData.authenticated){
-        const users = gameState.players.map((p) => p.id)
-        let characters = await usersCharacters(users)
-        if(characters){
-            gameState.players.forEach((player) => {
-                let customization = {}
-                const custom = characters.find((p) => p.id === player.id);
-                if(custom){
-                  customization = {
-                    image: custom.image,
-                    borderColor: custom.borderColor,
-                    centerColor: custom.centerColor,
-                    iconType: custom.iconType,
-                    iconColor: custom.iconColor
-                  };
-                }else{
-                  customization = {
-                    image: null,
-                    borderColor: null,
-                    centerColor: null,
-                    iconType: null,
-                    iconColor: null
-                  };
-                }
-                const data = {
-                    id: player.id,
-                    name: player.name,
-                    team: player.team,
-                    x: player.x,
-                    y: player.y,
-                    ...customization
-                };
-                players.push(data)
-            });
-        }
-      }else{
-        gameState.players.forEach((player) => {
-          const data = {
-              id: player.id,
-              name: player.name,
-              team: player.team,
-              x: player.x,
-              y: player.y,
-              image: null,
-              borderColor: null,
-              centerColor: null,
-              iconType: null,
-              iconColor: null
-          };
-          players.push(data)
-        });
-      }
-      updatesGoal(gameState, players)
-      calculateGoalNumber(playersGoal);
-      calculateAssistNumber(gameState, players);
-    }
-    fetchCustomizations()
-  }, [])
 
   return (
     <Box
@@ -254,10 +198,10 @@ export default function Summary({ gameState, onExit }) {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                bgcolor: alpha("#1976d2", blueWins ? 0.3 : 0.1),
+                bgcolor: alpha("#1976d2", 0.3),
                 p: 2,
                 borderRadius: 2,
-                border: blueWins ? `2px solid #1976d2` : "none",
+                border: blueWins && `2px solid #1976d2`,
               }}
             >
               <ShieldIcon color="primary" sx={{ mr: 1, fontSize: 30 }} />
@@ -274,10 +218,10 @@ export default function Summary({ gameState, onExit }) {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                bgcolor: alpha("#dc004e", redWins ? 0.3 : 0.1),
+                bgcolor: alpha("#dc004e", 0.3),
                 p: 2,
                 borderRadius: 2,
-                border: redWins ? `2px solid #dc004e` : "none",
+                border: redWins && `2px solid #dc004e`,
               }}
             >
               <Typography variant="h4" sx={{ fontWeight: "bold", color: "#dc004e" }}>
@@ -286,25 +230,6 @@ export default function Summary({ gameState, onExit }) {
               <ShieldIcon sx={{ ml: 1, fontSize: 30, color:"#dc004e" }} />
             </Box>
           </Box>
-          {!isDraw && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                mb: 2,
-                animation: showContent ? `${fadeIn} 1.4s ease-out` : "none",
-              }}
-            >
-              <EmojiEventsIcon
-                sx={{
-                  fontSize: 60,
-                  color: "#FFD700",
-                  animation: `${pulse} 2s infinite`,
-                  filter: "drop-shadow(0 0 10px rgba(255, 215, 0, 0.5))",
-                }}
-              />
-            </Box>
-          )}
         </Box>
         <Box sx={{ p: { xs: 2, md: 4 } }}>
           <Box
@@ -340,7 +265,7 @@ export default function Summary({ gameState, onExit }) {
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography variant="body2" sx={{ color: "#1976d2", width: "40px" }}>
-                    {playersAssist.blue > 0 || playersAssist.red > 0 ? (playersAssist.blue*100)/(playersAssist.blue+playersAssist.red) +"%" : "%0"}
+                    {blueAssistPct}
                     </Typography>
                     <Box sx={{ flexGrow: 1, mx: 1 }}>
                       <Box
@@ -358,9 +283,7 @@ export default function Summary({ gameState, onExit }) {
                             left: 0,
                             top: 0,
                             height: "100%",
-                            width: `${playersAssist.blue > 0 || playersAssist.red > 0 
-                                ? Math.round((playersAssist.blue * 100) / (playersAssist.blue + playersAssist.red)) 
-                                : 0}%`,
+                            width: `${blueAssistPct}%`,
                             bgcolor: "#1976d2",
                           }}
                         />
@@ -370,16 +293,14 @@ export default function Summary({ gameState, onExit }) {
                             right: 0,
                             top: 0,
                             height: "100%",
-                            width: `${playersAssist.blue > 0 || playersAssist.red > 0 
-                                ? Math.round((playersAssist.red * 100) / (playersAssist.blue + playersAssist.red)) 
-                                : 0}%`,
+                            width: `${redAssistPct}%`,
                             bgcolor: "#dc004e",
                           }}
                         />
                       </Box>
                     </Box>
                     <Typography variant="body2" sx={{ color: "#dc004e", width: "40px", textAlign: "right" }}>
-                    {playersAssist.blue > 0 || playersAssist.red > 0 ? (playersAssist.red*100)/(playersAssist.blue+playersAssist.red) +"%" : "%0"}
+                    {redAssistPct}
                     </Typography>
                   </Box>
                 </Paper>
@@ -445,10 +366,10 @@ export default function Summary({ gameState, onExit }) {
             <Paper
               sx={{
                 p: 3,
-                bgcolor: alpha((topScorer.team === 0 ? "#1976d2" : "#dc004e"), 0.2),
+                bgcolor: alpha((colors[topScorer.team]), 0.2),
                 borderRadius: 2,
                 border: `1px solid ${alpha(
-                   (topScorer.team === 0 ? "#1976d2" : "#dc004e"),
+                   (colors[topScorer.team]),
                   0.5,
                 )}`,
                 display: "flex",
@@ -470,7 +391,7 @@ export default function Summary({ gameState, onExit }) {
                 width={80} 
                 height={80} 
                 playerName={topScorer.name} 
-                playerColor={topScorer.centerColor || topScorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                playerColor={topScorer.centerColor || colors[topScorer.team]} 
                 borderColor={"#FFD700"} 
                 iconType={topScorer.iconType} 
                 iconColor={topScorer.iconColor} 
@@ -482,7 +403,7 @@ export default function Summary({ gameState, onExit }) {
                     {topScorer.name}
                 </Typography>
                 <Typography variant="body1" sx={{ color: "white", opacity: 0.7, mb: 1 }}>
-                  {topScorer.team === 0 ? "Team A" : "Team B"}
+                  Team {winner[topScorer.team]}
                 </Typography>
                 <Chip
                   icon={<EmojiEventsIcon />}
@@ -520,9 +441,9 @@ export default function Summary({ gameState, onExit }) {
                 <List sx={{ bgcolor: alpha("#333", 0.3), borderRadius: 2 }}>
                 {playersGoal.map((scorer, index) => (
                     <ListItem
-                    key={index}
+                    key={scorer.id}
                     sx={{
-                        borderBottom: index < playersGoal.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
+                        borderBottom: index < playersGoal.length - 1 && `1px solid ${alpha("#fff", 0.1)}`,
                     }}
                     >
                     <ListItemAvatar>
@@ -530,7 +451,7 @@ export default function Summary({ gameState, onExit }) {
                       width={40} 
                       height={40} 
                       playerName={scorer.name} 
-                      playerColor={scorer.centerColor || scorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                      playerColor={scorer.centerColor || colors[scorer.team]} 
                       borderColor={scorer.borderColor} 
                       iconType={scorer.iconType} 
                       iconColor={scorer.iconColor} 
@@ -544,7 +465,7 @@ export default function Summary({ gameState, onExit }) {
                         }
                         secondary={
                         <Typography variant="body2" sx={{ color: "white", opacity: 0.7 }}>
-                            Team {scorer.team === 0 ? "A" : "B"}
+                            Team {winner[scorer.team]}
                         </Typography>
                         }
                     />
@@ -552,9 +473,9 @@ export default function Summary({ gameState, onExit }) {
                         label={`${scorer.goal} ${scorer.goal === 1 ? "goal" : "goals"}`}
                         size="small"
                         sx={{
-                        bgcolor: alpha(scorer.team === 0 ? "#1976d2" : "#dc004e", 0.2),
-                        color: scorer.team === 0 ? "#1976d2" : "#dc004e",
-                        border: `1px solid ${alpha(scorer.team === 0 ? "#1976d2" : "#dc004e", 0.5)}`,
+                        bgcolor: alpha(colors[scorer.team], 0.2),
+                        color: colors[scorer.team],
+                        border: `1px solid ${alpha(colors[scorer.team], 0.5)}`,
                         }}
                     />
                     </ListItem>
@@ -590,7 +511,7 @@ export default function Summary({ gameState, onExit }) {
                 <List sx={{ bgcolor: alpha("#333", 0.3), borderRadius: 2 }}>
                 {assists.map((scorer, index) => (
                     <ListItem
-                    key={index}
+                    key={scorer.id}
                     sx={{
                         borderBottom: index < playersGoal.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
                     }}
@@ -600,7 +521,7 @@ export default function Summary({ gameState, onExit }) {
                       width={40} 
                       height={40} 
                       playerName={scorer.name} 
-                      playerColor={scorer.centerColor || scorer.team === 0 ? "#1976d2" : "#dc004e"} 
+                      playerColor={scorer.centerColor || colors[scorer.team]} 
                       borderColor={scorer.borderColor} 
                       iconType={scorer.iconType} 
                       iconColor={scorer.iconColor} 
@@ -614,7 +535,7 @@ export default function Summary({ gameState, onExit }) {
                         }
                         secondary={
                         <Typography variant="body2" sx={{ color: "white", opacity: 0.7 }}>
-                            Team {scorer.team === 0 ? "A" : "B"}
+                            Team {winner[scorer.team]}
                         </Typography>
                         }
                     />
@@ -622,9 +543,9 @@ export default function Summary({ gameState, onExit }) {
                         label={`${scorer.assist} ${scorer.assist === 1 ? "assist" : "assists"}`}
                         size="small"
                         sx={{
-                        bgcolor: alpha(scorer.team === 0 ? "#1976d2" : "#dc004e", 0.2),
-                        color: scorer.team === 0 ? "#1976d2" : "#dc004e",
-                        border: `1px solid ${alpha(scorer.team === 0 ? "#1976d2" : "#dc004e", 0.5)}`,
+                        bgcolor: alpha(colors[scorer.team], 0.2),
+                        color: colors[scorer.team],
+                        border: `1px solid ${alpha(colors[scorer.team], 0.5)}`,
                         }}
                     />
                     </ListItem>
@@ -663,3 +584,45 @@ export default function Summary({ gameState, onExit }) {
     </Box>
   )
 }
+Summary.propTypes = {
+  gameState: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    gameName: PropTypes.string.isRequired,
+    creatorName: PropTypes.string.isRequired,
+    creationTime: PropTypes.string.isRequired,
+    startTime: PropTypes.string,
+    maxPlayers: PropTypes.number.isRequired,
+    privateGame: PropTypes.bool.isRequired,
+    borderX: PropTypes.number.isRequired,
+    borderY: PropTypes.number.isRequired,
+    status: PropTypes.string,
+    events: PropTypes.arrayOf(
+      PropTypes.shape({
+        first: PropTypes.string.isRequired,
+        second: PropTypes.string.isRequired
+      })
+    ),
+    players: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        team: PropTypes.number.isRequired,
+        sessionId: PropTypes.string.isRequired,
+        kicking: PropTypes.bool,
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired
+      })
+    ).isRequired,
+    ball: PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+      velocityX: PropTypes.number.isRequired,
+      velocityY: PropTypes.number.isRequired
+    }).isRequired,
+    teams: PropTypes.shape({
+      first: PropTypes.number.isRequired,
+      second: PropTypes.number.isRequired
+    }).isRequired
+  }).isRequired,
+  onExit: PropTypes.func.isRequired
+};

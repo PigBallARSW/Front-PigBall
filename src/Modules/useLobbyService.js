@@ -15,6 +15,8 @@ export function useLobbyService() {
             const response = await finishGame(id, token);
             await sendStatsUser(response.data);
         } catch (error) {
+            console.error("Could not send Stats: ", error);
+            showAlert("Could not send Stats", "error");
         }
     }, [getToken, sendStatsUser]);
     
@@ -28,6 +30,7 @@ export function useLobbyService() {
                 showAlert("Room created successfully!", "success");   
             }
         }catch(error){
+            console.error("Error creating room: ", error);
             showAlert("Could not create", "error");
         }
     }
@@ -45,6 +48,7 @@ export function useLobbyService() {
             const response = await getGames(token);
             callback(response.data);
         }catch(error){
+            console.error("Could not load rooms: ", error);
             showAlert("Could not load rooms", "error");
         }
         
@@ -55,6 +59,7 @@ export function useLobbyService() {
             const response = await getGame(id, token);
             callback(response.data);
         }catch(error){
+            console.error("Could not load game: ", error);
             showAlert("Could not load game", "error");
         }
     },[getToken, showAlert]);

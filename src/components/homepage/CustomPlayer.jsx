@@ -158,7 +158,15 @@ export default function CustomPlayer() {
   const saveCharacter = async () => {
     let centerIcon = getIcon()
     if(playerData?.id){
-        await updateCharacter(playerData.id, playerName, centerIcon, playerColor, borderColor,emblemColor,emblemType, setPlayer)
+        const requestBody = {
+            username: playerName,
+            image: centerIcon,
+            centerColor: playerColor,
+            borderColor: borderColor,
+            iconColor: emblemColor,
+            iconType: emblemType
+        }
+        await updateCharacter(playerData.id, requestBody, setPlayer)
         navigate("/homepage")
     }
   }

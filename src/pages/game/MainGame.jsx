@@ -5,7 +5,7 @@ import { useGame } from "../../context/game/useGame";
 import {GameContainer} from "../../components/game/GameContainer";
 import { GoalAnimation } from "../../components/game/GoalAnimation";
 import { useGoal } from "../../context/game/useGoal";
-import LoadResponse from "../../components/Load/LoadResponse";
+import {LoadResponse} from "../../components/Load/LoadResponse";
 import LoadingGame from "../../components/Load/LoadingGame";
 import { useAlert } from "../../context/alert/AlertContext";
   

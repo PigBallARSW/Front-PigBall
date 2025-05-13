@@ -26,7 +26,6 @@ export async function getPotentialFriends(currentUserId, token, {
         });
         return response;
     } catch (error) {
-        console.error("Error getting potential friends:", error);
         throw error;
     }
 }
@@ -41,7 +40,6 @@ export async function getFriends(userId, token) {
         });
         return response;
     } catch (error) {
-        console.error("Error getting friends:", error);
         throw error;
     }
 }
@@ -56,7 +54,6 @@ export async function addFriend(userId, friendId, token) {
         });
         return response;
     } catch (error) {
-        console.error("Error adding friend:", error);
         throw error;
     }
 }
@@ -71,7 +68,6 @@ export async function removeFriend(userId, friendId, token) {
         });
         return response;
     } catch (error) {
-        console.error("Error removing friend:", error);
         throw error;
     }
 }
@@ -95,7 +91,6 @@ export async function createUser(id, name, token) {
             });
         return response;
     } catch (error) {
-        console.error("Error creating user:", error);
         throw error;
     }
 }
@@ -113,7 +108,6 @@ export async function sendStats(data, token) {
             });
         return response;
     } catch (error) {
-        console.error("Error sending stats:", error);
         throw error;
     }
 }
@@ -127,30 +121,20 @@ export async function getUser(id, token) {
             });
         return response;
     } catch (error) {
-        console.error("Error user user:", error);
         throw error;
     }
 }
 
-export async function updateUserCharacter(id,username,image, centerColor, borderColor, iconColor, iconType, token) {
+export async function updateUserCharacter(id,customizations, token) {
     try {
         const endpoint = `${API}/user/`;
-        const requestBody = {
-            username: username,
-            image: image,
-            centerColor: centerColor,
-            borderColor: borderColor,
-            iconColor: iconColor,
-            iconType: iconType
-        };
-        const response = await axios.put(endpoint+id, requestBody, {
+        const response = await axios.put(endpoint+id, customizations, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
             });
         return response;
     } catch (error) {
-        console.error("Error updating user:", error);
         throw error;
     }
 }
@@ -165,7 +149,6 @@ export async function getUsersCharacters(users, token) {
             });
         return response;
     } catch (error) {
-        console.error("Error updating user:", error);
         throw error;
     }
 }

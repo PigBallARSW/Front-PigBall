@@ -4,7 +4,15 @@ import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import ShieldIcon from "@mui/icons-material/Shield"
 import React from "react"
-
+import PropTypes from 'prop-types';
+/**
+ * Componente para cargar el marcador del juego
+ * @param {Object} props - Propiedades del componente
+ * @param {number} props.blueScore - marcador de equipo azul
+ * @param {number} props.redScore - marcador de equipo rojo
+ * @param {string} props.gameTime - tiempo de la partida
+ * @returns {JSX.Element} Componente de Marcador del juego
+ */
 export const Scoreboard = React.memo(function({
   blueScore,
   redScore,
@@ -123,3 +131,8 @@ export const Scoreboard = React.memo(function({
   
   )
 })
+Scoreboard.propTypes = {
+  blueScore: PropTypes.number.isRequired,
+  redScore: PropTypes.number.isRequired,
+  gameTime: PropTypes.string.isRequired,
+};

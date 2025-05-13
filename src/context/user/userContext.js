@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
                 if (!user) {
                     await createNewUser(id, name, setPlayer);
                 } 
-        };
+            }
     
             if (prevAuthState.current !== isAuthenticated) {
                 setPlayerData(null);
