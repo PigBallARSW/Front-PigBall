@@ -92,7 +92,6 @@ export default function Summary({ gameState, onExit }) {
       const players = []
       if(playerData.authenticated){
         const users = gameState.players.map((p) => p.id)
-        console.log(users)
         let characters = await usersCharacters(users)
         if(characters){
             gameState.players.forEach((player) => {

@@ -85,7 +85,6 @@ export default function Friends({closeDialog, isOpen}) {
       slotProps={{
       paper: {
         sx: {
-            bgcolor: "#222",
             color: "white",
             borderRadius: 2,
             border: "2px solid #4CAF50",

@@ -89,7 +89,6 @@ export function useUserLogin() {
         try {
             const token = await getToken();
             const response = await getFriends(userId, token);
-            console.log(response)
             callback(response.data.users);
         } catch (error) {
             showAlert("Could not fetch friends", "error");

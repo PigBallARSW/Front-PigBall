@@ -91,7 +91,6 @@ export default function LoadingGame({ }) {
       }}
     >
 
-      {/* Overlay para mejorar la legibilidad */}
       <Box
         sx={{
           position: "absolute",
@@ -104,7 +103,6 @@ export default function LoadingGame({ }) {
         }}
       />
 
-      {/* Título */}
       <Box
         sx={{
           display: "flex",
@@ -141,7 +139,6 @@ export default function LoadingGame({ }) {
         </Typography>
       </Box>
 
-      {/* Balón animado */}
       <Box
         sx={{
           mb: 4,
@@ -159,8 +156,6 @@ export default function LoadingGame({ }) {
             filter: "drop-shadow(0 0 10px rgba(255,255,255,0.7))",
           }}
         />
-
-        {/* Efecto de fuego */}
         <WhatshotIcon
           sx={{
             position: "absolute",
@@ -173,7 +168,6 @@ export default function LoadingGame({ }) {
         />
       </Box>
 
-      {/* Mensaje de carga */}
       <Box
         sx={{
           height: 30,
@@ -196,7 +190,6 @@ export default function LoadingGame({ }) {
         </Typography>
       </Box>
 
-      {/* Barra de progreso */}
       <Box
         sx={{
           width: { xs: "80%", sm: "60%", md: "40%" },

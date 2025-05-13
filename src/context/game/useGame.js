@@ -47,7 +47,7 @@ export function useGame(id, addGoal, setLoading) {
 
         client.publish({
           destination: `/app/join/${id}`,
-          body: JSON.stringify({ name: playerName, id: playerId }),
+          body: JSON.stringify({ name: playerName, id: playerId })
         });
 
         client.subscribe(`/topic/started/${id}`, (message) => {
