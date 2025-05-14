@@ -1,10 +1,7 @@
 "use client"
 import React, { useState, useEffect } from "react"
 import {
-  Container,
   Typography,
-  Card,
-  CardContent,
   Tabs,
   Tab,
   TextField,
@@ -15,20 +12,32 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
-  Avatar,
   InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material"
 import {
   PersonAdd as PersonAddIcon,
   PersonRemove as PersonRemoveIcon,
-  Search as SearchIcon,
-  Person as PersonIcon
+  Search,
 } from "@mui/icons-material"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useUserLogin } from "../../Modules/useUserLogin"
 import { useUser } from "../../context/user/userContext"
+import StarIcon from '@mui/icons-material/Star';
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
+import { CustomizerUser } from "../../components/user/CustomizerUser"
+import PropTypes from 'prop-types'
 
-export default function Friends() {
+/**
+ * Componente para abrir lista de jugadores
+ * @param {Object} props - Propiedades del componente
+ * @param {boolean} props.isOpen - Booleano para abrir el dialogo
+ * @param {function} props.closeDialog - Función que cierra el dialogo
+ * @returns {JSX.Element} Componente de dialogo para jugadores
+ */
+export const Friends = ({closeDialog, isOpen}) => {
   const [tab, setTab] = useState(0)
   const [query, setQuery] = useState("")
   const [suggestions, setSuggestions] = useState([])
@@ -42,8 +51,8 @@ export default function Friends() {
   } = useUserLogin()
   const { playerData } = useUser()
 
-  //Carga sugerencias
   useEffect(() => {
+    if (!playerData?.id || tab !== 0) return;
     if (!playerData?.id) return
     const timeout = setTimeout(() => {
       getFriendSuggestions(playerData.id, { search: query })
@@ -51,7 +60,7 @@ export default function Friends() {
         .catch(() => setSuggestions([]))
     }, 500)
     return () => clearTimeout(timeout)
-  }, [query, playerData, getFriendSuggestions])
+  }, [query, playerData, getFriendSuggestions, tab])
 
 
   useEffect(() => {
@@ -72,150 +81,156 @@ export default function Friends() {
   }
 
   return (
-    <Container
-      disableGutters
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        mt: 4,
-        px: 2,
+    <Dialog
+      open={isOpen}
+      onClose={closeDialog}
+      fullWidth
+      maxWidth="md" 
+      slotProps={{
+      paper: {
+        sx: {
+            color: "white",
+            borderRadius: 2,
+            border: "2px solid #4CAF50",
+            height: "100%",
+            bgcolor: "#0e250f",
+        },
+      },
       }}
     >
-
-      <Typography
-              variant="h2"
-              component="h1"
-              sx={{
-                fontWeight: "bold",
-                color: "secondary.main",
-                textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
-                mb: 1,
-              }}
-            >
-              FRIENDS
-            </Typography>
-
-
-      <Card
-        elevation={4}
-        sx={{
-          width: "80%",
-          maxWidth: 800,
-          height: "70vh",
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: 2,
-        }}
-      >
-
-        <Tabs
+      <DialogTitle sx={{ bgcolor: "rgba(27, 94, 32, 0.9)", display: "flex", alignItems: "center" }}>
+         <Tabs
           value={tab}
           onChange={(_, v) => setTab(v)}
           indicatorColor="secondary"
           textColor="inherit"
-          sx={{ bgcolor: "primary.dark", color: "white" }}
+          sx={{ color: "white" }}
         >
           <Tab label="Add Friend" />
           <Tab label="My Friends" />
         </Tabs>
-
-        <CardContent
-          sx={{
-            flex: 1,
-            minHeight: 0,
-            display: "flex",
-            flexDirection: "column",
-            p: 2,
-            bgcolor: "background.paper",
-          }}
-        >
-
-          <Box
+      </DialogTitle>
+      <DialogContent sx={{ mt: 3,overflow: "hidden"}}>
+        <Box
             sx={{
               display: tab === 0 ? "flex" : "none",
               flex: 1,
               minHeight: 0,
               flexDirection: "column",
+              height: "100%",
             }}
           >
             <TextField
-              variant="outlined"
-              size="medium"
               fullWidth
-              label="Search Friends"
+              placeholder="Search for a room by name, host, or type..."
+              variant="outlined"
+              size="small"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon color="disabled" />
+                    <Search sx={{ color: "white" }} />
                   </InputAdornment>
                 ),
+                sx: {
+                  color: "white",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.8)",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                  "&::placeholder": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                  },
+                },
               }}
-              sx={{ mb: 2 }}
+              sx={{
+                "& .MuiInputBase-input": {
+                  color: "white",
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  opacity: 1,
+                },
+                mb: 2
+              }}
             />
+        {suggestions.length > 0 ? (
+          <>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Suggestions:
             </Typography>
-            <Box
-              sx={{
-                flex: 1,
-                minHeight: 0,
-                overflowY: "auto",
-                pr: 1,
-              }}
-            >
-              <List disablePadding>
-                <AnimatePresence>
-                  {suggestions.length > 0 ? (
-                    suggestions.map((f) => (
-                      <motion.div
-                        key={f.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, x: 100 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <ListItem
-                          sx={{
-                            mb: 1,
-                            borderRadius: 1,
-                            py: 2,
-                            "&:hover": { bgcolor: "action.hover" },
-                          }}
+              <List disablePadding sx={{overflow: "auto", 
+                "&::-webkit-scrollbar": {
+                  width: "8px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent", 
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#254626",
+                  borderRadius: "4px",
+                }
+              }} >
+              {suggestions.map((f) => (
+                  <motion.div
+                    key={f.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: 100 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ListItem
+                      sx={{
+                        mb: 1,
+                        borderRadius: 1,
+                        py: 2,
+                        "&:hover": { bgcolor: "action.hover" },
+                      }}
+                    >
+                      <ListItemAvatar>
+                        <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.centerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={f.username}
+                        secondary={
+                          <Box sx={{display: "flex", color:"white"}}>
+                            <EmojiEventsIcon sx={{color: "#FFD700"}} />
+                            <Typography>
+                            {f.gamesPlayed}
+                            </Typography>
+                            <StarIcon sx={{color: "#FFD700"}}/>
+                            <Typography>
+                            {f.gamesWon}
+                            </Typography>
+                          </Box>
+                        }
+                        sx={{ ml: 2, color:"white" }}
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton
+                          edge="end"
+                          onClick={() => handleAddFriend(f.id)}
+                          sx={{ width: 48, height: 48, color:"primary.light" }}
                         >
-                          <ListItemAvatar>
-                            <Avatar sx={{ width: 40, height: 40 }}>
-                              <PersonIcon sx={{ fontSize: 28 }} />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={f.username}
-                            secondary={`Games: ${f.gamesPlayed ?? 0} • Win Rate: ${(f.winningPercentage ?? 0).toFixed(0)}%`}
-                            sx={{ ml: 2 }}
-                          />
-                          <ListItemSecondaryAction>
-                            <IconButton
-                              edge="end"
-                              color="secondary"
-                              onClick={() => handleAddFriend(f.id)}
-                              sx={{ width: 48, height: 48 }}
-                            >
-                              <PersonAddIcon sx={{ fontSize: 28 }} />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      </motion.div>
-                    ))
-                  ) : (
-                    <Typography sx={{ p: 2, textAlign: "center", color: "text.disabled" }}>
-                      No suggestions found.
-                    </Typography>
-                  )}
-                </AnimatePresence>
+                          <PersonAddIcon sx={{ fontSize: 28 }} />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  </motion.div>
+              ))}
               </List>
-            </Box>
+            </>
+            ) : 
+          <Typography sx={{ p: 2, textAlign: "center", color: "white" }}>
+            No suggestions found.
+          </Typography>
+          }
           </Box>
 
           <Box
@@ -224,20 +239,24 @@ export default function Friends() {
               flex: 1,
               minHeight: 0,
               flexDirection: "column",
+              height: "100%"
             }}
           >
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Your Friends:
             </Typography>
-            <Box
-              sx={{
-                flex: 1,
-                minHeight: 0,
-                overflowY: "auto",
-                pr: 1,
-              }}
-            >
-              <List disablePadding>
+              <List disablePadding sx={{overflow: "auto", 
+               "&::-webkit-scrollbar": {
+                  width: "8px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent", 
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "#315f33",
+                  borderRadius: "4px",
+                },
+              }}>
                 {friends.length > 0 ? (
                   friends.map((f) => (
                     <ListItem
@@ -250,13 +269,22 @@ export default function Friends() {
                       }}
                     >
                       <ListItemAvatar>
-                        <Avatar sx={{ width: 40, height: 40 }}>
-                          <PersonIcon sx={{ fontSize: 28 }} />
-                        </Avatar>
+                        <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.centerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
                       </ListItemAvatar>
                       <ListItemText
                         primary={f.username}
-                        secondary={`Games: ${f.gamesPlayed ?? 0} • Win Rate: ${(f.winningPercentage ?? 0).toFixed(0)}%`}
+                        secondary={
+                        <Box sx={{display: "flex", color:"white"}}>
+                        <EmojiEventsIcon sx={{color: "#FFD700"}} />
+                        <Typography>
+                        {f.gamesPlayed}
+                        </Typography>
+                        <StarIcon sx={{color: "#FFD700"}}/>
+                        <Typography>
+                        {f.gamesWon}
+                        </Typography>
+                      </Box>
+                              }
                         sx={{ ml: 2 }}
                       />
                       <ListItemSecondaryAction>
@@ -277,10 +305,12 @@ export default function Friends() {
                   </Typography>
                 )}
               </List>
-            </Box>
           </Box>
-        </CardContent>
-      </Card>
-    </Container>
+      </DialogContent>
+    </Dialog>
   )
 }
+Friends.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  closeDialog: PropTypes.func.isRequired,
+};

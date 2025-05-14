@@ -1,12 +1,17 @@
-import * as React from 'react';
-import { createContext, useState, useContext, useCallback } from "react";
+import React, { createContext, useState, useContext, useCallback, useMemo } from "react";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import PropTypes from 'prop-types';
+
 
 const AlertContext = createContext();
 
 export const useAlert = () => useContext(AlertContext);
 
+/**Mostrar alertas
+ * @param {JSX.Element} props.children -Elmentos donde mostrar alertas
+ * @returns {JSX.Element} Contexto para mostrar alertas
+ */
 export const AlertProvider = ({ children }) => {
   const [alert, setAlert] = useState({ open: false, message: "", severity: "success" });
 
@@ -21,8 +26,10 @@ export const AlertProvider = ({ children }) => {
     setAlert((prev) => ({ ...prev, open: false }));
   };
 
+  const contextValue = useMemo(() => ({ showAlert }), [showAlert]);
+
   return (
-    <AlertContext.Provider value={{ showAlert }}>
+    <AlertContext.Provider value={contextValue }>
       {children}
         <Snackbar 
           open={alert.open} 
@@ -35,4 +42,7 @@ export const AlertProvider = ({ children }) => {
         </Snackbar>
     </AlertContext.Provider>
   );
+};
+AlertProvider.propTypes = {
+  children: PropTypes.node.isRequired
 };

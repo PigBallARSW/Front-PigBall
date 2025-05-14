@@ -2,8 +2,8 @@ import { Box, CircularProgress, Typography, Backdrop } from "@mui/material"
 import { alpha } from "@mui/material/styles"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
 import { keyframes } from "@emotion/react"
+import PropTypes from 'prop-types'
 
-// Animación de rotación para el balón
 const spin = keyframes`
   from {
     transform: rotate(0deg);
@@ -12,8 +12,6 @@ const spin = keyframes`
     transform: rotate(360deg);
   }
 `
-
-// Animación de pulso para el fondo
 const pulse = keyframes`
   0%, 100% {
     opacity: 0.7;
@@ -31,7 +29,7 @@ const pulse = keyframes`
  * @param {function} props.onClose - Función opcional para cerrar el overlay
  * @returns {JSX.Element} Componente de overlay de carga
  */
-export default function LoadResponse({ open = false, message = "Cargando datos...", onClose = () => {} }) {
+export const LoadResponse = ({ open = false, message = "Cargando datos...", onClose = () => {} }) => {
   return (
     <Backdrop
       open={open}
@@ -101,4 +99,10 @@ export default function LoadResponse({ open = false, message = "Cargando datos..
       </Box>
     </Backdrop>
   )
+}
+
+LoadResponse.propTypes = {
+  open: PropTypes.bool,
+  message: PropTypes.string,
+  onClose: PropTypes.func
 }

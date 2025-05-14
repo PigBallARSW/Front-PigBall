@@ -1,30 +1,35 @@
-"use client"
 import { Box, Typography, Paper } from "@mui/material"
 import { alpha } from "@mui/material/styles"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import ShieldIcon from "@mui/icons-material/Shield"
 import React from "react"
-
+import PropTypes from 'prop-types';
+/**
+ * Componente para cargar el marcador del juego
+ * @param {Object} props - Propiedades del componente
+ * @param {number} props.blueScore - marcador de equipo azul
+ * @param {number} props.redScore - marcador de equipo rojo
+ * @param {string} props.gameTime - tiempo de la partida
+ * @returns {JSX.Element} Componente de Marcador del juego
+ */
 export const Scoreboard = React.memo(function({
   blueScore,
   redScore,
   gameTime,
 }) {
+
   return (
     <Paper
       elevation={3}
-      sx={{
-        width: "auto",
-        mx: "auto",
-        px: 1,
-        py: 0.5,
-        bgcolor: alpha("#000000", 0.75),
-        borderRadius: 2,
-        border: "1px solid rgba(255, 255, 255, 0.1)",
-        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
-        overflow: "hidden",
-      }}
+        sx={{
+          width: "100%",
+          p: 1,
+          bgcolor: alpha("#000000", 0.75),
+          borderRadius: 2,
+          border: "2px solid rgba(255, 255, 255, 0.1)",
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3)",
+        }}
     >
       <Box
         sx={{
@@ -32,26 +37,34 @@ export const Scoreboard = React.memo(function({
           alignItems: "center",
           justifyContent: "space-between",
           gap: 5,
-          flexWrap: "wrap",
+          flexWrap: "nowrap",
         }}
       >
-        {/* Equipo Azul */}
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            p: 1,
-            borderRadius: 1,
-            bgcolor: alpha("#1976d2", 0.2),
-            minWidth: 100,
-            flex: 1,
-          }}
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              p: 0.5,
+              borderRadius: 1,
+              bgcolor: alpha("#1976d2", 0.2),
+               minWidth: { xs: 60, sm: 70 }, 
+              flexShrink: 1, 
+            }}
         >
           <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
             <ShieldIcon color="primary" sx={{ fontSize: 18, mr: 0.5 }} />
-            <Typography variant="body2" color="primary" sx={{ fontWeight: "bold" }}>
-              Team A
+            <Typography variant="body2" color="primary" 
+            sx={{
+            fontWeight: "bold",
+            fontSize: {
+              xs: "0.65rem",  
+              sm: "0.9rem",   
+              md: "1rem",     
+            },
+            whiteSpace: "nowrap", 
+          }}>
+              TEAM A
             </Typography>
           </Box>
           <Typography variant="h5" sx={{ fontFamily: "scoreboard, monospace", color: "white" }}>
@@ -59,8 +72,6 @@ export const Scoreboard = React.memo(function({
           </Typography>
           <SportsSoccerIcon sx={{ color: "#1976d2", fontSize: 18 }} />
         </Box>
-  
-        {/* Centro */}
         <Box
           sx={{
             display: "flex",
@@ -70,22 +81,7 @@ export const Scoreboard = React.memo(function({
             px: 1,
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              px: 1,
-              py: 0.5,
-              borderRadius: 1,
-              bgcolor: alpha("#ffffff", 0.1),
-            }}
-          >
-            <EmojiEventsIcon sx={{ color: "#FFD700", fontSize: 16, mr: 0.5 }} />
-            <Typography variant="caption" color="white">
-              LIVE MATCH
-            </Typography>
-          </Box>
+          <EmojiEventsIcon sx={{ color: "#FFD700", fontSize: 30}} />
           <Typography
             variant="h6"
             sx={{
@@ -97,24 +93,32 @@ export const Scoreboard = React.memo(function({
             {gameTime}
           </Typography>
         </Box>
-  
-        {/* Equipo Rojo */}
         <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            p: 1,
-            borderRadius: 1,
-            bgcolor: alpha("#dc004e", 0.2),
-            minWidth: 100,
-            flex: 1,
-          }}
+           sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              p: 0.5,
+              borderRadius: 1,
+              bgcolor: alpha("#dc004e", 0.2),
+               minWidth: { xs: 60, sm: 70 }, 
+              flexShrink: 1, 
+            }}
         >
           <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
             <ShieldIcon sx={{ fontSize: 18, mr: 0.5, color: "#dc004e" }} />
-            <Typography variant="body2" sx={{ fontWeight: "bold", color: "#dc004e" }}>
-              Team B
+            <Typography variant="body2" 
+            sx={{
+            fontWeight: "bold",
+            fontSize: {
+              xs: "0.65rem",  
+              sm: "0.9rem",   
+              md: "1rem",     
+            },
+            whiteSpace: "nowrap",
+            color: "#dc004e" 
+          }}>
+              TEAM B
             </Typography>
           </Box>
           <Typography variant="h5" sx={{ fontFamily: "scoreboard, monospace", color: "white" }}>
@@ -127,3 +131,8 @@ export const Scoreboard = React.memo(function({
   
   )
 })
+Scoreboard.propTypes = {
+  blueScore: PropTypes.number.isRequired,
+  redScore: PropTypes.number.isRequired,
+  gameTime: PropTypes.string.isRequired,
+};

@@ -5,8 +5,8 @@ import {
   Box
 } from "@mui/material"
 import Grid from '@mui/material/Grid2';
-import Character from '../../components/homepage/Character';
-import Statistic from '../../components/homepage/Statistic';
+import {Character} from '../../components/homepage/Character';
+import {Statistic} from '../../components/homepage/Statistic';
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/user/userContext";
 import { LoadingPage } from "../../components/homepage/LoadingPage";

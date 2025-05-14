@@ -24,6 +24,7 @@ export function useUserLogin() {
             callback(response.data);
             showAlert("Welcome "+name, "success");    
         }catch(error){
+            console.error("Could not Loggin: ", error);
             showAlert("Could not Loggin", "error");
         }
     },[getToken,showAlert]);
@@ -31,9 +32,9 @@ export function useUserLogin() {
     const sendStatsUser = useCallback(async (stats, callback) => {
         try{
             const token = await getToken();
-            const response = await sendStats(stats, token);
-            callback(response);
+            await sendStats(stats, token);
         }catch(error){
+            console.error("Could not sendStats: ", error);
             showAlert("Could not sendStats", "error");
         }
     },[getToken,showAlert]);
@@ -46,18 +47,20 @@ export function useUserLogin() {
             showAlert("Welcome back! "+response.data.username, "success"); 
             return true;
         }catch(error){
+            console.error("Could not get user: ", error);
             return false;
         }
         
     },[getToken,showAlert]);
 
-    const updateCharacter = useCallback(async (id,username,image, centerColor, borderColor, iconColor, iconType, callback) => {
+    const updateCharacter = useCallback(async (id,requestBody, callback) => {
         try{
             const token = await getToken();
-            const response = await updateUserCharacter(id,username,image, centerColor, borderColor, iconColor,iconType,token);
+            const response = await updateUserCharacter(id,requestBody,token);
             callback(response.data);
             showAlert("Character updated successfully!","success"); 
         }catch(error){
+            console.error("Could not update character: ", error);
             showAlert("Could not update character", "error");
         }
         
@@ -69,6 +72,7 @@ export function useUserLogin() {
             const response = await getUsersCharacters(users,token);
             return response.data 
         }catch(error){
+            console.error("Could not get character: ", error);
             showAlert("Could not get character", "error");
         }
         
@@ -77,11 +81,10 @@ export function useUserLogin() {
     const getFriendSuggestions = useCallback(async (userId, params = {}) => {
     try {
         const token = await getToken();
-        console.log(params);
         const response = await getPotentialFriends(userId, token, params);
-        console.log(response.data.users);
         return response.data.users;
     } catch (error) {
+        console.error("Could not fetch friend suggestions: ", error);
         showAlert("Could not fetch friend suggestions", "error");
         return [];
     }
@@ -91,9 +94,9 @@ export function useUserLogin() {
         try {
             const token = await getToken();
             const response = await getFriends(userId, token);
-            console.log(response)
             callback(response.data.users);
         } catch (error) {
+            console.error("Could not fetch friends: ", error);
             showAlert("Could not fetch friends", "error");
         }
     }, [getToken, showAlert]);
@@ -105,6 +108,7 @@ export function useUserLogin() {
             callback?.(response.data);
             showAlert("Friend added successfully!", "success");
         } catch (error) {
+            console.error("Could not add friend: ", error);
             showAlert("Could not add friend", "error");
         }
     }, [getToken, showAlert]);
@@ -116,6 +120,7 @@ export function useUserLogin() {
             callback?.(response.data);
             showAlert("Friend removed successfully!", "success");
         } catch (error) {
+            console.error("Could not remove friend: ", error);
             showAlert("Could not remove friend", "error");
         }
     }, [getToken, showAlert]);

@@ -1,13 +1,76 @@
-"use client"
-import { Box, IconButton, Fab } from "@mui/material"
-import { alpha } from "@mui/material/styles"
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft"
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
-import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
+import { useRef } from "react";
+import { Box, Fab, alpha } from "@mui/material";
+import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
+import PropTypes from 'prop-types';
+/**
+ * Componente carga los controles del movil
+ * @param {Object} props - Propiedades del componente
+ * @param {function} props.onMoveStart - funcion para identificar el movimiento
+ * @param {function} props.onMoveEnd - funcion para eliminar movimiento
+ * @param {function} props.onActionStart - funcion para empezar la accion
+ * @param {function} props.onActionEnd - funcion para terminar la accion
+ * @returns {JSX.Element} Componente de overlay de carga
+ */
+export const MobileControls = ({ onMoveStart, onMoveEnd, onActionStart, onActionEnd }) => {
+  const joystickRef = useRef(null);
+  const stickRef = useRef(null);
+  const moveDirectionRef = useRef(null);
+  const isDraggingRef = useRef(false);
 
-export default function MobileControls({ onMoveStart, onMoveEnd, onActionStart, onActionEnd }) {
+  const getDirection = (dx, dy) => {
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    if (angle >= -45 && angle <= 45) return "ArrowRight";
+    if (angle > 45 && angle < 135) return "ArrowDown";
+    if (angle >= 135 || angle <= -135) return "ArrowLeft";
+    if (angle < -45 && angle > -135) return "ArrowUp";
+    return null;
+  };
+
+  const handleTouchStart = (e) => {
+    isDraggingRef.current = true;
+    const base = joystickRef.current.getBoundingClientRect();
+
+    const move = (ev) => {
+      const t = ev.touches[0];
+      const dx = t.clientX - (base.left + base.width / 2);
+      const dy = t.clientY - (base.top + base.height / 2);
+
+      const direction = getDirection(dx, dy);
+      if (direction !== moveDirectionRef.current) {
+        if (moveDirectionRef.current) onMoveEnd(moveDirectionRef.current);
+        if (direction) onMoveStart(direction);
+        moveDirectionRef.current = direction;
+      }
+
+      const stick = stickRef.current;
+      const maxDistance = 40;
+      const distance = Math.min(Math.hypot(dx, dy), maxDistance);
+      const angle = Math.atan2(dy, dx);
+      const x = distance * Math.cos(angle);
+      const y = distance * Math.sin(angle);
+
+      stick.style.transition = "none"; 
+      stick.style.transform = `translate(${x}px, ${y}px)`;
+    };
+
+    const end = () => {
+      if (moveDirectionRef.current) {
+        onMoveEnd(moveDirectionRef.current);
+        moveDirectionRef.current = null;
+      }
+
+      const stick = stickRef.current;
+      isDraggingRef.current = false;
+      stick.style.transition = "transform 0.15s ease-out"; 
+      stick.style.transform = `translate(0px, 0px)`;
+
+      window.removeEventListener("touchmove", move);
+      window.removeEventListener("touchend", end);
+    };
+
+    window.addEventListener("touchmove", move, { passive: false });
+    window.addEventListener("touchend", end);
+  };
 
   return (
     <Box
@@ -18,59 +81,53 @@ export default function MobileControls({ onMoveStart, onMoveEnd, onActionStart, 
         right: 0,
         display: "flex",
         justifyContent: "space-between",
+        alignItems: "center",
         p: 2,
         zIndex: 100,
+        pointerEvents: "none",
       }}
     >
-      {/* Controles direccionales (izquierda) */}
+      {/* Joystick */}
       <Box
+        ref={joystickRef}
         sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gridTemplateRows: "repeat(3, 1fr)",
-          gap: 0.5,
-          width: "150px",
-          height: "150px",
+          position: "relative",
+          width: 150,
+          height: 150,
+          borderRadius: "50%",
+          bgcolor: alpha("#000000", 0.2),
+          border: `2px solid ${alpha("#ffffff", 0.3)}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "auto",
+          touchAction: "none",
+          boxShadow: "0 0 10px rgba(0,0,0,0.3)",
         }}
+        onTouchStart={handleTouchStart}
       >
-        {/* Fila superior */}
-        <Box sx={{ gridColumn: "1 / 2", gridRow: "1 / 2" }} /> {/* Espacio vacío */}
-        <IconButton
-          onTouchStart={() => onMoveStart("ArrowUp")}
-          onTouchEnd={() => onMoveEnd("ArrowUp")}
-          sx={{
-            gridColumn: "2 / 3",
-            gridRow: "1 / 2",
-            bgcolor: alpha("#000000", 0.6),
-            color: "white",
-            "&:hover": { bgcolor: alpha("#000000", 0.8) },
-            boxShadow: "0 0 10px rgba(0,0,0,0.3)",
-          }}
-        >
-          <KeyboardArrowUpIcon fontSize="large" />
-        </IconButton>
-        <Box sx={{ gridColumn: "3 / 4", gridRow: "1 / 2" }} /> {/* Espacio vacío */}
-        {/* Fila media */}
-        <IconButton
-        onTouchStart={() => onMoveStart("ArrowLeft")}
-        onTouchEnd={() => onMoveEnd("ArrowLeft")}
-          sx={{
-            gridColumn: "1 / 2",
-            gridRow: "2 / 3",
-            bgcolor: alpha("#000000", 0.6),
-            color: "white",
-            "&:hover": { bgcolor: alpha("#000000", 0.8) },
-            boxShadow: "0 0 10px rgba(0,0,0,0.3)",
-          }}
-        >
-          <KeyboardArrowLeftIcon fontSize="large" />
-        </IconButton>
+        {/* Base */}
         <Box
           sx={{
-            gridColumn: "2 / 3",
-            gridRow: "2 / 3",
+            position: "absolute",
+            width: "70%",
+            height: "70%",
             borderRadius: "50%",
-            bgcolor: alpha("#333333", 0.4),
+            bgcolor: alpha("#ffffff", 0.1),
+            border: `1px solid ${alpha("#ffffff", 0.2)}`,
+          }}
+        />
+        {/* Stick */}
+        <Box
+          ref={stickRef}
+          sx={{
+            position: "absolute",
+            width: 60,
+            height: 60,
+            borderRadius: "50%",
+            bgcolor: alpha("#ffc107", 0.8),
+            boxShadow: `0 0 15px ${alpha("#1976d2", 0.5)}`,
+            border: `2px solid ${alpha("#ffffff", 0.8)}`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -78,69 +135,47 @@ export default function MobileControls({ onMoveStart, onMoveEnd, onActionStart, 
         >
           <Box
             sx={{
-              width: "15px",
-              height: "15px",
+              width: 15,
+              height: 15,
               borderRadius: "50%",
-              bgcolor: alpha("#ffffff", 0.6),
+              bgcolor: alpha("#ffffff", 0.9),
             }}
           />
         </Box>
-        <IconButton
-        onTouchStart={() => onMoveStart("ArrowRight")}
-        onTouchEnd={() => onMoveEnd("ArrowRight")}
-          sx={{
-            gridColumn: "3 / 4",
-            gridRow: "2 / 3",
-            bgcolor: alpha("#000000", 0.6),
-            color: "white",
-            "&:hover": { bgcolor: alpha("#000000", 0.8) },
-            boxShadow: "0 0 10px rgba(0,0,0,0.3)",
-          }}
-        >
-          <KeyboardArrowRightIcon fontSize="large" />
-        </IconButton>
-        <Box sx={{ gridColumn: "1 / 2", gridRow: "3 / 4" }} /> 
-        <IconButton
-        onTouchStart={() => onMoveStart("ArrowDown")}
-        onTouchEnd={() => onMoveEnd("ArrowDown")}
-          sx={{
-            gridColumn: "2 / 3",
-            gridRow: "3 / 4",
-            bgcolor: alpha("#000000", 0.6),
-            color: "white",
-            "&:hover": { bgcolor: alpha("#000000", 0.8) },
-            boxShadow: "0 0 10px rgba(0,0,0,0.3)",
-          }}
-        >
-          <KeyboardArrowDownIcon fontSize="large" />
-        </IconButton>
-        <Box sx={{ gridColumn: "3 / 4", gridRow: "3 / 4" }} /> 
       </Box>
 
-      {/* Botón de acción (derecha) */}
+      {/* Action Button */}
       <Box
         sx={{
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "flex-end",
+          pointerEvents: "auto",
         }}
       >
         <Fab
-        onTouchStart={onActionStart}
-        onTouchEnd={onActionEnd}
+          onTouchStart={onActionStart}
+          onTouchEnd={onActionEnd}
           color="primary"
           size="large"
           sx={{
-            width: 70,
-            height: 70,
-            bgcolor: alpha("#1976d2", 0.8),
-            "&:hover": { bgcolor: alpha("#1976d2", 0.9) },
-            boxShadow: "0 0 15px rgba(25, 118, 210, 0.5)",
+            width: 80,
+            height: 80,
+            bgcolor: alpha("#ffc107", 0.8),
+            "&:hover": { bgcolor: alpha("#f9d466", 0.9) },
+            boxShadow: "0 0 15px rgba(192, 210, 25, 0.5)",
           }}
         >
-          <SportsSoccerIcon sx={{ fontSize: 40 }} />
+          <SportsSoccerIcon sx={{ fontSize: 60 }} />
         </Fab>
       </Box>
     </Box>
-  )
+  );
 }
+MobileControls.propTypes = {
+  onMoveStart: PropTypes.func.isRequired,
+  onMoveEnd: PropTypes.func.isRequired,
+  onActionStart: PropTypes.func.isRequired,
+  onActionEnd: PropTypes.func.isRequired,
+};
+
