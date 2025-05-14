@@ -6,69 +6,48 @@ import axios from "axios";
 const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL || "https://piglobby.duckdns.org:8081";
 
 export async function createRoom(newRoom, playerName, token) {
-    try {
-
-        const creatorName = playerName || "default";
-        const endpoint = `${API}/lobby`;
-        const requestBody = {
-            lobbyName: newRoom.name,
-            creatorName: creatorName,
-            maxPlayers: newRoom.maxPlayers,
-            privateLobby: newRoom.isPrivate
-        };
-        const response = await axios.post(endpoint, requestBody, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-            });
-        return response;
-    } catch (error) {
-        console.error("Error creating room:", error);
-        throw error;
-    }
+    const creatorName = playerName || "default";
+    const endpoint = `${API}/lobby`;
+    const requestBody = {
+        lobbyName: newRoom.name,
+        creatorName: creatorName,
+        maxPlayers: newRoom.maxPlayers,
+        privateLobby: newRoom.isPrivate
+    };
+    const response = await axios.post(endpoint, requestBody, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        });
+    return response;
 }
 
 export async function getGames(token) {
-    try {
-        const endpoint = `${API}/lobby`;
-        const response = await axios.get(endpoint, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-        return response;
-    } catch (error) {
-        console.error("Error getting games:", error);
-        throw error;
-    }
+    const endpoint = `${API}/lobby`;
+    const response = await axios.get(endpoint, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        });
+    return response;
 }
 
 export async function getGame(id,token) {
-    try {
-        const endpoint = `${API}/lobby/${id}`;
-        const response = await axios.get(endpoint, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-        return response;
-    } catch (error) {
-        console.error("Error getting games:", error);
-        throw error;
-    }
+    const endpoint = `${API}/lobby/${id}`;
+    const response = await axios.get(endpoint, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        });
+    return response;
 }
 
 export async function finishGame(id,token) {
-    try {
-        const endpoint = `${API}/lobby/${id}`;
-        const response = await axios.delete(endpoint, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-        return response;
-    } catch (error) {
-        console.error("Error deleting game:", error);
-        throw error;
-    }
+    const endpoint = `${API}/lobby/${id}`;
+    const response = await axios.delete(endpoint, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        });
+    return response;
 }

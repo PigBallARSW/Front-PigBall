@@ -37,6 +37,7 @@ import { useUser } from "../../context/user/userContext"
 import { useUserLogin } from "../../Modules/useUserLogin"
 import { useNavigate } from "react-router-dom"
 import { CustomizerUser } from "../user/CustomizerUser"
+import PropTypes from 'prop-types';
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -66,7 +67,15 @@ function TabPanel(props) {
     </div>
   )
 }
-
+TabPanel.propTypes = {
+  children: PropTypes.node.isRequired, 
+  value: PropTypes.any.isRequired, 
+  index: PropTypes.any.isRequired, 
+};
+/**
+ * Componente mostrar caracterizacion del jugador
+ * @returns {JSX.Element} Componente para mostrar info del jugador
+ */
 export default function CustomPlayer() {
     const navigate = useNavigate();
   const {playerData, setPlayer} = useUser();
@@ -158,13 +167,20 @@ export default function CustomPlayer() {
   const saveCharacter = async () => {
     let centerIcon = getIcon()
     if(playerData?.id){
-        await updateCharacter(playerData.id, playerName, centerIcon, playerColor, borderColor,emblemColor,emblemType, setPlayer)
+        const requestBody = {
+            username: playerName,
+            image: centerIcon,
+            centerColor: playerColor,
+            borderColor: borderColor,
+            iconColor: emblemColor,
+            iconType: emblemType
+        }
+        await updateCharacter(playerData.id, requestBody, setPlayer)
         navigate("/homepage")
     }
   }
 
   return (
-    <>
     <Container maxWidth="lg" sx={{ padding: 2 }}>
         <Box sx={{ textAlign: "center", mb: 2 }}>
             <Typography variant="h6" sx={{ color: "secondary.light" }}>
@@ -643,6 +659,5 @@ export default function CustomPlayer() {
         </CardContent>
         </Card>
     </Container>
-    </>
   )
 }

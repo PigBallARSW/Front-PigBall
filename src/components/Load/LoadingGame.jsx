@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Box, Typography, LinearProgress, CircularProgress } from "@mui/material"
 import { alpha, keyframes } from "@mui/material/styles"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
@@ -48,7 +48,11 @@ const loadingMessages = [
   "Adjusting the heels of the boots...",
 ]
 
-export default function LoadingGame({ }) {
+/**
+ * Componente de overlay de carga para inciar el juego
+ * @returns {JSX.Element} Componente de overlay de carga
+ */
+export default function LoadingGame() {
   const [progress, setProgress] = useState(0)
   const [messageIndex, setMessageIndex] = useState(0)
 

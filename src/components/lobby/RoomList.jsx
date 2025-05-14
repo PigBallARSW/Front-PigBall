@@ -23,7 +23,14 @@ import {
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { motion } from "framer-motion"
 import { useLobbyService } from "../../Modules/useLobbyService";
+import PropTypes from 'prop-types';
 
+/**
+ * Componente que muestra la lista de jugadores
+ * @param {Object} props - Propiedades del componente
+ * @param {Array} props.gameRooms - Lista delas salas
+ * @returns {JSX.Element} Lista de jugadores
+ */
 
 export const RoomList = ({ gameRooms }) => {
   const{joinRoom} = useLobbyService();
@@ -197,6 +204,8 @@ export const RoomList = ({ gameRooms }) => {
       )}
     </List>
   )
-
 }
+RoomList.propTypes = {
+  gameRooms: PropTypes.array.isRequired
+};
 

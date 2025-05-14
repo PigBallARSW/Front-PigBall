@@ -7,8 +7,19 @@ import { Ball } from "./Ball";
 import { Camera } from "./Camera";
 import TileSpriteComponent from "./TileImage";
 import { BallDirectionArrow } from "./BallDirectionArrow";
+import PropTypes from 'prop-types';
 
-export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY, movePlayer, players, ball, children}) {
+/**
+ * Componente de dibujo
+ * @param {Object} props - Propiedades del componente
+ * @param {Array} props.players - Lista de los jugadores
+ * @param {Object} props.ball - balon del juego
+ * @param {Object} props.canvasSize - tamaño del canvas
+ * @param {number} props.borderX - ancho del mapa
+ * @param {number} props.borderY - alto del mapa
+ * @returns {JSX.Element} dibujo de la cancha
+ */
+export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY,  players, ball}) {
     const MARGIN = 0;
     const GOAL_WIDTH = borderX * 0.03;
     const CANVAS_WIDTH = borderX + MARGIN * 2 + GOAL_WIDTH * 2;
@@ -31,12 +42,10 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
                 <Container x={fieldX + (MAP_WIDTH - CANVAS_WIDTH) / 2} y={fieldY + (MAP_HEIGHT - CANVAS_HEIGHT) / 2}>
                     <TileSpriteComponent width={borderX} height={borderY} />
                     <FieldDraw fieldWidth={borderX} fieldHeight={borderY} goalWidth={GOAL_WIDTH} />
-                <MoveContainer 
-                    movePlayer={movePlayer}
-                >
-                {players.map((player) => (
+                <MoveContainer>
+                {players.map((player,i) => (
                     <>
-                    <Player key={player.id} player={player} />
+                    <Player key={player.id +"-"+i} player={player} />
                     <BallDirectionArrow player={player} ball={ball} />
                     </>
                 ))}
@@ -47,3 +56,29 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
         </Container>
     )
 })
+
+ContainerField.propTypes = {
+  players: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        team: PropTypes.number.isRequired,
+        sessionId: PropTypes.string.isRequired,
+        kicking: PropTypes.bool,
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired
+      })
+    ).isRequired,
+     ball: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        velocityX: PropTypes.number.isRequired,
+        velocityY: PropTypes.number.isRequired
+      }).isRequired,
+  canvasSize: PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired
+  }).isRequired,
+  borderX: PropTypes.number.isRequired,
+  borderY: PropTypes.number.isRequired
+};

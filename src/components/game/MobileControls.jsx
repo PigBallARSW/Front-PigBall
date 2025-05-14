@@ -1,8 +1,17 @@
 import { useRef } from "react";
 import { Box, Fab, alpha } from "@mui/material";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
-
-export default function MobileControls({ onMoveStart, onMoveEnd, onActionStart, onActionEnd }) {
+import PropTypes from 'prop-types';
+/**
+ * Componente carga los controles del movil
+ * @param {Object} props - Propiedades del componente
+ * @param {function} props.onMoveStart - funcion para identificar el movimiento
+ * @param {function} props.onMoveEnd - funcion para eliminar movimiento
+ * @param {function} props.onActionStart - funcion para empezar la accion
+ * @param {function} props.onActionEnd - funcion para terminar la accion
+ * @returns {JSX.Element} Componente de overlay de carga
+ */
+export const MobileControls = ({ onMoveStart, onMoveEnd, onActionStart, onActionEnd }) => {
   const joystickRef = useRef(null);
   const stickRef = useRef(null);
   const moveDirectionRef = useRef(null);
@@ -19,7 +28,6 @@ export default function MobileControls({ onMoveStart, onMoveEnd, onActionStart, 
 
   const handleTouchStart = (e) => {
     isDraggingRef.current = true;
-    const touch = e.touches[0];
     const base = joystickRef.current.getBoundingClientRect();
 
     const move = (ev) => {
@@ -164,5 +172,10 @@ export default function MobileControls({ onMoveStart, onMoveEnd, onActionStart, 
     </Box>
   );
 }
-
+MobileControls.propTypes = {
+  onMoveStart: PropTypes.func.isRequired,
+  onMoveEnd: PropTypes.func.isRequired,
+  onActionStart: PropTypes.func.isRequired,
+  onActionEnd: PropTypes.func.isRequired,
+};
 

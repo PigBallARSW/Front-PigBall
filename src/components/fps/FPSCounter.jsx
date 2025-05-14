@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { Paper, Typography, IconButton, Box, Collapse } from '@mui/material';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import { alpha } from '@mui/material/styles';
+import React from 'react'
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
+import { Paper, Typography, Box, Collapse } from '@mui/material'
+import BarChartIcon from '@mui/icons-material/BarChart'
+import { alpha } from '@mui/material/styles'
+import PropTypes from 'prop-types'
 
-export default function FPSCounter({ fps, fpsHistory, showGraph }) {
+/**
+ * Componente para mostrar los FPS
+ * @param {Object} props - Propiedades del componente
+ * @param {number} props.fps - valor de los fps
+ * @param {Array} props.fpsHistory - Array con la historia de las solicitudes enviadas
+ * @param {boolean} props.showGraph - Booleano que indica si mostrar o no la grafica
+ * @returns {JSX.Element} Componente que carga los fps
+ */
+
+export const FPSCounter = ({ fps, fpsHistory, showGraph }) => {
   return (
     <Paper
       elevation={3}
@@ -35,17 +45,16 @@ export default function FPSCounter({ fps, fpsHistory, showGraph }) {
             height: 100, 
             mt: 1,
             width: "100%", 
-            px: 0, // Eliminar cualquier padding horizontal
-            mx: 0, // Eliminar cualquier margen horizontal
+            px: 0, 
+            mx: 0, 
             "& .recharts-wrapper": {
-              // Asegurar que el contenedor de Recharts no tenga márgenes internos
               margin: "0 !important",
             },
           }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart 
                 data={fpsHistory}
-                margin={{ top: 5, right: 0, left: -15, bottom: 5 }} // Ajuste para alinear con el texto superior
+                margin={{ top: 5, right: 0, left: -15, bottom: 5 }} 
               >
                 <XAxis dataKey="time" tick={{ fill: 'white', fontSize: 10 }} tickFormatter={() => ''} />
                 <YAxis domain={[0, 70]} tick={{ fill: 'white', fontSize: 10 }} />
@@ -65,3 +74,14 @@ export default function FPSCounter({ fps, fpsHistory, showGraph }) {
     </Paper>
   );
 }
+FPSCounter.propTypes = {
+  fps: PropTypes.number.isRequired,
+  fpsHistory: PropTypes.arrayOf(
+    PropTypes.shape({
+      time: PropTypes.string.isRequired,
+      fps: PropTypes.number.isRequired,
+      target: PropTypes.number.isRequired
+    })
+  ).isRequired,
+  showGraph: PropTypes.bool.isRequired
+};

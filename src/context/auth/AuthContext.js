@@ -1,8 +1,12 @@
-
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback,useMemo } from "react";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../authConfig";
+import PropTypes from 'prop-types';
 
+/**Autorizar usuario
+ * @param {JSX.Element} props.children -elementos que se deben verificar
+ * @returns {JSX.Element} Contexto para Autorizar al usuario
+ */
 const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const { instance } = useMsal();
@@ -54,9 +58,17 @@ export const AuthProvider = ({ children }) => {
         setUser(accounts[0]);
       }
     }, [instance]);
+
+    const contextValue = useMemo(() => ({
+    user,
+    token,
+    signInUser,
+    getToken,
+    signOut
+  }), [user, token, signInUser, getToken, signOut]);
   
     return (
-      <AuthContext.Provider value={{ user, token, signInUser, getToken, signOut }}>
+      <AuthContext.Provider value={contextValue}>
         {children}
       </AuthContext.Provider>
     );
@@ -65,3 +77,6 @@ export const AuthProvider = ({ children }) => {
     const context = useContext(AuthContext);
     return context;
   };
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired
+};

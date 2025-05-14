@@ -22,7 +22,7 @@ import { CreateRoom } from "../../components/lobby/CreateRoom";
 import { JoinRoom } from "../../components/lobby/JoinRoom";
 import { useRooms } from "../../context/lobby/useRooms";
 import { useLobby } from "../../context/lobby/useLobby";
-import LoadResponse from "../../components/Load/LoadResponse";
+import {LoadResponse} from "../../components/Load/LoadResponse";
 import { useNavigate } from "react-router-dom";
 
 export const Lobby = () => {

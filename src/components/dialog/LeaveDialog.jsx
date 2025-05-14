@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Typography,
   Button,
@@ -10,6 +10,16 @@ import {
 import {
   ExitToApp,
 } from "@mui/icons-material"
+import PropTypes from 'prop-types'
+
+/**
+ * Componente para abrir confirmar si se desea salir del juego
+ * @param {Object} props - Propiedades del componente
+ * @param {boolean} props.isLeaveDialogOpen - Booleano para abrir el dialogo
+ * @param {function} props.leaveRoom - Función que llama al broker para abandonar juego
+ * @param {function} props.setIsLeaveDialogOpen - Función para cerrar el dialogo
+ * @returns {JSX.Element} Componente de dialogo para dejar el juego
+ */
 export const LeaveDialog = ({leaveRoom, isLeaveDialogOpen, setIsLeaveDialogOpen}) => {
   const handleLeaveRoom = () => {
     setIsLeaveDialogOpen(false);
@@ -69,3 +79,9 @@ export const LeaveDialog = ({leaveRoom, isLeaveDialogOpen, setIsLeaveDialogOpen}
     </Dialog>
   )
 }
+
+LeaveDialog.propTypes = {
+    isLeaveDialogOpen: PropTypes.bool.isRequired,
+    leaveRoom: PropTypes.func.isRequired,
+    setIsLeaveDialogOpen: PropTypes.func.isRequired
+};

@@ -14,10 +14,9 @@ import {
   Logout,
   PersonAdd,
 } from "@mui/icons-material"
-import { useMsal } from "@azure/msal-react";
+import { useMsal,useIsAuthenticated } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
-import { useIsAuthenticated } from '@azure/msal-react';
-import Friends from "../../pages/friends/Friends";
+import {Friends} from "../../pages/friends/Friends";
 
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -37,9 +36,6 @@ export const Navbar = () => {
     };
     const handleGoHome = () => {
       navigation("/homepage");
-    }
-    const handleAddFriends = () => {
-      navigation("/homepage/addfriends");
     }
     const openFriends = () =>{
       setIsOpen(true)
