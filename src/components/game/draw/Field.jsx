@@ -8,8 +8,8 @@ import PropTypes from 'prop-types';
  * @param {Object} props - Propiedades del componente
  * @param {Array} props.players - Lista de los jugadores
  * @param {Object} props.ball - balon del juego
- * @param {number} props.borderX - ancho de todo el mapa
- * @param {number} props.borderY - alto de todo el mapa
+ * @param {number} props.borderX - ancho de el mapa
+ * @param {number} props.borderY - alto de el mapa
  * * @param {any} props.wrapperRef - tamaño del contenedor del juego
  * @returns {JSX.Element} dibujo de la cancha
  */

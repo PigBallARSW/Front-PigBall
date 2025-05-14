@@ -20,20 +20,24 @@ import {
 import {
   PersonAdd as PersonAddIcon,
   PersonRemove as PersonRemoveIcon,
-  Search as SearchIcon,
-  Person as PersonIcon,
-  PersonAdd,
-  Search
+  Search,
 } from "@mui/icons-material"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useUserLogin } from "../../Modules/useUserLogin"
 import { useUser } from "../../context/user/userContext"
 import StarIcon from '@mui/icons-material/Star';
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import { CustomizerUser } from "../../components/user/CustomizerUser"
-import { scrollbarStyles } from "../../components/themes/ScrollTheme"
+import PropTypes from 'prop-types'
 
-export default function Friends({closeDialog, isOpen}) {
+/**
+ * Componente para abrir lista de jugadores
+ * @param {Object} props - Propiedades del componente
+ * @param {boolean} props.isOpen - Booleano para abrir el dialogo
+ * @param {function} props.closeDialog - Función que cierra el dialogo
+ * @returns {JSX.Element} Componente de dialogo para jugadores
+ */
+export const Friends = ({closeDialog, isOpen}) => {
   const [tab, setTab] = useState(0)
   const [query, setQuery] = useState("")
   const [suggestions, setSuggestions] = useState([])
@@ -190,7 +194,7 @@ export default function Friends({closeDialog, isOpen}) {
                       }}
                     >
                       <ListItemAvatar>
-                        <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.playerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
+                        <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.centerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
                       </ListItemAvatar>
                       <ListItemText
                         primary={f.username}
@@ -265,7 +269,7 @@ export default function Friends({closeDialog, isOpen}) {
                       }}
                     >
                       <ListItemAvatar>
-                        <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.playerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
+                        <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.centerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
                       </ListItemAvatar>
                       <ListItemText
                         primary={f.username}
@@ -306,3 +310,7 @@ export default function Friends({closeDialog, isOpen}) {
     </Dialog>
   )
 }
+Friends.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  closeDialog: PropTypes.func.isRequired,
+};

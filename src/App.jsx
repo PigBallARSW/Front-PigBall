@@ -8,7 +8,7 @@ import { Main } from './components/main/Main';
 import { Login } from './pages/login/Login';
 import ProtectedRoutes from './utils/ProtectedRoutes';
 import CustomPlayer from './components/homepage/CustomPlayer';
-import Friends from './pages/friends/Friends';
+import {Friends} from './pages/friends/Friends';
 
 export default function App() {
 

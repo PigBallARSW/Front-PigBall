@@ -17,8 +17,8 @@ const getDynamicZoom = (playersCount, canvasWidth, canvasHeight, mapWidth, mapHe
  * @param {Object} props - Propiedades del componente
  * @param {Array} props.players - Lista de los jugadores
  * @param {Object} props.canvasSize - tamaño del canvas
- * @param {number} props.CANVAS_WIDTH - ancho de todo el mapa
- * @param {number} props.CANVAS_HEIGHT - alto de todo el mapa
+ * @param {number} props.CANVAS_WIDTH - ancho del mapa
+ * @param {number} props.CANVAS_HEIGHT - alto del mapa
  * @param {number} props.MAP_WIDTH - ancho del mapa con canchas
  * @param {number} props.MAP_HEIGHT - alto del mapa con canchas
  * @param {JSX.Element} props.children

@@ -26,7 +26,16 @@ import { PlayerList } from "./PlayerList";
 import { useTeams } from "../../context/lobby/useTeams";
 import { useUser } from "../../context/user/userContext";
 import { LeaveDialog } from "../dialog/LeaveDialog";
+import PropTypes from 'prop-types';
 
+/**
+ * Sala de espera
+ * @param {Object} props - Propiedades del componente
+ * @param {Object} props.roomData - Configuracion del juego
+ * @param {function} props.leaveRoom - Función para abandonar juego
+ * @param {function} props.onStartGame - Función para empezar juego
+ * @returns {JSX.Element} Componente de sala de espera
+ */
 export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveRoom, roomData }) {
   const {playerData} = useUser();
   const currentUser = playerData?.username || sessionStorage.getItem("username");
@@ -277,4 +286,47 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveR
   )
 })
 
+WaitingRoom.propTypes = {
+  roomData: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      gameName: PropTypes.string.isRequired,
+      creatorName: PropTypes.string.isRequired,
+      creationTime: PropTypes.string.isRequired,
+      startTime: PropTypes.string,
+      maxPlayers: PropTypes.number.isRequired,
+      privateGame: PropTypes.bool.isRequired,
+      borderX: PropTypes.number,
+      borderY: PropTypes.number,
+      status: PropTypes.string,
+      events: PropTypes.arrayOf(
+        PropTypes.shape({
+          first: PropTypes.string,
+          second: PropTypes.string
+        })
+      ),
+      players: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          team: PropTypes.number.isRequired,
+          sessionId: PropTypes.string,
+          kicking: PropTypes.bool,
+          x: PropTypes.number,
+          y: PropTypes.number
+        })
+      ).isRequired,
+      ball: PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number,
+        velocityX: PropTypes.number,
+        velocityY: PropTypes.number
+      }),
+      teams: PropTypes.shape({
+        first: PropTypes.number,
+        second: PropTypes.number
+      })
+    }).isRequired,      
+  leaveRoom: PropTypes.func.isRequired,       
+  onStartGame: PropTypes.func.isRequired,    
+};
 

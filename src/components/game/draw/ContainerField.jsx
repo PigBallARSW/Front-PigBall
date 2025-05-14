@@ -15,8 +15,8 @@ import PropTypes from 'prop-types';
  * @param {Array} props.players - Lista de los jugadores
  * @param {Object} props.ball - balon del juego
  * @param {Object} props.canvasSize - tamaño del canvas
- * @param {number} props.borderX - ancho de todo el mapa
- * @param {number} props.borderY - alto de todo el mapa
+ * @param {number} props.borderX - ancho del mapa
+ * @param {number} props.borderY - alto del mapa
  * @returns {JSX.Element} dibujo de la cancha
  */
 export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY,  players, ball}) {
@@ -43,9 +43,9 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
                     <TileSpriteComponent width={borderX} height={borderY} />
                     <FieldDraw fieldWidth={borderX} fieldHeight={borderY} goalWidth={GOAL_WIDTH} />
                 <MoveContainer>
-                {players.map((player) => (
+                {players.map((player,i) => (
                     <>
-                    <Player key={player.id} player={player} />
+                    <Player key={player.id +"-"+i} player={player} />
                     <BallDirectionArrow player={player} ball={ball} />
                     </>
                 ))}

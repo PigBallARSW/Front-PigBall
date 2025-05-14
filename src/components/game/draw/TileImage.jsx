@@ -5,8 +5,8 @@ import backgroundAsset from '../../../assets/images/tile2.png';
 import PropTypes from 'prop-types';
 /**
  * Componente para cargar el tile
- * @param {number} props.width - ancho de todo el mapa
- * @param {number} props.height - alto de todo el mapa
+ * @param {number} props.width - ancho de el mapa
+ * @param {number} props.height - alto de el mapa
  * @returns {JSX.Element} fondo de la cancha
  */
 const TileSpriteComponent = ({ width, height }) => {

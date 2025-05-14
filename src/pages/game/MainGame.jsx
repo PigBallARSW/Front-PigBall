@@ -1,4 +1,4 @@
-import React, {  useMemo, useState } from "react";
+import React, {  useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { WaitingRoom } from "../../components/lobby/WaitingRoom";
 import { useGame } from "../../context/game/useGame";

@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 /**
  * Componente de dibujo
  * @param {Object} props - Propiedades del componente
- * @param {number} props.fieldWidth - ancho de todo el mapa
- * @param {number} props.fieldHeight - alto de todo el mapa
+ * @param {number} props.fieldWidth - ancho de el mapa
+ * @param {number} props.fieldHeight - alto de el mapa
  * @param {number} props.goalWidth - Ancho de la cancha
  * @returns {JSX.Element} dibujo de la cancha
  */

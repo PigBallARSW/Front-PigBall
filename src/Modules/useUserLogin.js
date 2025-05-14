@@ -33,7 +33,6 @@ export function useUserLogin() {
         try{
             const token = await getToken();
             const response = await sendStats(stats, token);
-            console.log(response)
         }catch(error){
             console.error("Could not sendStats: ", error);
             showAlert("Could not sendStats", "error");
