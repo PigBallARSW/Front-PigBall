@@ -32,7 +32,7 @@ export function useUserLogin() {
     const sendStatsUser = useCallback(async (stats, callback) => {
         try{
             const token = await getToken();
-            const response = await sendStats(stats, token);
+            await sendStats(stats, token);
         }catch(error){
             console.error("Could not sendStats: ", error);
             showAlert("Could not sendStats", "error");
