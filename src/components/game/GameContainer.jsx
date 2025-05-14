@@ -162,7 +162,6 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
         wrapperRef={fieldWrapperRef}
         players={players}
         ball={ball}
-        movePlayer={movePlayer}
         borderX={gameState.borderX}
         borderY={gameState.borderY}
       />

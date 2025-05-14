@@ -17,7 +17,18 @@ import {
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import { CustomizerUser } from "../user/CustomizerUser";
 import { scrollbarStyles } from "../themes/ScrollTheme";
-  
+import PropTypes from 'prop-types';
+
+/**
+ * Componente que muestra la lista de jugadores
+ * @param {Object} props - Propiedades del componente
+ * @param {Array} props.teamAPlayers - Lista de jugadores del equipo A
+ * @param {Array} props.teamBPlayers - Lista de jugadores del equipo B
+ * @param {function} props.onStartGame - Funcion para empezar juego
+ * @param {boolean} props.isHost - Indica si el usuario actual es el host
+ * @param {string} props.host- Nombre del Host del juego
+ * @returns {JSX.Element} Lista de jugadores
+ */
 export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, host})  => {  
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -79,9 +90,9 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                     </Box>
                   
                   <List dense disablePadding sx={{pt:"10px"}}>
-                    {teamAPlayers.map((player,i) => (
+                    {teamAPlayers.map((player) => (
                       <ListItem
-                        key={i}
+                        key={player.id}
                         sx={{
                           bgcolor: "rgba(33, 150, 243, 0.1)",
                           borderRadius: 1,
@@ -115,7 +126,7 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                           }
                           secondary={
                             <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                              Games won: {player?.gamesWon ? player.gamesWon : 0}
+                              Games won: {player?.gamesWon || 0}
                             </Typography>
                           }
                         />
@@ -176,9 +187,9 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
                     </Box>
              
                   <List dense disablePadding sx={{pt:"10px"}}>
-                    {teamBPlayers.map((player,i) => (
+                    {teamBPlayers.map((player) => (
                       <ListItem
-                        key={i}
+                        key={player.id}
                         sx={{
                           bgcolor: "rgba(244, 67, 54, 0.1)",
                           borderRadius: 1,
@@ -264,3 +275,10 @@ export const PlayerList = ({teamAPlayers, teamBPlayers, onStartGame, isHost, hos
         </>
     )
   }
+  PlayerList.propTypes = {
+  teamAPlayers: PropTypes.array.isRequired,   
+  teamBPlayers: PropTypes.array.isRequired,    
+  onStartGame: PropTypes.func.isRequired,      
+  isHost: PropTypes.bool.isRequired,           
+  host: PropTypes.string.isRequired            
+};

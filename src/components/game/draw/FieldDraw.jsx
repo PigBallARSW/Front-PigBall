@@ -1,6 +1,15 @@
 import { Graphics } from "@pixi/react";
 import React, { useCallback } from "react";
+import PropTypes from 'prop-types';
 
+/**
+ * Componente de dibujo
+ * @param {Object} props - Propiedades del componente
+ * @param {number} props.fieldWidth - ancho de todo el mapa
+ * @param {number} props.fieldHeight - alto de todo el mapa
+ * @param {number} props.goalWidth - Ancho de la cancha
+ * @returns {JSX.Element} dibujo de la cancha
+ */
 const FieldDrawComponent = ({ fieldWidth, fieldHeight, goalWidth }) => {
     const draw = useCallback((g) => {
         g.clear();
@@ -95,3 +104,9 @@ const FieldDrawComponent = ({ fieldWidth, fieldHeight, goalWidth }) => {
     return <Graphics draw={draw} />;
 };
 export const FieldDraw = React.memo(FieldDrawComponent);
+
+FieldDrawComponent.propTypes = {
+  fieldWidth: PropTypes.number.isRequired,
+  fieldHeight: PropTypes.number.isRequired,
+  goalWidth: PropTypes.number.isRequired,
+};

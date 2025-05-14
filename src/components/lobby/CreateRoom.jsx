@@ -1,4 +1,3 @@
-
 "use client"
 import React, { useState } from "react"
 import {
@@ -26,6 +25,14 @@ import {
 } from "@mui/icons-material"
 import {useLobbyService } from "../../Modules/useLobbyService";
 import { useUser } from "../../context/user/userContext";
+import PropTypes from 'prop-types';
+/**
+ * Componente crear sala
+ * @param {Object} props - Propiedades del componente
+ * @param {function} props.OpenDialog - Abrir el dialog
+ * * @param {function} props.CloseDialog - Cerrar el dialog
+ * @returns {JSX.Element} Componente para crear una sala
+ */
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
   const {createNewRoom} = useLobbyService();
   const {playerData} = useUser();
@@ -304,4 +311,9 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
     </DialogActions>
   </Dialog>
   )
+}
+
+CreateRoom.propTypes = {
+  OpenDialog: PropTypes.func.isRequired,
+  CloseDialog: PropTypes.func.isRequired,
 }
