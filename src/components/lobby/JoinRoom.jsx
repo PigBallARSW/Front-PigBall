@@ -18,7 +18,14 @@ import {
 } from "@mui/icons-material";
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import { useLobbyService } from "../../Modules/useLobbyService";
-
+import PropTypes from 'prop-types';
+/**
+ * Componente crear sala
+ * @param {Object} props - Propiedades del componente
+ * @param {function} props.OpenDialog - Abrir el dialog
+ * * @param {function} props.CloseDialog - Cerrar el dialog
+ * @returns {JSX.Element} Componente para crear una sala
+ */
 export const JoinRoom = ({OpenDialog,CloseDialog}) => {
   const{joinRoom} = useLobbyService();
     const [id, setId] = useState("");
@@ -172,4 +179,8 @@ export const JoinRoom = ({OpenDialog,CloseDialog}) => {
     </DialogActions>
   </Dialog>
   )
+}
+JoinRoom.propTypes = {
+  OpenDialog: PropTypes.func.isRequired,
+  CloseDialog: PropTypes.func.isRequired,
 }

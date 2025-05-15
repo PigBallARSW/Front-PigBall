@@ -11,9 +11,15 @@ import Grid from '@mui/material/Grid2';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
 import { motion } from "framer-motion";
 import { CustomizerUser } from "../user/CustomizerUser";
-
-
-export default function Character({player, customPlayer}) {
+import PropTypes from 'prop-types';
+/**
+ * Componente de informacion del jugador
+ * @param {Object} props - Propiedades del componente
+ * @param {Object} props.player - Jugador 
+ * * @param {function} props.customPlayer - Funcion que lleva a la pagina de customizacion
+ * @returns {JSX.Element} Componente para mostrar info del jugador
+ */
+export const Character = ({player, customPlayer}) => {
     return (
         <Grid size={{
             xs: 12,
@@ -53,3 +59,16 @@ export default function Character({player, customPlayer}) {
     )
 
 }
+
+Character.propTypes = {
+  player: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    centerColor: PropTypes.string.isRequired,
+    borderColor: PropTypes.string.isRequired,
+    iconType: PropTypes.string.isRequired,
+    iconColor: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+  }).isRequired,
+  customPlayer: PropTypes.func.isRequired
+};

@@ -3,8 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import { useAlert } from "../alert/AlertContext";
 import { useUser } from "../user/userContext";
-import _ from "lodash";
 import { useFpsTracker } from './useFpsTracker';
+import {
+  handlePlayersMessage,
+  handleStartedMessage,
+  handlePlayMessage,
+  handleGoalMessage,
+  subscribeToTopics
+} from "../../utils/gameBrokerHandlers"
 
 export function useGame(id, addGoal, setLoading) {
   const { showAlert } = useAlert();
@@ -21,9 +27,8 @@ export function useGame(id, addGoal, setLoading) {
   const { signalFramesReached, fps, fpsHistory } = useFpsTracker();
 
   const playerName = useMemo(() => {
-    const storedName = sessionStorage.getItem("usarname") || `Guest${Math.floor(Math.random() * 10000000)}`;
-    const finalName = playerData?.username || storedName;
-    sessionStorage.setItem("usarname", finalName);
+    const finalName = playerData?.username;
+    sessionStorage.setItem("usarname", playerData?.username);
     return finalName;
   }, [playerData?.username]);
 
@@ -31,67 +36,42 @@ export function useGame(id, addGoal, setLoading) {
     return playerData?.id || `guest-${Math.floor(Math.random() * 10000000)}`;
   }, [playerData?.id]);
 
+
   const connectToBroker = useCallback(() => {
-    const brokerUrl = process.env.REACT_APP_API_GAME_URL || process.env.REACT_APP_API_GAME_URL_LOCAL || "wss://piggame.duckdns.org:8080/pigball";
+    const brokerUrl =
+      process.env.REACT_APP_API_GAME_URL ||
+      process.env.REACT_APP_API_GAME_URL_LOCAL ||
+      "wss://piggame.duckdns.org:8080/pigball";
 
     const client = new Client({
       brokerURL: brokerUrl,
       onConnect: () => {
-        isConnected.current = true;
-        client.subscribe(`/topic/players/${id}`, (message) => {
-          const body = JSON.parse(message.body);
-          console.log(body)
-          setGameState(body);
-          if (body.startTime !== null) setGameStarted(true);
-        });
+      isConnected.current = true;
+        const handlers = {
+          players: handlePlayersMessage(setGameState, setGameStarted),
+          started: handleStartedMessage(setGameState, setGameStarted, setLoading),
+          play: handlePlayMessage(setPlayers, setBall, messageCountRef, signalFramesReached, FRAME_RATE),
+          goal: handleGoalMessage(setGameState, addGoal),
+        };
+
+        subscribeToTopics(client, id, handlers);
 
         client.publish({
           destination: `/app/join/${id}`,
-          body: JSON.stringify({ name: playerName, id: playerId })
-        });
-
-        client.subscribe(`/topic/started/${id}`, (message) => {
-          setLoading(false)
-          setGameState(JSON.parse(message.body));
-          setGameStarted(true);
-        });
-
-        client.subscribe(`/topic/play/${id}`, (message) => {
-          const data = JSON.parse(message.body);
-          setPlayers(prev => _.isEqual(prev, data.players) ? prev : data.players);
-          setBall(prev => _.isEqual(prev, data.ball) ? prev : data.ball);
-
-          messageCountRef.current += 1;
-          if (messageCountRef.current >= FRAME_RATE) {
-            signalFramesReached();
-            messageCountRef.current = 0;
-          }
-        });
-
-        client.subscribe(`/topic/goal/${id}`, (message) => {
-          const newState = JSON.parse(message.body);
-          setGameState(prev => _.isEqual(prev, newState) ? prev : newState);
-          addGoal(newState)
+          body: JSON.stringify({ name: playerName, id: playerId }),
         });
       },
-      onStompError: (frame) => {
-        console.error("STOMP error:", frame.body);
-      },
-      onWebSocketError: (error) => {
-        console.error("WebSocket error:", error);
-      },
-      onWebSocketClose: () => {
-        console.warn("WebSocket closed");
-      }
+      onStompError: (frame) => console.error("STOMP error:", frame.body),
+      onWebSocketError: (error) => console.error("WebSocket error:", error),
+      onWebSocketClose: () => console.warn("WebSocket closed")
     });
 
     client.activate();
     stompClient.current = client;
-  }, [id, playerName, playerId, signalFramesReached, addGoal]);
-
+  }, [id, playerName, playerId, signalFramesReached, addGoal, setLoading]);
 
   const handleStartGame = useCallback(() => {
-    setLoading(true)
+    setLoading(true);
     if (stompClient.current?.connected) {
       stompClient.current.publish({ destination: `/app/start/${id}` });
     } else {
@@ -150,6 +130,7 @@ export function useGame(id, addGoal, setLoading) {
     handleMovePlayer,
   };
 }
+
 
 
 

@@ -13,6 +13,8 @@ body {
   min-height: 100vh;
   z-index: -1;
   position: relative;
+  overflow-y: overlay;
+  scrollbar-width: thin;
 }
 .containerField {
   width: 100vw;

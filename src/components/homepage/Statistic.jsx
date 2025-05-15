@@ -19,15 +19,26 @@ import {
 } from "@mui/icons-material"
 import { motion } from "framer-motion";
 import { useEffect, useState } from 'react';
-export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,winRate }) {
-  const [countMatches, setCountPlayed] = useState(0);
+import PropTypes from 'prop-types';
+/**
+ * Componente de estadisticas del jugador
+ * @param {Object} props - Propiedades del componente
+ * @param {number} props.matchesPlayed - Partidas jugadas 
+ * @param {number} props.matchesWon -Partidas ganadas
+ * @param {number} props.matchesLost -Partidas perdidas
+ * @param {number} props.score -Puntaje
+ * @param {number} props.winRate -Porcentaje del puntaje
+ * @returns {JSX.Element} Componente para mostrar estadisticas del jugador
+ */
+export const Statistic = ({matchesPlayed,matchesWon,matchesLost,score,winRate }) => {
+  const [countMatches, setCountMatches] = useState(0);
   const [countWon, setCountWon] = useState(0);
   const [countLost, setCountLost] = useState(0);
   const [countScore, setCountScore] = useState(0);
   const [countWin, setCountWin] = useState(0);
 
   useEffect(() => {
-    animation(matchesPlayed,setCountPlayed)
+    animation(matchesPlayed,setCountMatches)
   }, [matchesPlayed]);
   useEffect(() => {
     animation(matchesWon,setCountWon)
@@ -235,3 +246,10 @@ export default function Statistic ({matchesPlayed,matchesWon,matchesLost,score,w
         </Grid>
     )
 }
+Statistic.propTypes = {
+  matchesPlayed: PropTypes.number.isRequired,
+  matchesWon: PropTypes.number.isRequired,
+  matchesLost: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
+  winRate: PropTypes.number.isRequired,
+};

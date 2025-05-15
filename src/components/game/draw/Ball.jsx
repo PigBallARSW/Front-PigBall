@@ -1,7 +1,15 @@
 import { Graphics } from '@pixi/react';
 import React from 'react';
-
-export const Ball = React.memo(({ fieldX, fieldY, ball }) => {
+import PropTypes from 'prop-types';
+/**
+ * Componente para resumir el juego
+ * @param {Object} props - Propiedades del componente
+ * @param {number} props.fieldX - Ancho de la cancha
+ * @param {number} props.fieldY - Alto de la cancha
+ * @param {Object} props.ball - balon del juego
+ * @returns {JSX.Element} Resume el juego
+ */
+export const Ball = React.memo(({ ball }) => {
     if (!ball) return null;
     const ballRadius = 10;
     const xPos = ball.x;
@@ -20,3 +28,12 @@ export const Ball = React.memo(({ fieldX, fieldY, ball }) => {
         />
     );
 })
+
+Ball.propTypes = {
+    ball: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        velocityX: PropTypes.number.isRequired,
+        velocityY: PropTypes.number.isRequired
+    }).isRequired,
+};

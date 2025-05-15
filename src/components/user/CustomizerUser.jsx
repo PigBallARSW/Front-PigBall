@@ -2,7 +2,22 @@ import React from "react";
 import { User } from "./User";
 import { Box, Typography } from "@mui/material";
 import { Bolt, EmojiEvents, Favorite, Flag, Shield, SportsBasketball, SportsFootball, SportsSoccer, SportsTennis, Star } from "@mui/icons-material";
- 
+import PropTypes from 'prop-types';
+/**
+ * Componente customizacion del jugador
+ * @param {Object} props - Propiedades del componente
+ * @param {number} props.width - Ancho del componente
+ * @param {number} props.height - Alto del componente
+ * @param {string} props.playerName - Nombre del jugador
+ * @param {string} props.playerColor - Color principal del jugador
+ * @param {string} props.borderColor - Color del borde
+ * @param {string} props.iconType - Tipo de ícono
+ * @param {string} props.iconColor - Color del ícono
+ * @param {string} props.icon - Nombre del ícono
+ * @param {string} props.shadow - Sombra del jugador
+ * @param {JSX.Element} props.children -Customizacion del jugador
+ * @returns {JSX.Element} Componente para mostrar la customizacion del jugador
+ */
 export const CustomizerUser = ({ width, height, playerName, playerColor, borderColor, iconType, iconColor, icon, shadow }) => {
     const icons = {
         football: <SportsSoccer fontSize="inherit" />,
@@ -16,45 +31,28 @@ export const CustomizerUser = ({ width, height, playerName, playerColor, borderC
         basketball: <SportsBasketball fontSize="inherit" />,
         american: <SportsFootball fontSize="inherit" />,
     };
-
-    return (
-        <User
-            name={playerName}
-            width={width}
-            height={height}
-            color={playerColor}
-            border={borderColor ? "3px solid " + borderColor : null}
-            shadow={shadow}
-        >
-            {(iconType !== "none" && icon !== "none" && iconType && icon)  ? 
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "50%",
-                    overflow: "hidden",
-                }}
-            >
-                {iconType === "image" ? (
+    const selectCustomization = () => {
+        switch (iconType) {
+            case "image":
+                return (
                     <Box
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "50%",
-                        overflow: "hidden",
-                    }}
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "50%",
+                            overflow: "hidden",
+                        }}
                     >
-                    <Box
-                        component="img"
-                        src={icon}
-                        alt="Custom"
-                        sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
+                        <Box
+                            component="img"
+                            src={icon}
+                            alt="Custom"
+                            sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
                     </Box>
-                ) : iconType === "icon" ? (
+                );
+            case "icon":
+                return (
                     <Box
                         sx={{
                             color: iconColor,
@@ -63,7 +61,9 @@ export const CustomizerUser = ({ width, height, playerName, playerColor, borderC
                     >
                         {icons[icon]}
                     </Box>
-                ) : iconType === "number" ? (
+                );
+            case "number":
+                return (
                     <Typography
                         variant="h3"
                         component="span"
@@ -75,7 +75,9 @@ export const CustomizerUser = ({ width, height, playerName, playerColor, borderC
                     >
                         {icon}
                     </Typography>
-                ) : (
+                );
+            case "emoji":
+                return (
                     <Typography
                         variant="h2"
                         sx={{
@@ -84,12 +86,38 @@ export const CustomizerUser = ({ width, height, playerName, playerColor, borderC
                     >
                         {icon}
                     </Typography>
-                )
-                }
-            </Box> : null
+                );
+            default:
+                return null;
+        }
+    }
+
+
+    return (
+        <User
+            name={playerName}
+            width={width}
+            height={height}
+            color={playerColor}
+            border={borderColor ? "3px solid " + borderColor : null}
+            shadow={shadow}
+        >
+            {(iconType !== "none" && icon !== "none" && iconType && icon)  ? 
+            selectCustomization() : null
             }
         </User>
     );
+};
+CustomizerUser.propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  playerName: PropTypes.string,
+  playerColor: PropTypes.string,
+  borderColor: PropTypes.string,
+  iconType: PropTypes.string,
+  iconColor: PropTypes.string,
+  icon: PropTypes.string,
+  shadow: PropTypes.string
 };
 
 
