@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import {
   Typography,
   Tabs,
@@ -23,12 +23,12 @@ import {
   Search,
 } from "@mui/icons-material"
 import { motion } from "framer-motion"
-import { useUserLogin } from "../../Modules/useUserLogin"
-import { useUser } from "../../context/user/userContext"
 import StarIcon from '@mui/icons-material/Star';
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import { CustomizerUser } from "../../components/user/CustomizerUser"
 import PropTypes from 'prop-types'
+import { useFriends } from "../../context/friends/useFriends"
+import { useFilterFriends } from "../../context/friends/useFilterFriends"
 
 /**
  * Componente para abrir lista de jugadores
@@ -38,48 +38,10 @@ import PropTypes from 'prop-types'
  * @returns {JSX.Element} Componente de dialogo para jugadores
  */
 export const Friends = ({closeDialog, isOpen}) => {
-  const [tab, setTab] = useState(0)
   const [query, setQuery] = useState("")
-  const [suggestions, setSuggestions] = useState([])
-  const [friends, setFriends] = useState([])
-
-  const {
-    getFriendSuggestions,
-    sendFriendRequest,
-    fetchFriends,
-    deleteFriend
-  } = useUserLogin()
-  const { playerData } = useUser()
-
-  useEffect(() => {
-    if (!playerData?.id || tab !== 0) return;
-    if (!playerData?.id) return
-    const timeout = setTimeout(() => {
-      getFriendSuggestions(playerData.id, { search: query })
-        .then(setSuggestions)
-        .catch(() => setSuggestions([]))
-    }, 500)
-    return () => clearTimeout(timeout)
-  }, [query, playerData, getFriendSuggestions, tab])
-
-
-  useEffect(() => {
-    if (!playerData?.id) return
-    fetchFriends(playerData.id, setFriends)
-  }, [playerData, fetchFriends])
-
-  const handleAddFriend = async (id) => {
-    await sendFriendRequest(playerData.id, id, () => {
-      setSuggestions(s => s.filter(u => u.id !== id))
-      fetchFriends(playerData.id, setFriends)
-    })
-  }
-  const handleRemoveFriend = async (id) => {
-    await deleteFriend(playerData.id, id, () => {
-      setFriends(f => f.filter(u => u.id !== id))
-    })
-  }
-
+  const [tab, setTab] = useState(0)
+  const {friends, suggestions, handleAddFriend, handleRemoveFriend, setSuggestions} = useFriends()
+  useFilterFriends(setSuggestions, query, tab)
   return (
     <Dialog
       open={isOpen}
