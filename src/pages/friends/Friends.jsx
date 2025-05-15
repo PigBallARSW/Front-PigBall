@@ -32,11 +32,10 @@ import CloseIcon from '@mui/icons-material/Close';
 /**
  * Componente para abrir lista de jugadores
  * @param {Object} props - Propiedades del componente
- * @param {boolean} props.isOpen - Booleano para abrir el dialogo
  * @param {function} props.closeDialog - Función que cierra el dialogo
  * @returns {JSX.Element} Componente de dialogo para jugadores
  */
-export const Friends = ({closeDialog, isOpen}) => {
+export const Friends = ({closeDialog}) => {
   const [query, setQuery] = useState("")
   const [tab, setTab] = useState(0)
   const {friends, suggestions, handleAddFriend, handleRemoveFriend, setSuggestions} = useFriends()
@@ -293,6 +292,5 @@ export const Friends = ({closeDialog, isOpen}) => {
   )
 }
 Friends.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
   closeDialog: PropTypes.func.isRequired,
 };

@@ -8,8 +8,8 @@ export function useTeams(gameState) {
     const [teamBPlayers, setTeamBPlayers] = useState([]);
     const getCustomizedPlayers = useCustomizedPlayers(gameState)
     const fetchCustomizations = useCallback(async (players) => {
-        const teamA = []
-        const teamB = []
+        let teamA = []
+        let teamB = []
         if (players && playerData?.authenticated) {
             const users = players.map((p) => p.id)
             let characters = await getCustomizedPlayers(users)

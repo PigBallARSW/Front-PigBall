@@ -1,17 +1,33 @@
 export function createAddFriendHandler(playerId, sendFriendRequest, fetchFriends, setFriends, setSuggestions) {
   return async function handleAddFriend(id) {
-    const sendRequest = () => {
-      setSuggestions(prev => prev.filter(u => u.id !== id));
+    const onRequestSent = () => {
+      updateSuggestions(id);
+      refreshFriends();
+    };
+
+    const updateSuggestions = (userId) => {
+      setSuggestions(prev => prev.filter(u => u.id !== userId));
+    };
+
+    const refreshFriends = () => {
       fetchFriends(playerId, setFriends);
     };
-    await sendFriendRequest(playerId, id, sendRequest);
+
+    await sendFriendRequest(playerId, id, onRequestSent);
   };
 }
 
 export function createRemoveFriendHandler(playerId, deleteFriend, setFriends) {
   return async function handleRemoveFriend(id) {
-    await deleteFriend(playerId, id, () => {
-      setFriends(prev => prev.filter(u => u.id !== id));
-    });
+    const onFriendDeleted = () => {
+      removeFriendFromList(id);
+    };
+
+    const removeFriendFromList = (userId) => {
+      setFriends(prev => prev.filter(u => u.id !== userId));
+    };
+
+    await deleteFriend(playerId, id, onFriendDeleted);
   };
 }
+
