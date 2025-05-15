@@ -13,9 +13,10 @@ export const MainGame = () => {
   const navigate = useNavigate()
   const { id } = useParams();
   const [loading, setLoading] = useState(false)
+  const [loadingRoom, setLoadingRoom] = useState(true)
   const{showAlert} = useAlert();
   const { goalAnimation, addGoal, closeGoalAnimation } = useGoalPlayer();
-  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal, setLoading);
+  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal, setLoading,setLoadingRoom);
   const startGame = () => {
     if (players.length > 1) {
       setLoading(true)
@@ -33,7 +34,7 @@ export const MainGame = () => {
     return <LoadingGame />
   }
 
-  if(!gameState){
+  if(loadingRoom){
     return <LoadResponse open={true} message="Loading room..." onClose={closePage}/>
   }
 

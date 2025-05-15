@@ -7,10 +7,10 @@ export function useCustomizedPlayers(gameState) {
   const { playerData } = useUser();
 
   const getCustomizedPlayers = useCallback(async () => {
-    const players = gameState.players ?? [];
-    if (!playerData.authenticated || players.length === 0) return [];
+    const players = gameState?.players ?? [];
+    if (players.length === 0) return [];
 
-    const userIds = players.map(p => p.id);
+    const userIds = players?.map(p => p.id);
     const characters = await usersCharacters(userIds);
     const characterMap = new Map((characters ?? []).map(c => [c.id, c]));
 
@@ -29,7 +29,7 @@ export function useCustomizedPlayers(gameState) {
       };
     });
     return customizedPlayers
-  }, [gameState.players, playerData.authenticated, usersCharacters]);
+  }, [gameState?.players, usersCharacters]);
 
   return getCustomizedPlayers;
 }

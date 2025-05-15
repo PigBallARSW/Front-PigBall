@@ -1,14 +1,23 @@
-import { useIsAuthenticated } from "@azure/msal-react";
-import {Navigate, Outlet} from "react-router-dom";
+import { useMsal, useIsAuthenticated } from "@azure/msal-react";
+import { Navigate, Outlet } from "react-router-dom";
+import { LoadResponse } from "../components/Load/LoadResponse";
 import { useUser } from "../context/user/userContext";
-/**Controlar rutas protegidas
- * @returns {JSX.Element} Proteger las rutas
- */
+
 const ProtectedRoutes = () => {
+    const { inProgress } = useMsal(); 
     const isAuthenticated = useIsAuthenticated();
-    const {playerData} = useUser();
-    return isAuthenticated || playerData ? <Outlet /> : <Navigate to="/" />
-}
+    const { playerData } = useUser();
+    const closePage = () =>{
+        return <Navigate to="/" />
+    }
+    if (inProgress !== "none" || (isAuthenticated && !playerData)) {
+    return <LoadResponse open={true} message="Loading..." onClose={closePage}/>
+    }
+
+
+    return isAuthenticated && playerData ? <Outlet /> : <Navigate to="/" />;
+};
 
 export default ProtectedRoutes;
+
 

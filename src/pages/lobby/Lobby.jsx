@@ -24,13 +24,16 @@ import { useRooms } from "../../context/lobby/useRooms";
 import { useLobby } from "../../context/lobby/useLobby";
 import {LoadResponse} from "../../components/Load/LoadResponse";
 import { useNavigate } from "react-router-dom";
+import { useLobbyService } from "../../Modules/useLobbyService";
 
 export const Lobby = () => {
   const navigate = useNavigate()
+  const{joinRoom} = useLobbyService();
   const {rooms, isRefreshing, getRooms} = useRooms();
   const {filteredRooms, searchTerm, setSearchTerm} = useLobby(rooms);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
+  const [loading, setLoading] = useState(false)
   function showForm() {
     setOpenCreateDialog(true);
   }
@@ -45,6 +48,12 @@ export const Lobby = () => {
   }
   const closePage = () => {
     navigate("/homepage")
+  }
+  const joinARoom = (id) =>{
+    joinRoom(id, setLoading)
+  }
+  if(loading){
+    return <p>Loading...</p>
   }
   if (isRefreshing) {
     return <LoadResponse open={true} message="Loading rooms..." onClose={closePage}/>
@@ -183,7 +192,7 @@ export const Lobby = () => {
           />
         </Box>
 
-        <RoomList gameRooms={filteredRooms} />
+        <RoomList gameRooms={filteredRooms} joinRoom={joinARoom}/>
         {/* Botones flotantes para móvil */}
         <Box
           sx={{

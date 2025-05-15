@@ -12,7 +12,7 @@ import {
   subscribeToTopics
 } from "../../utils/gameBrokerHandlers"
 
-export function useGame(id, addGoal, setLoading) {
+export function useGame(id, addGoal, setLoading,setLoadingRoom) {
   const { showAlert } = useAlert();
   const { playerData } = useUser();
   const [players, setPlayers] = useState([]);
@@ -48,18 +48,19 @@ export function useGame(id, addGoal, setLoading) {
       onConnect: () => {
       isConnected.current = true;
         const handlers = {
-          players: handlePlayersMessage(setGameState, setGameStarted),
+          players: handlePlayersMessage(setGameState, setGameStarted, setLoadingRoom),
           started: handleStartedMessage(setGameState, setGameStarted, setLoading),
           play: handlePlayMessage(setPlayers, setBall, messageCountRef, signalFramesReached, FRAME_RATE),
           goal: handleGoalMessage(setGameState, addGoal),
         };
 
-        subscribeToTopics(client, id, handlers);
-
+        
         client.publish({
           destination: `/app/join/${id}`,
           body: JSON.stringify({ name: playerName, id: playerId }),
         });
+
+        subscribeToTopics(client, id, handlers);
       },
       onStompError: (frame) => console.error("STOMP error:", frame.body),
       onWebSocketError: (error) => console.error("WebSocket error:", error),

@@ -9,6 +9,7 @@ export function useLobbyService() {
     const { getToken } = useAuth(); 
     const {sendStatsUser} = useUserLogin();
     const navigate = useNavigate();
+
     const finishRoom = useCallback(async (id) => {
         try {
             const token = await getToken();
@@ -34,13 +35,19 @@ export function useLobbyService() {
             showAlert("Could not create", "error");
         }
     }
-    const joinRoom = (id) => {
+    const joinRoom = (id, setLoading) => {
         const func = (response) => {
+            setLoading(false)
             const id = response.id;
-            navigate(`/game/${id}`);
-            showAlert("Joined successfully!", "success");
+            if(response.status !== "ABANDONED" || response.status !== "FINISHED"){
+                navigate(`/game/${id}`);
+                showAlert("Joined successfully!", "success");
+            }else{
+                showAlert("This room is no available", "error")
+                return;
+            }
         }
-       getAGame(func, id);
+       getAGame(func, id, setLoading);
     }
     const getAllRooms = useCallback(async (callback) => {
         try{
@@ -53,8 +60,9 @@ export function useLobbyService() {
         }
         
     },[getToken,showAlert]);
-    const getAGame = useCallback(async (callback, id) => {
+    const getAGame = useCallback(async (callback, id, setLoading) => {
         try{
+            setLoading(true)
             const token = await getToken();
             const response = await getGame(id, token);
             callback(response.data);

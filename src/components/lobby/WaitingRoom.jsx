@@ -28,6 +28,7 @@ import { useUser } from "../../context/user/userContext";
 import { LeaveDialog } from "../dialog/LeaveDialog";
 import PropTypes from 'prop-types';
 
+
 /**
  * Sala de espera
  * @param {Object} props - Propiedades del componente
@@ -39,11 +40,10 @@ import PropTypes from 'prop-types';
 export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveRoom, roomData }) {
   const {playerData} = useUser();
   const currentUser = playerData?.username;
-  const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams();
+  const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams(roomData);
   const [host, setHost] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
-
   useEffect(() => {
       fetchCustomizations(roomData.players);
       const isHost = currentUser === roomData.creatorName;
@@ -57,6 +57,7 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveR
     setIsLeaveDialogOpen(false);
     leaveRoom();
   }
+  
   return (
     <Box
       sx={{
