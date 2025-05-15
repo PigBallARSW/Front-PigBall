@@ -24,7 +24,8 @@ export function useCustomizedPlayers(gameState) {
         borderColor: custom.borderColor ?? null,
         centerColor: custom.centerColor ?? null,
         iconType: custom.iconType ?? null,
-        iconColor: custom.iconColor ?? null
+        iconColor: custom.iconColor ?? null,
+        gamesWon: custom.gamesWon ?? null
       };
     });
     return customizedPlayers

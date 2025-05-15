@@ -46,9 +46,10 @@ export const Navbar = () => {
       sx={{
         height: 40,
         bgcolor: "#0e250f",
+        width: "100%"
       }}
     >
-      <Toolbar variant="dense" sx={{ minHeight: 40, px: 2 }}>
+      <Toolbar variant="dense" sx={{ minHeight: 40, px: 2}}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <SportsSoccer sx={{ color: "white", fontSize: 20, mr: 1 }} />
           <Typography
@@ -66,7 +67,6 @@ export const Navbar = () => {
 
         <Box sx={{ flexGrow: 1 }} />
 
-        <Box sx={{ display: "flex" }}>
             <Tooltip title="Add Friends">
               <IconButton size="small" onClick={openFriends} sx={{ color: "white", ml: 1 }}>
                 <PersonAdd fontSize="small" />
@@ -82,10 +82,9 @@ export const Navbar = () => {
               <Logout fontSize="small" />
             </IconButton>
           </Tooltip>
-        </Box>
       </Toolbar>
     </AppBar>
-    <Friends isOpen={isOpen} closeDialog={closeFriends} />
+    {isOpen && <Friends closeDialog={closeFriends} />}
     </>
     )
 }
