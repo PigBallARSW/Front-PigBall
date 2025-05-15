@@ -14,33 +14,9 @@ import PropTypes from 'prop-types';
  * @returns {JSX.Element} Componente para mostrar la información del jugador
  */
 export const User = ({width, height, name, color, shadow, border, children}) => {
-  function stringAvatar() {
-    const nameParts = name.split(" ");
-    return {
-      sx: {
-        bgcolor: "white",
-        fontSize: Math.min(width, height) * 0.5
-      },
-      children: nameParts.length > 1
-        ? `${nameParts[0][0]}${nameParts[1][0]}`
-        : nameParts[0][0], 
-    };
-  }
-  
+
   return (
-    !children ? (
-      <Avatar
-      {...stringAvatar}
-      sx={{
-        width: {width},
-        height: {height},
-        bgcolor: color || "secondary.main",
-        border: border || "3px solid white",
-        boxShadow: shadow || "0 4px 8px rgba(0,0,0,0.2)",
-      }}
-    >
-    </Avatar>) : 
-    (<Avatar
+    <Avatar
     sx={{
       width: {width},
       height: {height},
@@ -50,8 +26,8 @@ export const User = ({width, height, name, color, shadow, border, children}) => 
     }}
     >
       {children}
-  </Avatar>)
-    )
+  </Avatar>
+  )
 }
 User.propTypes = {
   width: PropTypes.number.isRequired,

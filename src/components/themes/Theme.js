@@ -9,6 +9,9 @@ export const Theme = createTheme({
       more: "#81c784",
       contrastText: "#ffffff",
     },
+    custom: {
+      main: "#66bb6a", 
+    },
     secondary: {
       main: "#ffc107", // yellow
       light: "#fff350",
