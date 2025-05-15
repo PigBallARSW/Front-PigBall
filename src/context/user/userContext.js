@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useRef, useMemo 
 import { useMsal } from '@azure/msal-react';
 import { useUserLogin } from '../../Modules/useUserLogin';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const UserContext = createContext();
 /**Guardar informacion del usuario
@@ -13,16 +14,14 @@ export const UserProvider = ({ children }) => {
         const isAuthenticated = accounts.length > 0;
         const [playerData, setPlayerData] = useState(null);
         const { getAUser, createNewUser } = useUserLogin();
+        const [open, setOpen] = useState(false)
         const prevAuthState = useRef(isAuthenticated);
         const setPlayer = (res) => {
             setPlayerData({...res,authenticated: true});
         }
         useEffect(() => {
             const fetchOrCreateUser = async (id, name) => {
-                const user = await getAUser(id, setPlayer);
-                if (!user) {
-                    await createNewUser(id, name, setPlayer);
-                } 
+                const user = await getAUser(id, setPlayer, setOpen); 
             }
     
             if (prevAuthState.current !== isAuthenticated) {
@@ -39,7 +38,8 @@ export const UserProvider = ({ children }) => {
 
         const contextValue = useMemo(() => ({
         playerData,
-        setPlayer
+        setPlayer,
+        open
     }), [playerData, setPlayer]);
 
     return (

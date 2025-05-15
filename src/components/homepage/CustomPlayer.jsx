@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Box,
   Button,
@@ -91,7 +91,7 @@ export default function CustomPlayer() {
   const [playerName, setPlayerName] = useState(username || "")
   const [showField, setShowField] = useState(true)
   const [tabValue, setTabValue] = useState(0)
-  
+  const [isUsernameValid, setIsUsernameValid] = useState(false)
   const icons = {
     football: <SportsSoccer fontSize="inherit" />,
     trophy: <EmojiEvents fontSize="inherit" />,
@@ -162,10 +162,16 @@ export default function CustomPlayer() {
             return "none"
     }
   }
-
+  useEffect(() => {
+      setIsUsernameValid(username.length >= 3 && username.length <= 15)
+    }, [playerName])
+    const update = (response) => {
+        setPlayer(response)
+        navigate("/homepage")
+    }
   const saveCharacter = async () => {
     let centerIcon = getIcon()
-    if(playerData?.id){
+    if(playerData?.id && isUsernameValid){
         const requestBody = {
             username: playerName,
             image: centerIcon,
@@ -174,8 +180,7 @@ export default function CustomPlayer() {
             iconColor: emblemColor,
             iconType: emblemType
         }
-        await updateCharacter(playerData.id, requestBody, setPlayer)
-        navigate("/homepage")
+        await updateCharacter(playerData.id, requestBody, update)
     }
   }
 
@@ -344,11 +349,14 @@ export default function CustomPlayer() {
                         <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            disabled = {true}
                             value={playerName}
                             onChange={(e) => setPlayerName(e.target.value)}
                             variant="outlined"
                             label="Player Name" color="secondary"
+                            helperText={
+                            playerName ? (isUsernameValid ? "Valid name" : "The name must be between 3 and 15 characters long.") : ""
+                            }
+                            error={playerName !== "" && !isUsernameValid}
                             focused
                         />
                         </Grid>

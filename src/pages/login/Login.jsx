@@ -12,15 +12,16 @@ import {
   Container
 } from "@mui/material"
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../context/user/userContext';
+import { UsernameInput } from '../../components/login/UsernameInput';
 
 export const Login = () => {
+  const {open} = useUser()
   const { instance } = useMsal();
-  const navigate = useNavigate();
   const handleMicrosoftLogin = async () => {
     try {
       const loginResponse = await instance.loginPopup(loginRequest);
       instance.setActiveAccount(loginResponse.account);
-      navigate("/homepage");
     } catch (e) {
       console.error("Error durante login con Microsoft:", e);
     }
@@ -80,6 +81,7 @@ export const Login = () => {
           </Box>
         </Paper>
     </Container>
+    {open && <UsernameInput open={true} />}
     </>
   );
 };

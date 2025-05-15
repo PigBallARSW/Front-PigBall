@@ -38,8 +38,8 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
 
     return (
         <Container>
-            <Camera players={players} canvasSize={canvasSize} CANVAS_WIDTH={CANVAS_WIDTH} CANVAS_HEIGHT={CANVAS_HEIGHT} MAP_WIDTH={MAP_WIDTH} MAP_HEIGHT={MAP_HEIGHT} scale={scale}>
-                <Container x={fieldX + (MAP_WIDTH - CANVAS_WIDTH) / 2} y={fieldY + (MAP_HEIGHT - CANVAS_HEIGHT) / 2}>
+            <Camera players={players} canvasSize={canvasSize} CANVAS_WIDTH={CANVAS_WIDTH} CANVAS_HEIGHT={CANVAS_HEIGHT} MAP_WIDTH={MAP_WIDTH} MAP_HEIGHT={MAP_HEIGHT} scale={scale} ball={ball}>
+                <Container x={(MAP_WIDTH - borderX) / 2} y={(MAP_HEIGHT - borderY) / 2}>
                     <TileSpriteComponent width={borderX} height={borderY} />
                     <FieldDraw fieldWidth={borderX} fieldHeight={borderY} goalWidth={GOAL_WIDTH} />
                 <MoveContainer>

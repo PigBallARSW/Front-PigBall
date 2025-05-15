@@ -30,17 +30,14 @@ export const MainGame = () => {
       navigate("/homepage/lobby")
   }
 
-  if(loading){
-    return <LoadingGame />
-  }
-
   if(loadingRoom){
     return <LoadResponse open={true} message="Loading room..." onClose={closePage}/>
   }
 
   return (
     <>
-      {gameStarted ? (
+    {loading ? <LoadingGame /> :
+      gameStarted  ? (
         <>
         <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} fps={fps} fpsHistory={fpsHistory}/>
         {goalAnimation.show && (

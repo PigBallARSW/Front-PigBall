@@ -7,6 +7,7 @@ import { msalConfig } from './authConfig';
 import { UserProvider } from './context/user/userContext';
 import { AlertProvider } from './context/alert/AlertContext';
 import { AuthProvider } from './context/auth/AuthContext';
+import { BrowserRouter } from 'react-router-dom';
 
 /**
  * Initialize a PublicClientApplication instance which is provided to the MsalProvider component
@@ -24,9 +25,11 @@ root.render(
         <MsalProvider instance={msalInstance}>
         <AuthProvider>
         <AlertProvider>
+            <BrowserRouter>
             <UserProvider>
             <App />
             </UserProvider>
+            </BrowserRouter>
         </AlertProvider>
         </AuthProvider>
         </MsalProvider>
