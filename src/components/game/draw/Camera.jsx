@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import { Container, useTick } from '@pixi/react'
-import { useUser } from '../../../context/user/userContext'
 import PropTypes from 'prop-types';
 
 const lerp = (start, end, t = 0.03) => start + (end - start) * t;
