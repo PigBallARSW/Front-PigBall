@@ -1,17 +1,13 @@
 import { useIsAuthenticated } from "@azure/msal-react";
-import {Navigate} from "react-router-dom";
-import PropTypes from 'prop-types';
+import {Navigate, Outlet} from "react-router-dom";
+import { useUser } from "../context/user/userContext";
 /**Controlar rutas protegidas
- * @param {JSX.Element} props.children -Elmentos donde proteger las rutas
  * @returns {JSX.Element} Proteger las rutas
  */
-const ProtectedRoutes = ({children}) => {
+const ProtectedRoutes = () => {
     const isAuthenticated = useIsAuthenticated();
-    return isAuthenticated ? children : <Navigate to="/homepage/lobby" />
+    return isAuthenticated  ? <Outlet /> : <Navigate to="/" />
 }
 
 export default ProtectedRoutes;
 
-ProtectedRoutes.propTypes = {
-  children: PropTypes.node.isRequired
-};

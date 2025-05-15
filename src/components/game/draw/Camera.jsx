@@ -26,8 +26,7 @@ const getDynamicZoom = (playersCount, canvasWidth, canvasHeight, mapWidth, mapHe
  */
 export const Camera = ({ players, canvasSize, CANVAS_WIDTH, CANVAS_HEIGHT, MAP_WIDTH, MAP_HEIGHT, children }) => {
   const containerRef = useRef(null);
-  const user = useUser();
-  const currentUser = user?.username || sessionStorage.getItem("usarname");
+  const currentUser = sessionStorage.getItem("usarname");
   const playerPosition = players.find((p) => p.name === currentUser);
   const cameraPosition = useRef({ x: 0, y: 0 });
   const zoomRef = useRef(1);

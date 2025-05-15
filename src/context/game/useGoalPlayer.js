@@ -1,13 +1,11 @@
 import { useState, useCallback } from "react";
 
-export function useGoal () {
+export function useGoalPlayer () {
   const [goalAnimation, setGoalAnimation] = useState({
     show: false,
     player: null,
     team: null,
   });
-  const [playersGoal, setPlayersGoal] = useState([]);
-
   const addGoal = useCallback((state) => {
     const goalEvents = state.events?.filter(
       (e) => e.second === "GOAL_SCORED" || e.second === "SELF_GOAL_SCORED"
@@ -31,25 +29,6 @@ export function useGoal () {
     }
   },[]);
 
-  const updatesGoal = useCallback((state, players) => {
-    const goals = []
-    const goalEvents = state?.events?.filter(
-      (e) => e.second === "GOAL_SCORED" || e.second === "SELF_GOAL_SCORED"
-    );
-
-    goalEvents?.forEach((p) => {
-      const player = players.find((pl) => p.first === pl.id)
-      const exist = goals.find((g) => g.id === player.id)
-      if(exist){
-        exist.goal += 1
-      }else{
-        goals.push({...player, goal: 1})
-      }
-    })
-    setPlayersGoal(goals)
-  },[]);
-
-
   const closeGoalAnimation = useCallback(() => {
     setGoalAnimation((prev) => ({
       ...prev,
@@ -58,6 +37,6 @@ export function useGoal () {
   },[]);
 
   
-  return {goalAnimation, addGoal, closeGoalAnimation, playersGoal, updatesGoal};
+  return {goalAnimation, addGoal, closeGoalAnimation};
 };
 

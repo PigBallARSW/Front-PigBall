@@ -80,7 +80,7 @@ export default function CustomPlayer() {
     const navigate = useNavigate();
   const {playerData, setPlayer} = useUser();
   const {updateCharacter} = useUserLogin();
-  const username = playerData?.username || sessionStorage.getItem("usarname");
+  const username = playerData?.username;
   const [playerColor, setPlayerColor] = useState(playerData?.centerColor || "#ffc107")
   const [emblemType, setEmblemType] = useState(playerData?.iconType || "none")
   const [emblemColor, setEmblemColor] = useState(playerData?.iconColor || "#ffffff")

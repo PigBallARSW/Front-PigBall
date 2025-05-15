@@ -21,9 +21,8 @@ export function useGame(id, addGoal, setLoading) {
   const { signalFramesReached, fps, fpsHistory } = useFpsTracker();
 
   const playerName = useMemo(() => {
-    const storedName = sessionStorage.getItem("usarname") || `Guest${Math.floor(Math.random() * 10000000)}`;
-    const finalName = playerData?.username || storedName;
-    sessionStorage.setItem("usarname", finalName);
+    const finalName = playerData?.username;
+    sessionStorage.setItem("usarname", playerData?.username);
     return finalName;
   }, [playerData?.username]);
 

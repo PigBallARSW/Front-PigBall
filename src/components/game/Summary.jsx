@@ -66,22 +66,29 @@ const rotate = keyframes`
  */
 export default function Summary({ gameState, onExit }) {
   const [showContent, setShowContent] = useState(false)
-  const {playersGoal, assists, playersAssist, playersGoals} = useSummary(gameState)
+  const{ teamGoals, playerGoals, assistsByTeam, assists } = useSummary(gameState)
   const blueWins = (gameState?.teams.first || 0) > (gameState?.teams.second || 0);
   const redWins = (gameState?.teams.second || 0) > (gameState?.teams.first || 0);
   const isDraw = (gameState?.teams.first || 0) === (gameState?.teams.second || 0);
 
-  const winnerColor = blueWins ? "#1976d2" : redWins ? "#dc004e" : "#4caf50"
-  const winnerTeam = blueWins ? "A" : redWins ? "B" : "DRAW"
+  const winnerInfo = blueWins
+  ? { color: "#1976d2", team: "A" }
+  : redWins
+  ? { color: "#dc004e", team: "B" }
+  : { color: "#4caf50", team: "DRAW" };
 
-  const topScorer = playersGoal?.length
-  ? playersGoal.reduce((max, player) => player.goal > max.goal ? player : max)
+
+
+  const topScorer = playerGoals?.length
+  ? playerGoals.reduce((max, player) => player.goal > max.goal ? player : max)
   : null;
 
 
-  const totalAssists = playersAssist.blue + playersAssist.red;
-  const blueAssistPct = totalAssists > 0 ? Math.round((playersAssist.blue * 100) / totalAssists) : 0;
+  const totalAssists = assistsByTeam[0] + assistsByTeam[1];
+  const blueAssistPct = totalAssists > 0 ? Math.round((assistsByTeam[0] * 100) / totalAssists) : 0;
   const redAssistPct = totalAssists > 0 ? 100 - blueAssistPct : 0;
+
+  const animationStyle = showContent ? `${fadeIn} 0.8s ease-out` : "none";
 
 
   useEffect(() => {
@@ -119,8 +126,8 @@ export default function Summary({ gameState, onExit }) {
           maxWidth: 900,
           maxHeight: "90vh",
           overflow: "auto",
-          border: `4px solid ${winnerColor}`,
-          boxShadow: `0 0 30px ${alpha(winnerColor, 0.5)}`,
+          border: `4px solid ${winnerInfo.color}`,
+          boxShadow: `0 0 30px ${alpha(winnerInfo.color, 0.5)}`,
           animation: `${fadeIn} 0.8s ease-out`,
           position: "relative",
           overflowX: "hidden",
@@ -145,8 +152,8 @@ export default function Summary({ gameState, onExit }) {
             textAlign: "center",
             position: "relative",
             zIndex: 1,
-            bgcolor: alpha(winnerColor, 0.2),
-            borderBottom: `2px solid ${alpha(winnerColor, 0.5)}`,
+            bgcolor: alpha(winnerInfo.color, 0.2),
+            borderBottom: `2px solid ${alpha(winnerInfo.color, 0.5)}`,
           }}
         >
           <Typography
@@ -154,7 +161,7 @@ export default function Summary({ gameState, onExit }) {
             sx={{
               color: "white",
               mb: 1,
-              animation: showContent ? `${fadeIn} 0.8s ease-out` : "none",
+              animation: animationStyle,
             }}
           >
             MATCH OVER
@@ -165,7 +172,7 @@ export default function Summary({ gameState, onExit }) {
               variant="h3"
               sx={{
                 fontWeight: "bold",
-                color: winnerColor,
+                color: winnerInfo.color,
                 mb: 2,
                 animation: showContent ? `${fadeIn} 1s ease-out, ${pulse} 2s infinite` : "none",
               }}
@@ -177,12 +184,12 @@ export default function Summary({ gameState, onExit }) {
               variant="h3"
               sx={{
                 fontWeight: "bold",
-                color: winnerColor,
+                color: winnerInfo.color,
                 mb: 2,
                 animation: showContent ? `${fadeIn} 1s ease-out, ${pulse} 2s infinite` : "none",
               }}
             >
-              TEAM {winnerTeam} VICTORY!
+              TEAM {winnerInfo.team} VICTORY!
             </Typography>
           )}
           <Box
@@ -325,7 +332,7 @@ export default function Summary({ gameState, onExit }) {
                       }}
                     >
                       <ShieldIcon fontSize="small" sx={{ mr: 0.5 }} />
-                      <Typography variant="h6">{playersGoals.blue}</Typography>
+                      <Typography variant="h6">{teamGoals[0]}</Typography>
                     </Box>
                     <Box sx={{ mx: 2, color: "white" }}>-</Box>
                     <Box
@@ -335,7 +342,7 @@ export default function Summary({ gameState, onExit }) {
                         color: "#dc004e",
                       }}
                     >
-                      <Typography variant="h6">{playersGoals.red}</Typography>
+                      <Typography variant="h6">{teamGoals[1]}</Typography>
                       <ShieldIcon fontSize="small" sx={{ ml: 0.5 }} />
                     </Box>
                   </Box>
@@ -437,13 +444,13 @@ export default function Summary({ gameState, onExit }) {
                 <SportsSoccerIcon sx={{ mr: 1 }} />
                 GOAL SCORES
                 </Typography>
-                {playersGoal.length > 0 ? (
+                {playerGoals.length > 0 ? (
                 <List sx={{ bgcolor: alpha("#333", 0.3), borderRadius: 2 }}>
-                {playersGoal.map((scorer, index) => (
+                {playerGoals.map((scorer, index) => (
                     <ListItem
                     key={scorer.id}
                     sx={{
-                        borderBottom: index < playersGoal.length - 1 && `1px solid ${alpha("#fff", 0.1)}`,
+                        borderBottom: index < playerGoals.length - 1 && `1px solid ${alpha("#fff", 0.1)}`,
                     }}
                     >
                     <ListItemAvatar>
@@ -513,7 +520,7 @@ export default function Summary({ gameState, onExit }) {
                     <ListItem
                     key={scorer.id}
                     sx={{
-                        borderBottom: index < playersGoal.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
+                        borderBottom: index < playerGoals.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
                     }}
                     >
                     <ListItemAvatar>

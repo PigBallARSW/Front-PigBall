@@ -38,7 +38,7 @@ import PropTypes from 'prop-types';
  */
 export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveRoom, roomData }) {
   const {playerData} = useUser();
-  const currentUser = playerData?.username || sessionStorage.getItem("username");
+  const currentUser = playerData?.username;
   const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams();
   const [host, setHost] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);

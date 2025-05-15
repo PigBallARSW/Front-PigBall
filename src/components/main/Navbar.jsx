@@ -25,13 +25,8 @@ export const Navbar = () => {
     const isAuthenticated = useIsAuthenticated();
     const handleLogout = async () => {
       if (isAuthenticated) {
-        await instance.logoutRedirect({
-          postLogoutRedirectUri: "/"
-        });
-      } else {
-        sessionStorage.removeItem("guestPlayerId");
-        sessionStorage.removeItem("guestPlayerName");
-        navigation("/");
+        await instance.logoutPopup();
+        navigation("/")
       }
     };
     const handleGoHome = () => {

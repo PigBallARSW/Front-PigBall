@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useRef, useMemo 
 import { useMsal } from '@azure/msal-react';
 import { useUserLogin } from '../../Modules/useUserLogin';
 import PropTypes from 'prop-types';
+
 const UserContext = createContext();
 /**Guardar informacion del usuario
  * @param {JSX.Element} props.children -Elmentos donde guardar el usuario
@@ -33,27 +34,7 @@ export const UserProvider = ({ children }) => {
                 const id = accounts[0].homeAccountId;
                 const name = accounts[0].name;
                 fetchOrCreateUser(id, name);
-            } else {
-                const id = sessionStorage.getItem('guestPlayerId') || `guest-${crypto.randomUUID()}`;
-                const name = sessionStorage.getItem('guestPlayerName') || `Guest${Math.floor(Math.random() * 1000000)}`;
-                sessionStorage.setItem('guestPlayerId', id);
-                sessionStorage.setItem('guestPlayerName', name);
-                setPlayerData({
-                    id: id,
-                    username: name,
-                    gamesPlayed: 0,
-                    gamesWon: 0,
-                    lostGames: 0,
-                    totalScore: 0,
-                    winningPercentage: 0,
-                    image: "none",
-                    borderColor: "#ffffff",
-                    centerColor: "#ffc107",
-                    iconType: "none",
-                    iconColor: "#ffffff",
-                    authenticated: false
-                });
-            }
+            } 
         }, [isAuthenticated, accounts, createNewUser, getAUser]);
 
         const contextValue = useMemo(() => ({

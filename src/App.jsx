@@ -17,13 +17,13 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/game/:id" element={<MainGame />} />
-                    
-                    <Route path="/homepage" element={<Main />}>
-                        <Route index element={<ProtectedRoutes><HomePage /></ProtectedRoutes>} />
-                        <Route path="lobby" element={<Lobby />} />
-                        <Route path="custom" element={<CustomPlayer />} />
-                        <Route path="addfriends" element = {<Friends/>}/>
-                    
+                    <Route element={<ProtectedRoutes />}>
+                        <Route path="/homepage" element={<Main />}>
+                            <Route index element={<HomePage />} />
+                            <Route path="lobby" element={<Lobby />} />
+                            <Route path="custom" element={<CustomPlayer />} />
+                            <Route path="addfriends" element = {<Friends/>}/>
+                        </Route>
                     </Route>
                     
                 </Routes>

@@ -4,7 +4,7 @@ import { WaitingRoom } from "../../components/lobby/WaitingRoom";
 import { useGame } from "../../context/game/useGame";
 import {GameContainer} from "../../components/game/GameContainer";
 import { GoalAnimation } from "../../components/game/GoalAnimation";
-import { useGoal } from "../../context/game/useGoal";
+import { useGoalPlayer } from "../../context/game/useGoalPlayer";
 import {LoadResponse} from "../../components/Load/LoadResponse";
 import LoadingGame from "../../components/Load/LoadingGame";
 import { useAlert } from "../../context/alert/AlertContext";
@@ -14,7 +14,7 @@ export const MainGame = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false)
   const{showAlert} = useAlert();
-  const { goalAnimation, playersGoal, addGoal, closeGoalAnimation } = useGoal();
+  const { goalAnimation, addGoal, closeGoalAnimation } = useGoalPlayer();
   const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal, setLoading);
   const startGame = () => {
     if (players.length > 1) {
@@ -41,7 +41,7 @@ export const MainGame = () => {
     <>
       {gameStarted ? (
         <>
-        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} playersGoal={playersGoal} fps={fps} fpsHistory={fpsHistory}/>
+        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} fps={fps} fpsHistory={fpsHistory}/>
         {goalAnimation.show && (
           <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
         )}
