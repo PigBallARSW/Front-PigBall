@@ -18,6 +18,7 @@ import { useSummary } from "../../context/game/useSummary"
 import {PlayerSummary} from "./PlayerSummary"
 import {TopScorer} from "./TopScorer"
 import { SummaryStatistic } from "./SummaryStatistic"
+import { colors } from "../../context/color/teamCustom"
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -59,15 +60,18 @@ const rotate = keyframes`
 export const Summary = ({ gameState, onExit }) => {
   const [showContent, setShowContent] = useState(false)
   const{ teamGoals, playerGoals, assistsByTeam, assists, topScorer } = useSummary(gameState)
-  const blueWins = (gameState?.teams.first || 0) > (gameState?.teams.second || 0);
-  const redWins = (gameState?.teams.second || 0) > (gameState?.teams.first || 0);
-  const isDraw = (gameState?.teams.first || 0) === (gameState?.teams.second || 0);
+  const firstTeamScore = gameState?.teams.first || 0;
+  const secondTeamScore = gameState?.teams.second || 0;
 
-  const winnerInfo = blueWins
-  ? { color: "#1976d2", team: "A" }
-  : redWins
-  ? { color: "#dc004e", team: "B" }
-  : { color: "#4caf50", team: "DRAW" };
+  let winnerInfo;
+
+  if (firstTeamScore > secondTeamScore) {
+    winnerInfo = { team: 0, message: "TEAM A VICTORY!" };
+  } else if (secondTeamScore > firstTeamScore) {
+    winnerInfo = { team: 1, message: "TEAM B VICTORY!" };
+  } else {
+    winnerInfo = { team: 2, message: "DRAW!" };
+  }
 
   const totalAssists = assistsByTeam[0] + assistsByTeam[1];
   const blueAssistPct = totalAssists > 0 ? Math.round((assistsByTeam[0] * 100) / totalAssists) : 0;
@@ -108,8 +112,8 @@ export const Summary = ({ gameState, onExit }) => {
           maxWidth: 900,
           maxHeight: "90vh",
           overflow: "auto",
-          border: `4px solid ${winnerInfo.color}`,
-          boxShadow: `0 0 30px ${alpha(winnerInfo.color, 0.5)}`,
+          border: `4px solid ${colors[winnerInfo.team]}`,
+          boxShadow: `0 0 30px ${alpha(colors[winnerInfo.team], 0.5)}`,
           animation: `${fadeIn} 0.8s ease-out`,
           position: "relative",
           overflowX: "hidden",
@@ -134,8 +138,8 @@ export const Summary = ({ gameState, onExit }) => {
             textAlign: "center",
             position: "relative",
             zIndex: 1,
-            bgcolor: alpha(winnerInfo.color, 0.2),
-            borderBottom: `2px solid ${alpha(winnerInfo.color, 0.5)}`,
+            bgcolor: alpha(colors[winnerInfo.team], 0.2),
+            borderBottom: `2px solid ${alpha(colors[winnerInfo.team], 0.5)}`,
           }}
         >
           <Typography
@@ -148,32 +152,18 @@ export const Summary = ({ gameState, onExit }) => {
           >
             MATCH OVER
           </Typography>
-
-          {isDraw ? (
-            <Typography
+          <Typography
               variant="h3"
               sx={{
                 fontWeight: "bold",
-                color: winnerInfo.color,
+                color: colors[winnerInfo.team],
                 mb: 2,
                 animation: showContent ? `${fadeIn} 1s ease-out, ${pulse} 2s infinite` : "none",
               }}
-            >
-              DRAW!
-            </Typography>
-          ) : (
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: "bold",
-                color: winnerInfo.color,
-                mb: 2,
-                animation: showContent ? `${fadeIn} 1s ease-out, ${pulse} 2s infinite` : "none",
-              }}
-            >
-              TEAM {winnerInfo.team} VICTORY!
-            </Typography>
-          )}
+          >
+            {winnerInfo.message} 
+          </Typography>
+        
           <Box
             sx={{
               display: "flex",
@@ -190,12 +180,12 @@ export const Summary = ({ gameState, onExit }) => {
                 bgcolor: alpha("#1976d2", 0.3),
                 p: 2,
                 borderRadius: 2,
-                border: blueWins && `2px solid #1976d2`,
+                border: "2px solid #1976d2",
               }}
             >
               <ShieldIcon color="primary" sx={{ mr: 1, fontSize: 30 }} />
               <Typography variant="h4" sx={{ fontWeight: "bold", color: "#1976d2" }}>
-              {gameState?.teams.first || 0}
+              {firstTeamScore}
               </Typography>
             </Box>
 
@@ -210,11 +200,11 @@ export const Summary = ({ gameState, onExit }) => {
                 bgcolor: alpha("#dc004e", 0.3),
                 p: 2,
                 borderRadius: 2,
-                border: redWins && `2px solid #dc004e`,
+                border: "2px solid #dc004e",
               }}
             >
               <Typography variant="h4" sx={{ fontWeight: "bold", color: "#dc004e" }}>
-              {gameState?.teams.second || 0}
+              {secondTeamScore}
               </Typography>
               <ShieldIcon sx={{ ml: 1, fontSize: 30, color:"#dc004e" }} />
             </Box>
