@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import {  Box, Fab, useMediaQuery, useTheme } from "@mui/material"
 import {Scoreboard} from "./Scoreboard"
 import {useLobbyService } from "../../Modules/useLobbyService";
-import Summary from "./Summary"
+import {Summary} from "./Summary"
 import { Field } from "./draw/Field"
 import {FPSCounter} from "../fps/FPSCounter";
 import { useMoveGame } from "../../context/game/useMoveGame";

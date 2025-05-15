@@ -11,15 +11,14 @@ import StarIcon from "@mui/icons-material/Star"
 import { motion } from "framer-motion";
 import { CustomizerUser } from "../user/CustomizerUser"
 import { colors, winner } from "../../context/color/teamCustom"
-
+import PropTypes from 'prop-types';
 /**
- * Componente para resumir el juego
+ * Componente para mostrar el jugador con mas goles
  * @param {Object} props - Propiedades del componente
- * @param {Object} props.gameState - Configuracion del juego
- * @param {function} props.onExit - Función para salir del juego
+ * @param {Object} props.topScorer - Jugador
  * @returns {JSX.Element} Resume el juego
  */
-export default function TopScorer({ topScorer }) {
+export const TopScorer = ({ topScorer }) => {
   
   return (
     <>
@@ -91,3 +90,16 @@ export default function TopScorer({ topScorer }) {
     </>    
   )
 }
+TopScorer.propTypes = {
+  topScorer: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    team: PropTypes.number.isRequired,
+    goal: PropTypes.number,
+    image: PropTypes.string,
+    borderColor: PropTypes.string,
+    centerColor: PropTypes.string,
+    iconType: PropTypes.string,
+    iconColor: PropTypes.string,
+  }).isRequired
+};
