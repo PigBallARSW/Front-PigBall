@@ -11,14 +11,16 @@ export function useSummary(gameState) {
   const [assists, setAssists] = useState([])
   const [assistsByTeam, setAssistsByTeam] = useState({ 0: 0, 1: 0 })
   const [teamGoals, setTeamGoals] = useState({ 0: 0, 1: 0 })
+  const [topScorer, setTopScorer] = useState()
 
   useEffect(() => {
     const loadSummary = async () => {
       const players = await getCustomizedPlayers(); 
-      const { goalByTeam, goalsList } = calculateGoals(players);
+      const { goalByTeam, goalsList, scorer } = calculateGoals(players);
       const { assistsByTeam, assistsList } = calculateAssists(players);
       setPlayerGoals(goalsList);
       setTeamGoals(goalByTeam);
+      setTopScorer(scorer)
       setAssistsByTeam(assistsByTeam);
       setAssists(assistsList);
     };
@@ -26,6 +28,6 @@ export function useSummary(gameState) {
     loadSummary();
   }, []);
 
-  return { teamGoals, playerGoals, assistsByTeam, assists };
+  return { teamGoals, playerGoals, assistsByTeam, assists, topScorer };
 }
 
