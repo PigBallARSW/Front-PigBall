@@ -9,24 +9,24 @@ import { Login } from './pages/login/Login';
 import ProtectedRoutes from './utils/ProtectedRoutes';
 import CustomPlayer from './components/homepage/CustomPlayer';
 import {Friends} from './pages/friends/Friends';
+import { UsernameInput } from './components/login/UsernameInput';
 
 export default function App() {
 
     return (
-            <BrowserRouter>
+            <>
                 <Routes>
                     <Route path="/" element={<Login />} />
-                    <Route path="/game/:id" element={<MainGame />} />
-                    
-                    <Route path="/homepage" element={<Main />}>
-                        <Route index element={<ProtectedRoutes><HomePage /></ProtectedRoutes>} />
-                        <Route path="lobby" element={<Lobby />} />
-                        <Route path="custom" element={<CustomPlayer />} />
-                        <Route path="addfriends" element = {<Friends/>}/>
-                    
+                    <Route element={<ProtectedRoutes />}>
+                        <Route path="/game/:id" element={<MainGame />} />
+                        <Route path="/homepage" element={<Main />}>
+                            <Route index element={<HomePage />} />
+                            <Route path="lobby" element={<Lobby />} />
+                            <Route path="custom" element={<CustomPlayer />} />
+                            <Route path="addfriends" element = {<Friends/>}/>
+                        </Route>
                     </Route>
-                    
                 </Routes>
-            </BrowserRouter>
+            </>
     );
 }

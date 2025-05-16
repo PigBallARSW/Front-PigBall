@@ -22,6 +22,7 @@ export function useMoveGame(movePlayer) {
     const handleKeyDown = (e) => {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key) || e.code === "Space") {
         if (e.code === "Space") {
+          e.preventDefault(); 
           movementState.current.isKicking = true;
         } else {
           movementState.current[e.key.replace("Arrow", "").toLowerCase()] = true;
@@ -32,6 +33,7 @@ export function useMoveGame(movePlayer) {
     const handleKeyUp = (e) => {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key) || e.code === "Space") {
         if (e.code === "Space") {
+          e.preventDefault();
           movementState.current.isKicking = false;
         } else {
           movementState.current[e.key.replace("Arrow", "").toLowerCase()] = false;

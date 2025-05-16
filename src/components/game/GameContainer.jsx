@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import {  Box, Fab, useMediaQuery, useTheme } from "@mui/material"
 import {Scoreboard} from "./Scoreboard"
 import {useLobbyService } from "../../Modules/useLobbyService";
-import Summary from "./Summary"
+import {Summary} from "./Summary"
 import { Field } from "./draw/Field"
 import {FPSCounter} from "../fps/FPSCounter";
 import { useMoveGame } from "../../context/game/useMoveGame";
@@ -10,8 +10,10 @@ import { useIsTouchDevice } from "../../context/game/useIsTouchDevice";
 import {MobileControls} from "./MobileControls";
 import { ExitToApp } from "@mui/icons-material";
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { LeaveDialog } from "../dialog/LeaveDialog";
 import PropTypes from 'prop-types';
+import { playSound } from "../../utils/sounds";
 
 /**
  * Componente de overlay de carga para solicitudes a la API
@@ -32,10 +34,12 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const [hasFinished, setHasFinished] = useState(false);
   const [showGameOver, setShowGameOver] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
   const fieldWrapperRef = useRef();
-  const {onMoveStart,onMoveEnd, onActionStart, onActionEnd} = useMoveGame(movePlayer);
-  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+  const {onMoveStart,onMoveEnd, onActionStart, onActionEnd} = useMoveGame(movePlayer)
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
+  const [muted, setMuted] = useState(false)
+  const audioRef = useRef(null)
   const handleLeaveRoom = () => {
     setIsLeaveDialogOpen(false);
     leaveRoom();
@@ -47,6 +51,9 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   useEffect(() => {
     if (!gameState?.creationTime) return
     if (!gameState?.creationTime || hasFinished) return;
+    const audio = playSound("/sounds/stadium.mp3",0.01)
+    audio.loop = true;
+    audioRef.current = audio
     const startTime = new Date(gameState.startTime)
     const interval = setInterval(() => {
       const now = Date.now()
@@ -54,15 +61,27 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       setElapsedTime(diff);
       if (diff >= 300) { 
         setElapsedTime(300); 
-        clearInterval(interval); 
+        audio.pause()
+        audioRef.current = null
+        clearInterval(interval);
         setShowGameOver(true);
         setHasFinished(true);
       } else {
         setElapsedTime(diff);
       }
     }, 1000);
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      audio.pause();
+      audio.currentTime = 0;
+    }
   }, [gameState?.creationTime, gameState?.startTime,id,hasFinished,finishRoom]);
+  
+  useEffect(() => {
+      if (audioRef.current) {
+        audioRef.current.volume = muted ? 0 : 0.8;
+      }
+    }, [muted])
 
   const formatGameTime = () => {
     const minutes = Math.floor(elapsedTime / 60)
@@ -116,22 +135,17 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
           }}>
             <ExitToApp />
           </Fab>
-          <Fab color="success"
+          <Fab
+          color="success"
+          onClick={() => setMuted(prev => !prev)}
           sx={{
-            width: {
-              xs: 40,   
-              sm: 48,   
-              md: 56,   
-            },
-            height: {
-              xs: 40,
-              sm: 48,
-              md: 56,
-            },
-            minHeight: "unset", 
-          }}>
-            <VolumeOffIcon />
-          </Fab>
+            width: { xs: 40, sm: 48, md: 56 },
+            height: { xs: 40, sm: 48, md: 56 },
+            minHeight: "unset",
+          }}
+        >
+          {muted ? <VolumeOffIcon /> : <VolumeUpIcon />}
+        </Fab>
         </Box>
 
     {!isMobile && 

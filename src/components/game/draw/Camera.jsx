@@ -1,13 +1,12 @@
 import { useRef } from 'react'
 import { Container, useTick } from '@pixi/react'
-import { useUser } from '../../../context/user/userContext'
 import PropTypes from 'prop-types';
 
 const lerp = (start, end, t = 0.03) => start + (end - start) * t;
 
 const getDynamicZoom = (playersCount, canvasWidth, canvasHeight, mapWidth, mapHeight) => {
   const maxZoom = Math.min(canvasWidth / mapWidth, canvasHeight / mapHeight) * 2; 
-  const minZoom = 0.9; 
+  const minZoom = 1.2; 
   const zoom = Math.min(maxZoom, minZoom + playersCount * 0.1);
   return Math.max(minZoom, zoom);
 };
@@ -24,16 +23,16 @@ const getDynamicZoom = (playersCount, canvasWidth, canvasHeight, mapWidth, mapHe
  * @param {JSX.Element} props.children
  * @returns {JSX.Element} Camara que sigue al jugador
  */
-export const Camera = ({ players, canvasSize, CANVAS_WIDTH, CANVAS_HEIGHT, MAP_WIDTH, MAP_HEIGHT, children }) => {
+export const Camera = ({ players, canvasSize, CANVAS_WIDTH, CANVAS_HEIGHT, MAP_WIDTH, MAP_HEIGHT,ball, children }) => {
   const containerRef = useRef(null);
-  const user = useUser();
-  const currentUser = user?.username || sessionStorage.getItem("usarname");
+  const currentUser = sessionStorage.getItem("usarname");
   const playerPosition = players.find((p) => p.name === currentUser);
+  const cameraTarget = playerPosition || ball
   const cameraPosition = useRef({ x: 0, y: 0 });
   const zoomRef = useRef(1);
 
   useTick(() => {
-    if (containerRef.current && playerPosition) {
+    if (containerRef.current && cameraTarget) {
       const targetZoom = getDynamicZoom(
         players.length,
         canvasSize.width,
@@ -47,8 +46,8 @@ export const Camera = ({ players, canvasSize, CANVAS_WIDTH, CANVAS_HEIGHT, MAP_W
       const marginY = (MAP_HEIGHT - CANVAS_HEIGHT) / 2;
 
       // Target position to center the player
-      let targetX = canvasSize.width / 2 - (playerPosition.x + marginX) * zoomRef.current;
-      let targetY = canvasSize.height / 2 - (playerPosition.y + marginY) * zoomRef.current;
+      let targetX = canvasSize.width / 2 - (cameraTarget.x + marginX) * zoomRef.current;
+      let targetY = canvasSize.height / 2 - (cameraTarget.y + marginY) * zoomRef.current;
 
       // Calcular límites
       const maxX = 0;

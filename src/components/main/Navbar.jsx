@@ -17,22 +17,18 @@ import {
 import { useMsal,useIsAuthenticated } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
 import {Friends} from "../../pages/friends/Friends";
+import { useUser } from "../../context/user/userContext";
+import { useAuth } from "../../context/auth/AuthContext";
 
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const navigation = useNavigate();
-    const { instance } = useMsal();
-    const isAuthenticated = useIsAuthenticated();
+    const {setPlayer} = useUser()
+    const {signOut} = useAuth()
     const handleLogout = async () => {
-      if (isAuthenticated) {
-        await instance.logoutRedirect({
-          postLogoutRedirectUri: "/"
-        });
-      } else {
-        sessionStorage.removeItem("guestPlayerId");
-        sessionStorage.removeItem("guestPlayerName");
-        navigation("/");
-      }
+      signOut()
+      setPlayer(null)
+      navigation("/")
     };
     const handleGoHome = () => {
       navigation("/homepage");
@@ -51,9 +47,10 @@ export const Navbar = () => {
       sx={{
         height: 40,
         bgcolor: "#0e250f",
+        width: "100%"
       }}
     >
-      <Toolbar variant="dense" sx={{ minHeight: 40, px: 2 }}>
+      <Toolbar variant="dense" sx={{ minHeight: 40, px: 2}}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <SportsSoccer sx={{ color: "white", fontSize: 20, mr: 1 }} />
           <Typography
@@ -71,7 +68,6 @@ export const Navbar = () => {
 
         <Box sx={{ flexGrow: 1 }} />
 
-        <Box sx={{ display: "flex" }}>
             <Tooltip title="Add Friends">
               <IconButton size="small" onClick={openFriends} sx={{ color: "white", ml: 1 }}>
                 <PersonAdd fontSize="small" />
@@ -87,10 +83,9 @@ export const Navbar = () => {
               <Logout fontSize="small" />
             </IconButton>
           </Tooltip>
-        </Box>
       </Toolbar>
     </AppBar>
-    <Friends isOpen={isOpen} closeDialog={closeFriends} />
+    {isOpen && <Friends closeDialog={closeFriends} />}
     </>
     )
 }

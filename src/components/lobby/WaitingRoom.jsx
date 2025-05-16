@@ -28,6 +28,7 @@ import { useUser } from "../../context/user/userContext";
 import { LeaveDialog } from "../dialog/LeaveDialog";
 import PropTypes from 'prop-types';
 
+
 /**
  * Sala de espera
  * @param {Object} props - Propiedades del componente
@@ -38,25 +39,25 @@ import PropTypes from 'prop-types';
  */
 export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveRoom, roomData }) {
   const {playerData} = useUser();
-  const currentUser = playerData?.username || sessionStorage.getItem("username");
-  const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams();
+  const currentUser = playerData?.username;
+  const{teamAPlayers, teamBPlayers, fetchCustomizations} = useTeams(roomData);
   const [host, setHost] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
-
   useEffect(() => {
-      fetchCustomizations(roomData.players);
-      const isHost = currentUser === roomData.creatorName;
+      fetchCustomizations(roomData?.players);
+      const isHost = currentUser === roomData?.creatorName;
       setHost(isHost);
   }, [fetchCustomizations, roomData?.players]);
 
   const handleCopyInviteCode = () => {
-    navigator.clipboard.writeText(roomData.id);
+    navigator.clipboard.writeText(roomData?.id);
   }
   const handleLeaveRoom = () => {
     setIsLeaveDialogOpen(false);
     leaveRoom();
   }
+  
   return (
     <Box
       sx={{
@@ -95,22 +96,22 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveR
             }}
           >
             <SportsSoccer sx={{ mr: 1, color: "#4CAF50" }} />
-            {roomData.gameName}
+            {roomData?.gameName}
           </Typography>
           <Chip
-            label={roomData.privateGame ? "Private" : "Públic"}
+            label={roomData?.privateGame ? "Private" : "Públic"}
             size="small"
-            icon={roomData.privateGame ? <Lock fontSize="small" /> : <Public fontSize="small" />}
+            icon={roomData?.privateGame ? <Lock fontSize="small" /> : <Public fontSize="small" />}
             sx={{
               ml: 2,
-              bgcolor: roomData.privateGame ? "rgba(244, 67, 54, 0.2)" : "rgba(76, 175, 80, 0.2)",
+              bgcolor: roomData?.privateGame ? "rgba(244, 67, 54, 0.2)" : "rgba(76, 175, 80, 0.2)",
               color: "white",
               "& .MuiChip-icon": { color: "white" },
               display: { xs: "none", sm: "flex" },
             }}
           />
           <Chip
-            label={roomData.status}
+            label={roomData?.status}
             size="small"
             sx={{
               ml: 1,
@@ -187,12 +188,12 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveR
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: "bold", display: "flex", alignItems: "center" }}>
-              <People sx={{ mr: 1 }} /> Players ({roomData.players.length}/{roomData.maxPlayers})
+              <People sx={{ mr: 1 }} /> Players ({roomData?.players.length}/{roomData?.maxPlayers})
             </Typography>
 
             <Chip
               icon={<Timer fontSize="small" />}
-              label={`${new Date(roomData.creationTime).toLocaleString()}`}
+              label={`${new Date(roomData?.creationTime).toLocaleString()}`}
               size="small"
               sx={{
                 bgcolor: "rgba(255,255,255,0.1)",
@@ -201,7 +202,7 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveR
               }}
             />
           </Box>
-          <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={onStartGame} host={roomData.creatorName} isHost={host} />
+          <PlayerList teamAPlayers={teamAPlayers} teamBPlayers={teamBPlayers} onStartGame={onStartGame} host={roomData?.creatorName} isHost={host} />
         </Paper>
       </Box>
       <Dialog
@@ -247,7 +248,7 @@ export const WaitingRoom = React.memo(function WaitingRoom({ onStartGame, leaveR
                 textAlign: "center",
               }}
             >
-              {roomData.id}
+              {roomData?.id}
             </Typography>
             <IconButton
               onClick={handleCopyInviteCode}

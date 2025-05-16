@@ -1,14 +1,12 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Box,
   Button,
   Card,
   CardContent,
-  Container,
   FormControl,
   Grid,
   IconButton,
-  InputLabel,
   MenuItem,
   Paper,
   Select,
@@ -18,6 +16,8 @@ import {
   Typography,
   styled,
   CardHeader,
+  alpha,
+  AppBar,
 } from "@mui/material"
 import {
   CloudUpload,
@@ -37,6 +37,7 @@ import { useUser } from "../../context/user/userContext"
 import { useUserLogin } from "../../Modules/useUserLogin"
 import { useNavigate } from "react-router-dom"
 import { CustomizerUser } from "../user/CustomizerUser"
+import CancelIcon from '@mui/icons-material/Cancel';
 import PropTypes from 'prop-types';
 
 const VisuallyHiddenInput = styled("input")({
@@ -80,7 +81,7 @@ export default function CustomPlayer() {
     const navigate = useNavigate();
   const {playerData, setPlayer} = useUser();
   const {updateCharacter} = useUserLogin();
-  const username = playerData?.username || sessionStorage.getItem("usarname");
+  const username = playerData?.username;
   const [playerColor, setPlayerColor] = useState(playerData?.centerColor || "#ffc107")
   const [emblemType, setEmblemType] = useState(playerData?.iconType || "none")
   const [emblemColor, setEmblemColor] = useState(playerData?.iconColor || "#ffffff")
@@ -92,7 +93,7 @@ export default function CustomPlayer() {
   const [playerName, setPlayerName] = useState(username || "")
   const [showField, setShowField] = useState(true)
   const [tabValue, setTabValue] = useState(0)
-  
+  const [isUsernameValid, setIsUsernameValid] = useState(false)
   const icons = {
     football: <SportsSoccer fontSize="inherit" />,
     trophy: <EmojiEvents fontSize="inherit" />,
@@ -163,10 +164,19 @@ export default function CustomPlayer() {
             return "none"
     }
   }
-
+  useEffect(() => {
+      setIsUsernameValid(playerName.length >= 3 && playerName.length <= 15)
+    }, [playerName])
+    const cancelCustom = () =>{
+        navigate("/homepage")
+    }
+    const update = (response) => {
+        setPlayer(response)
+        navigate("/homepage")
+    }
   const saveCharacter = async () => {
     let centerIcon = getIcon()
-    if(playerData?.id){
+    if(playerData?.id && isUsernameValid){
         const requestBody = {
             username: playerName,
             image: centerIcon,
@@ -175,34 +185,44 @@ export default function CustomPlayer() {
             iconColor: emblemColor,
             iconType: emblemType
         }
-        await updateCharacter(playerData.id, requestBody, setPlayer)
-        navigate("/homepage")
+        await updateCharacter(playerData.id, requestBody, update)
     }
   }
 
   return (
-    <Container maxWidth="lg" sx={{ padding: 2 }}>
+    <Box
+              sx={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 1000,
+                backgroundColor: alpha("#000", 0.7),
+                p: 2,
+              }}
+            >
+    
         <Box sx={{ textAlign: "center", mb: 2 }}>
             <Typography variant="h6" sx={{ color: "secondary.light" }}>
             At the time of playing the team color will be assigned
              </Typography>
         </Box>
-        <Card sx={{ bgcolor: "primary.dark", color: "white", border:"1px solid white", height: "100%"}}>
-            <CardHeader
-                title="Customize Character"
-                slotProps={{ align: "center", variant: "h5" }}
-                sx={{ borderBottom: "1px solid #6da76f" }}
-        />
-        <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 3, flex: 1}}>
+        
             <Grid container spacing={3} sx={{ flex: 1 }}>
                 {/* Vista previa */}
-                <Grid item xs={12} md={4} sx={{ height: "100%" }}>
-                <Card elevation={4} sx={{ height: "100%", bgcolor:"primary.more"}}>
+                <Grid item xs={12} md={4}>
+                <Card sx={{bgcolor:alpha("#1b5e20", 0.3)}}>
+                    <CardHeader
+                            title="Customize Character"
+                            slotProps={{ align: "center", variant: "h5" }}
+                            sx={{ borderBottom: "1px solid #6da76f", color: "secondary.main" }}
+                    />
                     <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 3 }}>
-                    <Typography variant="h6" component="h2" sx={{ mb: 2, color: "primary.main", fontWeight: "bold" }}>
-                        Preview
-                    </Typography>
-
                     {showField ? (
                         <Paper
                         elevation={0}
@@ -268,7 +288,7 @@ export default function CustomPlayer() {
                                 borderRadius: 1,
                             }}
                             >
-                            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                            <Typography variant="body2" sx={{ fontWeight: "bold"}}>
                                 {playerName}
                             </Typography>
                             </Paper>
@@ -279,7 +299,7 @@ export default function CustomPlayer() {
                              <Box sx={{ display: "flex", justifyContent: "center" }}>
                              <CustomizerUser width={180} height={180} playerName={playerName} playerColor={playerColor} borderColor={borderColor} iconType={emblemType} iconColor={emblemColor} icon={getIcon()}/>
                             </Box>
-                        <Typography variant="h6" sx={{ mt: 2, fontWeight: "bold", color:"primary.dark" }}>
+                        <Typography variant="h6" sx={{ mt: 2, fontWeight: "bold", color:"primary.light" }}>
                             {playerName}
                         </Typography>
                         </Box>
@@ -289,6 +309,7 @@ export default function CustomPlayer() {
                         variant={showField ? "contained" : "outlined"}
                         size="small"
                         onClick={() => setShowField(true)}
+                        color="secondary"
                         >
                         In Field
                         </Button>
@@ -296,13 +317,17 @@ export default function CustomPlayer() {
                         variant={!showField ? "contained" : "outlined"}
                         size="small"
                         onClick={() => setShowField(false)}
+                        color="secondary"
                         >
                         Single Player
                         </Button>
                     </Box>
 
-                    <Button variant="contained" color="secondary" startIcon={<Download />} sx={{ mt: 3, color: "secondary.light" }} onClick={saveCharacter} fullWidth>
+                    <Button variant="contained" color="primary" startIcon={<Download />} sx={{ mt: 3}} onClick={saveCharacter} fullWidth>
                         Save Player
+                    </Button>
+                    <Button variant="contained" color="error" startIcon={<CancelIcon />} sx={{ mt: 3 }} onClick={cancelCustom} fullWidth>
+                        Cancel
                     </Button>
                     </CardContent>
                 </Card>
@@ -310,43 +335,61 @@ export default function CustomPlayer() {
 
                 {/* Opciones de personalización */}
                 <Grid item xs={12} md={8} >
-                <Card elevation={4} sx={{bgcolor:"primary.more", minHeight: 560, maxHeight: 670}} >
-                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Box sx={{bgcolor:alpha("#1b5e20", 0.3)}} >
+                    <AppBar position="static" sx={{color:"primary.light"}} enableColorOnDark>
                     <Tabs
                         value={tabValue}
                         onChange={handleTabChange}
                         variant="fullWidth"
-                        textColor="primary"
-                        indicatorColor="primary"
+                        textColor="secondary"
+                        indicatorColor="secondary"
                     >
-                        <Tab label="Basic" />
-                        <Tab label="Color" />
-                        <Tab label="Emblem" />
+                        <Tab label="Basic" sx={{color:"secondary.main"}}/>
+                        <Tab label="Color" sx={{color:"secondary.main"}}/>
+                        <Tab label="Emblem" sx={{color:"secondary.main"}}/>
                     </Tabs>
-                    </Box>
+                    </AppBar>
 
                     {/* Pestaña básica */}
-                    <TabPanel value={tabValue} index={0}>
+                    <TabPanel value={tabValue} index={0} >
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            disabled = {true}
-                            label="Player Name"
                             value={playerName}
                             onChange={(e) => setPlayerName(e.target.value)}
                             variant="outlined"
+                            label="Player Name" color="secondary"
+                            helperText={
+                            playerName ? (isUsernameValid ? "Valid name" : "The name must be between 3 and 15 characters long.") : ""
+                            }
+                            error={!playerName && !isUsernameValid}
                             InputProps={{
-                                sx: {
-                                  color: "#1b5e20",
+                            sx: {
+                                color: "white",
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "secondary.main",
                                 },
-                                maxLength: 50
-                              }}
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "secondary.main",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "secondary.main",
+                                },
+                            },
+                            }}
+                            InputLabelProps={{
+                            sx: { color: "secondary.main" },
+                            }}
+                            FormHelperTextProps={{
+                            sx: { color: isUsernameValid ? "secondary.main" : "error.main" },
+                            }}
+                            autoFocus
                         />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                         <TextField
-                            label="Player Number"
+                            label="Player Number" color="secondary"
                             value={playerNumber}
                             onChange={(e) => {
                             const val = e.target.value.replace(/\D/g, "")
@@ -354,9 +397,10 @@ export default function CustomPlayer() {
                             if (val) setEmblemType("number")
                             }}
                             inputProps={{ sx: {
-                                color: "#1b5e20",
+                                color: "secondary.main",
                               }, maxLength: 2 }}
                             variant="outlined"
+                            focused
                         />
                         </Grid>
                     </Grid>
@@ -364,14 +408,13 @@ export default function CustomPlayer() {
 
                     {/* Pestaña de colores */}
                     <TabPanel value={tabValue} index={1}>
-                    <Typography variant="h6" sx={{color:"#1b5e20"}} gutterBottom>
+                    <Typography variant="h6" sx={{color:"secondary.main"}} gutterBottom>
                         Colors of Popular Teams
                     </Typography>
                     <Grid container spacing={2} sx={{ mb: 4 }}>
                         {teamColors.map((team) => (
                         <Grid item xs={6} sm={4} key={team.name}>
                             <Button
-                            variant="outlined"
                             fullWidth
                             sx={{
                                 height: 64,
@@ -379,6 +422,8 @@ export default function CustomPlayer() {
                                 display: "flex",
                                 flexDirection: "column",
                                 justifyContent: "center",
+                                color: "secondary.main",
+                                borderColor: "secondary.main",
                             }}
                             onClick={() => {
                                 setPlayerColor(team.primary)
@@ -410,7 +455,7 @@ export default function CustomPlayer() {
                         ))}
                     </Grid>
 
-                    <Typography variant="h6" sx={{color:"#1b5e20"}} gutterBottom>
+                    <Typography variant="h6" sx={{color:"secondary.main"}} gutterBottom>
                     Custom Color
                     </Typography>
                     <Grid container spacing={2}>
@@ -434,10 +479,11 @@ export default function CustomPlayer() {
                         <Grid item xs={12}>
                         <Box display="flex" flexDirection="column" gap={2}>
                         <TextField
-                            label="Custom Color"
+                            label="Custom Color" color="secondary"
                             value={playerColor}
                             onChange={(e) => setPlayerColor(e.target.value)}
                             variant="outlined"
+                            error={playerName !== "" && !isUsernameValid}
                             fullWidth
                             InputProps={{
                             startAdornment: (
@@ -456,11 +502,12 @@ export default function CustomPlayer() {
                                 }}
                                 />
                             ),
-                            sx: {color: "#1b5e20"}
+                            sx: {color: "secondary.main"}
                             }}
+                            focused
                         />
                         <TextField
-                            label="Border Color"
+                            label="Border Color" color="secondary"
                             value={borderColor}
                             onChange={(e) => setBorderColor(e.target.value)}
                             variant="outlined"
@@ -482,8 +529,9 @@ export default function CustomPlayer() {
                                 }}
                                 />
                             ),
-                            sx: {color: "#1b5e20"}
+                            sx: {color: "secondary.main"}
                             }}
+                            focused
                         />
                         </Box>
                         </Grid>
@@ -493,27 +541,40 @@ export default function CustomPlayer() {
                     {/* Pestaña de emblema */}
                     <TabPanel value={tabValue} index={2}>
                     <Box sx={{ mb: 3 }}>
-                        <FormControl fullWidth>
-                        <InputLabel id="emblem-type-label">Emblem Type</InputLabel>
+                    <FormControl fullWidth>
                         <Select
-                            labelId="emblem-type-label"
-                            value={emblemType}
-                            label="Emblem Type"
-                            onChange={(e) => setEmblemType(e.target.value)}
-                            sx={{color:"#1b5e20"}}
+                        labelId="emblem-type-label"
+                        value={emblemType}
+                        onChange={(e) => setEmblemType(e.target.value)}
+                        sx={{
+                            color: "secondary.main",                        
+                            ".MuiOutlinedInput-notchedOutline": {
+                            borderColor: "secondary.main",               
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "secondary.main",              
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "secondary.main",               
+                            },
+                            ".MuiSvgIcon-root": {
+                            color: "secondary.main"                      
+                            }
+                        }}
                         >
-                            <MenuItem value="number">Number</MenuItem>
-                            <MenuItem value="icon">Icon</MenuItem>
-                            <MenuItem value="emoji">Emoji</MenuItem>
-                            <MenuItem value="image">Image</MenuItem>
-                            <MenuItem value="none">None</MenuItem>
+                        <MenuItem value="number">Number</MenuItem>
+                        <MenuItem value="icon" >Icon</MenuItem>
+                        <MenuItem value="emoji" >Emoji</MenuItem>
+                        <MenuItem value="image" >Image</MenuItem>
+                        <MenuItem value="none" >None</MenuItem>
                         </Select>
-                        </FormControl>
+                    </FormControl>
                     </Box>
+
 
                     {emblemType === "icon" && (
                         <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle1" gutterBottom>
+                        <Typography variant="subtitle1" gutterBottom color="secondary">
                             Select a football icon
                         </Typography>
                         <Grid container spacing={1}>
@@ -525,6 +586,8 @@ export default function CustomPlayer() {
                                     minWidth: 64,
                                     height: 64,
                                     fontSize: 32,
+                                    color: "secondary.main",
+                                    borderColor: "secondary.main"
                                 }}
                                 onClick={() => {
                                     setSelectedIcon(name)
@@ -541,7 +604,7 @@ export default function CustomPlayer() {
 
                     {emblemType === "emoji" && (
                         <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle1" gutterBottom>
+                        <Typography variant="subtitle1" gutterBottom color="secondary">
                         Select an emoji
                         </Typography>
                         <Grid container spacing={1}>
@@ -553,6 +616,7 @@ export default function CustomPlayer() {
                                     minWidth: 56,
                                     height: 56,
                                     fontSize: 24,
+                                    borderColor: "secondary.main"
                                 }}
                                 onClick={
                                     () => {
@@ -571,7 +635,7 @@ export default function CustomPlayer() {
 
                     {emblemType === "image" && (
                         <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle1" gutterBottom>
+                        <Typography variant="subtitle1" gutterBottom color="secondary">
                         Upload your own image
                         </Typography>
                         <Paper
@@ -625,7 +689,7 @@ export default function CustomPlayer() {
                     {emblemType !== "none" && emblemType !== "emoji" && emblemType !== "image" && (
                         <Box sx={{ mt: 3 }}>
                         <TextField
-                            label="Emblem Color"
+                            label="Emblem Color" color="secondary"
                             value={emblemColor}
                             onChange={(e) => setEmblemColor(e.target.value)}
                             variant="outlined"
@@ -647,17 +711,16 @@ export default function CustomPlayer() {
                                 }}
                                 />
                             ),
-                            sx: {color: "#1b5e20"}
+                            sx: {color: "secondary.main"}
                             }}
+                            focused
                         />
                         </Box>
                     )}
                     </TabPanel>
-                </Card>
+                </Box>
                 </Grid>
             </Grid>
-        </CardContent>
-        </Card>
-    </Container>
+            </Box>
   )
 }

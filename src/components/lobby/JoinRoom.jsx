@@ -19,6 +19,8 @@ import {
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import { useLobbyService } from "../../Modules/useLobbyService";
 import PropTypes from 'prop-types';
+import { LoadResponse } from "../Load/LoadResponse";
+import { useNavigate } from "react-router-dom";
 /**
  * Componente crear sala
  * @param {Object} props - Propiedades del componente
@@ -27,6 +29,8 @@ import PropTypes from 'prop-types';
  * @returns {JSX.Element} Componente para crear una sala
  */
 export const JoinRoom = ({OpenDialog,CloseDialog}) => {
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
   const{joinRoom} = useLobbyService();
     const [id, setId] = useState("");
     const [formErrors, setFormErrors] = useState({
@@ -59,9 +63,14 @@ export const JoinRoom = ({OpenDialog,CloseDialog}) => {
         })
         return;
       }
-      joinRoom(id);
+      joinRoom(id,setLoading);
     }
-
+    const closePage = () => {
+      navigate("/homepage/lobby")
+  }
+    if(loading){
+      return <LoadResponse open={true} message="Loading room..." onClose={closePage}/>
+    }
   return (
     <Dialog
     open={OpenDialog}

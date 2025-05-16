@@ -1,74 +1,24 @@
 import { useCallback, useState } from "react";
-import { useUserLogin } from "../../Modules/useUserLogin";
 import { useUser } from "../user/userContext";
+import { useCustomizedPlayers } from "../game/useCustomizedPlayers";
 
-export function useTeams() {
+export function useTeams(gameState) {
     const {playerData} = useUser();
     const [teamAPlayers, setTeamAPlayers] = useState([]);
     const [teamBPlayers, setTeamBPlayers] = useState([]);
-    const {usersCharacters} = useUserLogin();
+    const getCustomizedPlayers = useCustomizedPlayers(gameState)
     const fetchCustomizations = useCallback(async (players) => {
-        const teamA = []
-        const teamB = []
-        if (players && playerData?.authenticated) {
+        let teamA = []
+        let teamB = []
+        if (players && playerData) {
             const users = players.map((p) => p.id)
-            let characters = await usersCharacters(users)
-            if(characters){
-                players.forEach((player) => {
-                    let customization = {}
-                    const custom = characters.find((p) => p.id === player.id);
-                    if(custom){
-                        customization = {
-                          image: custom.image,
-                          borderColor: custom.borderColor,
-                          centerColor: custom.centerColor,
-                          iconType: custom.iconType,
-                          iconColor: custom.iconColor
-                        };
-                      }else{
-                        customization = {
-                          image: null,
-                          borderColor: null,
-                          centerColor: null,
-                          iconType: null,
-                          iconColor: null
-                        };
-                      }
-                      const data = {
-                          id: player.id,
-                          name: player.name,
-                          team: player.team,
-                          x: player.x,
-                          y: player.y,
-                          ...customization
-                      };
-
-                    if (player.team === 0) teamA.push(data);
-                    else if (player.team === 1) teamB.push(data);
-                });
-            }
-        }else{
-            players.forEach((player) => {
-                const data = {
-                    id: player.id,
-                    name: player.name,
-                    team: player.team,
-                    x: player.x,
-                    y: player.y,
-                    gamesWon: null,
-                    image: null,
-                    borderColor: null,
-                    centerColor: null,
-                    iconType: null,
-                    iconColor: null
-                };
-                if (player.team === 0) teamA.push(data);
-                else if (player.team === 1) teamB.push(data);
-            });
+            let characters = await getCustomizedPlayers(users)
+            teamA = characters.filter((p) => p.team === 0)
+            teamB = characters.filter((p) => p.team === 1)
         }
         setTeamAPlayers(teamA);
         setTeamBPlayers(teamB);
-    },[])
+    },[playerData, getCustomizedPlayers])
 
     return {teamAPlayers, teamBPlayers, fetchCustomizations}
 }

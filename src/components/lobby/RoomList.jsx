@@ -22,7 +22,6 @@ import {
 } from "@mui/icons-material"
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { motion } from "framer-motion"
-import { useLobbyService } from "../../Modules/useLobbyService";
 import PropTypes from 'prop-types';
 
 /**
@@ -32,8 +31,7 @@ import PropTypes from 'prop-types';
  * @returns {JSX.Element} Lista de jugadores
  */
 
-export const RoomList = ({ gameRooms }) => {
-  const{joinRoom} = useLobbyService();
+export const RoomList = ({ gameRooms, joinRoom }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const getStatusColor = (status) => {

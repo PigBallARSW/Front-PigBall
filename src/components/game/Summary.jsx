@@ -1,31 +1,25 @@
-"use client"
 import { useState, useEffect } from "react"
 import {
   Box,
   Typography,
   Paper,
   Button,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Chip,
   Grid,
 } from "@mui/material"
 import { alpha, keyframes } from "@mui/material/styles"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import ShieldIcon from "@mui/icons-material/Shield"
-import StarIcon from "@mui/icons-material/Star"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import BarChartIcon from "@mui/icons-material/BarChart"
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows"
-import { motion } from "framer-motion";
-import { CustomizerUser } from "../user/CustomizerUser"
 import { scrollbarStyles } from "../themes/ScrollTheme"
 import PropTypes from 'prop-types';
 import { useSummary } from "../../context/game/useSummary"
-import { colors, winner } from "../../context/color/teamCustom"
+import {PlayerSummary} from "./PlayerSummary"
+import {TopScorer} from "./TopScorer"
+import { SummaryStatistic } from "./SummaryStatistic"
+import { colors } from "../../context/color/teamCustom"
+import { playSound } from "../../utils/sounds"
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -64,32 +58,34 @@ const rotate = keyframes`
  * @param {function} props.onExit - Función para salir del juego
  * @returns {JSX.Element} Resume el juego
  */
-export default function Summary({ gameState, onExit }) {
+export const Summary = ({ gameState, onExit }) => {
   const [showContent, setShowContent] = useState(false)
-  const {playersGoal, assists, playersAssist, playersGoals} = useSummary(gameState)
-  const blueWins = (gameState?.teams.first || 0) > (gameState?.teams.second || 0);
-  const redWins = (gameState?.teams.second || 0) > (gameState?.teams.first || 0);
-  const isDraw = (gameState?.teams.first || 0) === (gameState?.teams.second || 0);
+  const{ teamGoals, playerGoals, assistsByTeam, assists, topScorer } = useSummary(gameState)
+  const firstTeamScore = gameState?.teams.first || 0;
+  const secondTeamScore = gameState?.teams.second || 0;
 
-  const winnerColor = blueWins ? "#1976d2" : redWins ? "#dc004e" : "#4caf50"
-  const winnerTeam = blueWins ? "A" : redWins ? "B" : "DRAW"
+  let winnerInfo;
 
-  const topScorer = playersGoal?.length
-  ? playersGoal.reduce((max, player) => player.goal > max.goal ? player : max)
-  : null;
+  if (firstTeamScore > secondTeamScore) {
+    winnerInfo = { team: 0, message: "TEAM A VICTORY!" };
+  } else if (secondTeamScore > firstTeamScore) {
+    winnerInfo = { team: 1, message: "TEAM B VICTORY!" };
+  } else {
+    winnerInfo = { team: 2, message: "DRAW!" };
+  }
 
-
-  const totalAssists = playersAssist.blue + playersAssist.red;
-  const blueAssistPct = totalAssists > 0 ? Math.round((playersAssist.blue * 100) / totalAssists) : 0;
+  const totalAssists = assistsByTeam[0] + assistsByTeam[1];
+  const blueAssistPct = totalAssists > 0 ? Math.round((assistsByTeam[0] * 100) / totalAssists) : 0;
   const redAssistPct = totalAssists > 0 ? 100 - blueAssistPct : 0;
-
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowContent(true)
+      playSound("/sounds/end.mp3",0.03)
     }, 500)
 
     return () => clearTimeout(timer)
+      
   }, [])
 
 
@@ -119,8 +115,8 @@ export default function Summary({ gameState, onExit }) {
           maxWidth: 900,
           maxHeight: "90vh",
           overflow: "auto",
-          border: `4px solid ${winnerColor}`,
-          boxShadow: `0 0 30px ${alpha(winnerColor, 0.5)}`,
+          border: `4px solid ${colors[winnerInfo.team]}`,
+          boxShadow: `0 0 30px ${alpha(colors[winnerInfo.team], 0.5)}`,
           animation: `${fadeIn} 0.8s ease-out`,
           position: "relative",
           overflowX: "hidden",
@@ -145,8 +141,8 @@ export default function Summary({ gameState, onExit }) {
             textAlign: "center",
             position: "relative",
             zIndex: 1,
-            bgcolor: alpha(winnerColor, 0.2),
-            borderBottom: `2px solid ${alpha(winnerColor, 0.5)}`,
+            bgcolor: alpha(colors[winnerInfo.team], 0.2),
+            borderBottom: `2px solid ${alpha(colors[winnerInfo.team], 0.5)}`,
           }}
         >
           <Typography
@@ -159,32 +155,18 @@ export default function Summary({ gameState, onExit }) {
           >
             MATCH OVER
           </Typography>
-
-          {isDraw ? (
-            <Typography
+          <Typography
               variant="h3"
               sx={{
                 fontWeight: "bold",
-                color: winnerColor,
+                color: colors[winnerInfo.team],
                 mb: 2,
                 animation: showContent ? `${fadeIn} 1s ease-out, ${pulse} 2s infinite` : "none",
               }}
-            >
-              DRAW!
-            </Typography>
-          ) : (
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: "bold",
-                color: winnerColor,
-                mb: 2,
-                animation: showContent ? `${fadeIn} 1s ease-out, ${pulse} 2s infinite` : "none",
-              }}
-            >
-              TEAM {winnerTeam} VICTORY!
-            </Typography>
-          )}
+          >
+            {winnerInfo.message} 
+          </Typography>
+        
           <Box
             sx={{
               display: "flex",
@@ -201,12 +183,12 @@ export default function Summary({ gameState, onExit }) {
                 bgcolor: alpha("#1976d2", 0.3),
                 p: 2,
                 borderRadius: 2,
-                border: blueWins && `2px solid #1976d2`,
+                border: "2px solid #1976d2",
               }}
             >
               <ShieldIcon color="primary" sx={{ mr: 1, fontSize: 30 }} />
               <Typography variant="h4" sx={{ fontWeight: "bold", color: "#1976d2" }}>
-              {gameState?.teams.first || 0}
+              {firstTeamScore}
               </Typography>
             </Box>
 
@@ -221,11 +203,11 @@ export default function Summary({ gameState, onExit }) {
                 bgcolor: alpha("#dc004e", 0.3),
                 p: 2,
                 borderRadius: 2,
-                border: redWins && `2px solid #dc004e`,
+                border: "2px solid #dc004e",
               }}
             >
               <Typography variant="h4" sx={{ fontWeight: "bold", color: "#dc004e" }}>
-              {gameState?.teams.second || 0}
+              {secondTeamScore}
               </Typography>
               <ShieldIcon sx={{ ml: 1, fontSize: 30, color:"#dc004e" }} />
             </Box>
@@ -250,173 +232,16 @@ export default function Summary({ gameState, onExit }) {
               <BarChartIcon sx={{ mr: 1 }} />
               MATCH STATS
             </Typography>
-
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    bgcolor: alpha("#333", 0.5),
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography variant="subtitle2" sx={{ color: "white", mb: 1 }}>
-                  Assists
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography variant="body2" sx={{ color: "#1976d2", width: "40px" }}>
-                    {blueAssistPct}
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, mx: 1 }}>
-                      <Box
-                        sx={{
-                          height: "8px",
-                          borderRadius: "4px",
-                          bgcolor: "#333",
-                          position: "relative",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            left: 0,
-                            top: 0,
-                            height: "100%",
-                            width: `${blueAssistPct}%`,
-                            bgcolor: "#1976d2",
-                          }}
-                        />
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            right: 0,
-                            top: 0,
-                            height: "100%",
-                            width: `${redAssistPct}%`,
-                            bgcolor: "#dc004e",
-                          }}
-                        />
-                      </Box>
-                    </Box>
-                    <Typography variant="body2" sx={{ color: "#dc004e", width: "40px", textAlign: "right" }}>
-                    {redAssistPct}
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    bgcolor: alpha("#333", 0.5),
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography variant="subtitle2" sx={{ color: "white", mb: 1 }}>
-                  Goals
-                  </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#1976d2",
-                      }}
-                    >
-                      <ShieldIcon fontSize="small" sx={{ mr: 0.5 }} />
-                      <Typography variant="h6">{playersGoals.blue}</Typography>
-                    </Box>
-                    <Box sx={{ mx: 2, color: "white" }}>-</Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#dc004e",
-                      }}
-                    >
-                      <Typography variant="h6">{playersGoals.red}</Typography>
-                      <ShieldIcon fontSize="small" sx={{ ml: 0.5 }} />
-                    </Box>
-                  </Box>
-                </Paper>
-              </Grid>
-            </Grid>
+            <SummaryStatistic blueAssistPct={blueAssistPct} redAssistPct={redAssistPct} teamGoals={teamGoals} />
           </Box>
-
           {topScorer &&
           <Box
             sx={{
-              mb: 4,
-              animation: showContent ? `${fadeIn} 1.8s ease-out` : "none",
+                mb: 4,
+                animation: showContent ? `${fadeIn} 1.8s ease-out` : "none",
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                mb: 2,
-                color: "white",
-              }}
-            >
-            <StarIcon sx={{ mr: 1, color: "#FFD700" }} />
-              MOST VALUABLE PLAYER
-            </Typography>
-            <Paper
-              sx={{
-                p: 3,
-                bgcolor: alpha((colors[topScorer.team]), 0.2),
-                borderRadius: 2,
-                border: `1px solid ${alpha(
-                   (colors[topScorer.team]),
-                  0.5,
-                )}`,
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                alignItems: "center",
-              }}
-            >
-              <motion.div
-                animate={{ y: [0, -20, 0, -20, 0] }} 
-                transition={{
-                  duration: 1.5, 
-                  times: [0, 0.2, 0.4, 0.6, 1], 
-                  repeat: Infinity, 
-                  repeatDelay: 3, 
-                  ease: "easeInOut", 
-                  }}
-              >
-                <CustomizerUser 
-                width={80} 
-                height={80} 
-                playerName={topScorer.name} 
-                playerColor={topScorer.centerColor || colors[topScorer.team]} 
-                borderColor={"#FFD700"} 
-                iconType={topScorer.iconType} 
-                iconColor={topScorer.iconColor} 
-                icon={topScorer.image}
-                shadow={"0 0 15px rgba(255, 215, 0, 0.5)"} />
-                </motion.div>
-              <Box sx={{ textAlign: { xs: "center", sm: "left" }, ml: { xs: 0, sm: 3 } }}>
-                <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
-                    {topScorer.name}
-                </Typography>
-                <Typography variant="body1" sx={{ color: "white", opacity: 0.7, mb: 1 }}>
-                  Team {winner[topScorer.team]}
-                </Typography>
-                <Chip
-                  icon={<EmojiEventsIcon />}
-                  label="MVP of the match"
-                  sx={{
-                    bgcolor: "#FFD700",
-                    color: "#000",
-                    fontWeight: "bold",
-                  }}
-                />
-              </Box>
-            </Paper>
-          </Box>}
+          <TopScorer topScorer={topScorer} /></Box>}
         <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
             <Box
@@ -437,55 +262,7 @@ export default function Summary({ gameState, onExit }) {
                 <SportsSoccerIcon sx={{ mr: 1 }} />
                 GOAL SCORES
                 </Typography>
-                {playersGoal.length > 0 ? (
-                <List sx={{ bgcolor: alpha("#333", 0.3), borderRadius: 2 }}>
-                {playersGoal.map((scorer, index) => (
-                    <ListItem
-                    key={scorer.id}
-                    sx={{
-                        borderBottom: index < playersGoal.length - 1 && `1px solid ${alpha("#fff", 0.1)}`,
-                    }}
-                    >
-                    <ListItemAvatar>
-                    <CustomizerUser 
-                      width={40} 
-                      height={40} 
-                      playerName={scorer.name} 
-                      playerColor={scorer.centerColor || colors[scorer.team]} 
-                      borderColor={scorer.borderColor} 
-                      iconType={scorer.iconType} 
-                      iconColor={scorer.iconColor} 
-                      icon={scorer.image}/>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={
-                        <Typography variant="subtitle1" sx={{ color: "white" }}>
-                            {scorer.name}
-                        </Typography>
-                        }
-                        secondary={
-                        <Typography variant="body2" sx={{ color: "white", opacity: 0.7 }}>
-                            Team {winner[scorer.team]}
-                        </Typography>
-                        }
-                    />
-                    <Chip
-                        label={`${scorer.goal} ${scorer.goal === 1 ? "goal" : "goals"}`}
-                        size="small"
-                        sx={{
-                        bgcolor: alpha(colors[scorer.team], 0.2),
-                        color: colors[scorer.team],
-                        border: `1px solid ${alpha(colors[scorer.team], 0.5)}`,
-                        }}
-                    />
-                    </ListItem>
-                ))}
-                </List>) : (
-                        <Box sx={{ p: 3, textAlign: "center" }}>
-                          <Typography sx={{ color: "rgba(255, 255, 255, 0.7)" }}>There are no players who made goals.
-                          </Typography>
-                        </Box>
-                      )}
+                <PlayerSummary players={playerGoals} message={"There are no players who made goals."} />
             </Box>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -507,55 +284,7 @@ export default function Summary({ gameState, onExit }) {
                 <CompareArrowsIcon sx={{ mr: 1 }} />
                 ASSISTS
                 </Typography>
-                {assists.length > 0 ? (
-                <List sx={{ bgcolor: alpha("#333", 0.3), borderRadius: 2 }}>
-                {assists.map((scorer, index) => (
-                    <ListItem
-                    key={scorer.id}
-                    sx={{
-                        borderBottom: index < playersGoal.length - 1 ? `1px solid ${alpha("#fff", 0.1)}` : "none",
-                    }}
-                    >
-                    <ListItemAvatar>
-                    <CustomizerUser 
-                      width={40} 
-                      height={40} 
-                      playerName={scorer.name} 
-                      playerColor={scorer.centerColor || colors[scorer.team]} 
-                      borderColor={scorer.borderColor} 
-                      iconType={scorer.iconType} 
-                      iconColor={scorer.iconColor} 
-                      icon={scorer.image}/>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={
-                        <Typography variant="subtitle1" sx={{ color: "white" }}>
-                            {scorer.name}
-                        </Typography>
-                        }
-                        secondary={
-                        <Typography variant="body2" sx={{ color: "white", opacity: 0.7 }}>
-                            Team {winner[scorer.team]}
-                        </Typography>
-                        }
-                    />
-                    <Chip
-                        label={`${scorer.assist} ${scorer.assist === 1 ? "assist" : "assists"}`}
-                        size="small"
-                        sx={{
-                        bgcolor: alpha(colors[scorer.team], 0.2),
-                        color: colors[scorer.team],
-                        border: `1px solid ${alpha(colors[scorer.team], 0.5)}`,
-                        }}
-                    />
-                    </ListItem>
-                ))}
-                </List>) : (
-                        <Box sx={{ p: 3, textAlign: "center" }}>
-                          <Typography sx={{ color: "rgba(255, 255, 255, 0.7)" }}>There are no players who made assists.
-                          </Typography>
-                        </Box>
-                      )}
+                <PlayerSummary players={assists} message={"There are no players who made assists."} />
             </Box>
             </Grid>
             </Grid>

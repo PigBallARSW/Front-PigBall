@@ -2,64 +2,51 @@ import React, { createContext, useContext, useEffect, useState, useRef, useMemo 
 import { useMsal } from '@azure/msal-react';
 import { useUserLogin } from '../../Modules/useUserLogin';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+
 const UserContext = createContext();
 /**Guardar informacion del usuario
  * @param {JSX.Element} props.children -Elmentos donde guardar el usuario
  * @returns {JSX.Element} Guardar informacion del usuario
  */
 export const UserProvider = ({ children }) => {
-        const { accounts } = useMsal();
-        const isAuthenticated = accounts.length > 0;
+        const { accounts } = useMsal()
         const [playerData, setPlayerData] = useState(null);
-        const { getAUser, createNewUser } = useUserLogin();
-        const prevAuthState = useRef(isAuthenticated);
+        const { getAUser } = useUserLogin();
+        const [open, setOpen] = useState(false)
+        const [loading, setLoading] = useState(true)
         const setPlayer = (res) => {
-            setPlayerData({...res,authenticated: true});
+            setPlayerData(res);
+            sessionStorage.setItem("playerData", JSON.stringify(res))
         }
+        const loadUserFromMicrosoftLogin = async (id) => {
+            await getAUser(id, setPlayer, setOpen); 
+        };
+        const logout = () => {
+            setPlayerData(null); 
+            sessionStorage.removeItem("playerData")      
+        };
+
         useEffect(() => {
-            const fetchOrCreateUser = async (id, name) => {
-                const user = await getAUser(id, setPlayer);
-                if (!user) {
-                    await createNewUser(id, name, setPlayer);
-                } 
+            let user = sessionStorage.getItem("playerData")
+            try {
+                const parsedUser = JSON.parse(user);
+                setPlayerData(parsedUser);
+            } catch (error) {
+                console.error("Error parsing playerData from sessionStorage:", error);
             }
-    
-            if (prevAuthState.current !== isAuthenticated) {
-                setPlayerData(null);
-                prevAuthState.current = isAuthenticated;
-            }
-    
-            if (isAuthenticated) {
-                const id = accounts[0].homeAccountId;
-                const name = accounts[0].name;
-                fetchOrCreateUser(id, name);
-            } else {
-                const id = sessionStorage.getItem('guestPlayerId') || `guest-${crypto.randomUUID()}`;
-                const name = sessionStorage.getItem('guestPlayerName') || `Guest${Math.floor(Math.random() * 1000000)}`;
-                sessionStorage.setItem('guestPlayerId', id);
-                sessionStorage.setItem('guestPlayerName', name);
-                setPlayerData({
-                    id: id,
-                    username: name,
-                    gamesPlayed: 0,
-                    gamesWon: 0,
-                    lostGames: 0,
-                    totalScore: 0,
-                    winningPercentage: 0,
-                    image: "none",
-                    borderColor: "#ffffff",
-                    centerColor: "#ffc107",
-                    iconType: "none",
-                    iconColor: "#ffffff",
-                    authenticated: false
-                });
-            }
-        }, [isAuthenticated, accounts, createNewUser, getAUser]);
+            setLoading(false)
+        },[accounts])
 
         const contextValue = useMemo(() => ({
-        playerData,
-        setPlayer
-    }), [playerData, setPlayer]);
+            playerData,
+            setPlayer,
+            open,
+            setOpen,
+            loadUserFromMicrosoftLogin,
+            logout,
+            loading
+        }), [playerData, setPlayer]);
 
     return (
         <UserContext.Provider value={contextValue}>

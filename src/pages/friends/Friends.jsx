@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import {
   Typography,
   Tabs,
@@ -13,9 +13,8 @@ import {
   ListItemSecondaryAction,
   IconButton,
   InputAdornment,
-  Dialog,
-  DialogTitle,
-  DialogContent,
+  Paper,
+  alpha,
 } from "@mui/material"
 import {
   PersonAdd as PersonAddIcon,
@@ -23,82 +22,57 @@ import {
   Search,
 } from "@mui/icons-material"
 import { motion } from "framer-motion"
-import { useUserLogin } from "../../Modules/useUserLogin"
-import { useUser } from "../../context/user/userContext"
 import StarIcon from '@mui/icons-material/Star';
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import { CustomizerUser } from "../../components/user/CustomizerUser"
 import PropTypes from 'prop-types'
-
+import { useFriends } from "../../context/friends/useFriends"
+import { useFilterFriends } from "../../context/friends/useFilterFriends"
+import CloseIcon from '@mui/icons-material/Close';
 /**
  * Componente para abrir lista de jugadores
  * @param {Object} props - Propiedades del componente
- * @param {boolean} props.isOpen - Booleano para abrir el dialogo
  * @param {function} props.closeDialog - Función que cierra el dialogo
  * @returns {JSX.Element} Componente de dialogo para jugadores
  */
-export const Friends = ({closeDialog, isOpen}) => {
-  const [tab, setTab] = useState(0)
+export const Friends = ({closeDialog}) => {
   const [query, setQuery] = useState("")
-  const [suggestions, setSuggestions] = useState([])
-  const [friends, setFriends] = useState([])
-
-  const {
-    getFriendSuggestions,
-    sendFriendRequest,
-    fetchFriends,
-    deleteFriend
-  } = useUserLogin()
-  const { playerData } = useUser()
-
-  useEffect(() => {
-    if (!playerData?.id || tab !== 0) return;
-    if (!playerData?.id) return
-    const timeout = setTimeout(() => {
-      getFriendSuggestions(playerData.id, { search: query })
-        .then(setSuggestions)
-        .catch(() => setSuggestions([]))
-    }, 500)
-    return () => clearTimeout(timeout)
-  }, [query, playerData, getFriendSuggestions, tab])
-
-
-  useEffect(() => {
-    if (!playerData?.id) return
-    fetchFriends(playerData.id, setFriends)
-  }, [playerData, fetchFriends])
-
-  const handleAddFriend = async (id) => {
-    await sendFriendRequest(playerData.id, id, () => {
-      setSuggestions(s => s.filter(u => u.id !== id))
-      fetchFriends(playerData.id, setFriends)
-    })
-  }
-  const handleRemoveFriend = async (id) => {
-    await deleteFriend(playerData.id, id, () => {
-      setFriends(f => f.filter(u => u.id !== id))
-    })
-  }
-
+  const [tab, setTab] = useState(0)
+  const {friends, suggestions, handleAddFriend, handleRemoveFriend, setSuggestions} = useFriends()
+  useFilterFriends(setSuggestions, query, tab)
   return (
-    <Dialog
-      open={isOpen}
-      onClose={closeDialog}
-      fullWidth
-      maxWidth="md" 
-      slotProps={{
-      paper: {
-        sx: {
-            color: "white",
-            borderRadius: 2,
-            border: "2px solid #4CAF50",
-            height: "100%",
-            bgcolor: "#0e250f",
-        },
-      },
-      }}
-    >
-      <DialogTitle sx={{ bgcolor: "rgba(27, 94, 32, 0.9)", display: "flex", alignItems: "center" }}>
+    <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            backgroundColor: alpha("#000", 0.7),
+            backdropFilter: "blur(8px)",
+            p: 2,
+          }}
+        >
+          <Paper
+            elevation={24}
+            sx={{
+              bgcolor: alpha("#121212", 0.95),
+              borderRadius: 4,
+              width: "100%",
+              maxWidth: 900,
+              height: "100%",
+              border: "4px solid #4CAF50",
+              boxShadow: "0 0 30px #4CAF50",
+              position: "relative",
+              overflow: "hidden",
+              
+            }}
+          >
+        <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: alpha("#4CAF50", 0.2), mb: 2, p: 2}}>
          <Tabs
           value={tab}
           onChange={(_, v) => setTab(v)}
@@ -109,8 +83,13 @@ export const Friends = ({closeDialog, isOpen}) => {
           <Tab label="Add Friend" />
           <Tab label="My Friends" />
         </Tabs>
-      </DialogTitle>
-      <DialogContent sx={{ mt: 3,overflow: "hidden"}}>
+        <IconButton
+        onClick={closeDialog} 
+        size="small"
+        >
+        <CloseIcon sx={{color:"white"}}/>
+      </IconButton>
+        </Box>
         <Box
             sx={{
               display: tab === 0 ? "flex" : "none",
@@ -118,6 +97,7 @@ export const Friends = ({closeDialog, isOpen}) => {
               minHeight: 0,
               flexDirection: "column",
               height: "100%",
+              p: 2
             }}
           >
             <TextField
@@ -162,7 +142,7 @@ export const Friends = ({closeDialog, isOpen}) => {
             />
         {suggestions.length > 0 ? (
           <>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            <Typography variant="subtitle1" sx={{ mb: 1, color: "white" }}>
               Suggestions:
             </Typography>
               <List disablePadding sx={{overflow: "auto", 
@@ -239,10 +219,11 @@ export const Friends = ({closeDialog, isOpen}) => {
               flex: 1,
               minHeight: 0,
               flexDirection: "column",
-              height: "100%"
+              height: "100%",
+              p: 2
             }}
           >
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            <Typography variant="subtitle1" sx={{ mb: 1, color: "white" }}>
               Your Friends:
             </Typography>
               <List disablePadding sx={{overflow: "auto", 
@@ -272,7 +253,7 @@ export const Friends = ({closeDialog, isOpen}) => {
                         <CustomizerUser width={40} height={40} playerName={f.username} playerColor={f.centerColor} borderColor={f.borderColor} iconType={f.iconType} iconColor={f.iconColor} icon={f.image} />
                       </ListItemAvatar>
                       <ListItemText
-                        primary={f.username}
+                        primary= {<Typography sx={{color:"white"}}>{f.username}</Typography>}
                         secondary={
                         <Box sx={{display: "flex", color:"white"}}>
                         <EmojiEventsIcon sx={{color: "#FFD700"}} />
@@ -300,17 +281,16 @@ export const Friends = ({closeDialog, isOpen}) => {
                     </ListItem>
                   ))
                 ) : (
-                  <Typography sx={{ p: 2, textAlign: "center", color: "text.disabled" }}>
+                  <Typography sx={{ p: 2, textAlign: "center", color: "white" }}>
                     You have no friends yet.
                   </Typography>
                 )}
               </List>
           </Box>
-      </DialogContent>
-    </Dialog>
+      </Paper>
+    </Box>
   )
 }
 Friends.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
   closeDialog: PropTypes.func.isRequired,
 };
