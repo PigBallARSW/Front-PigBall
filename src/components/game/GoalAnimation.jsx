@@ -37,7 +37,7 @@ const letterVariants = {
 export const GoalAnimation = React.memo(function GoalAnimation({ player, team, onClose, goalState }) {
   const [showConfetti, setShowConfetti] = useState(true);
 
-  const text = goalState === "GOAL_SCORED" ? "¡GOAL!": "SELF GOAL";
+  const text = goalState === "GOAL_SCORED" ? "¡GOAL!": "OWN GOAL";
 
   let message;
   if (goalState === "GOAL_SCORED") {
@@ -52,6 +52,7 @@ export const GoalAnimation = React.memo(function GoalAnimation({ player, team, o
       if (onClose) onClose();
     }, 2000);
     return () => clearTimeout(timer);
+      
   }, [onClose]);
 
   return (

@@ -14,17 +14,16 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/user/userContext';
 import { UsernameInput } from '../../components/login/UsernameInput';
+import { useAuth } from '../../context/auth/AuthContext';
 
 export const Login = () => {
-  const {open} = useUser()
-  const { instance } = useMsal();
+  const {open, loadUserFromMicrosoftLogin} = useUser()
+  const {signInUser} = useAuth()
+  
   const handleMicrosoftLogin = async () => {
-    try {
-      const loginResponse = await instance.loginPopup(loginRequest);
-      instance.setActiveAccount(loginResponse.account);
-    } catch (e) {
-      console.error("Error durante login con Microsoft:", e);
-    }
+    const response = await signInUser()
+    loadUserFromMicrosoftLogin(response.homeAccountId)
+    
   };
   return (
     <>

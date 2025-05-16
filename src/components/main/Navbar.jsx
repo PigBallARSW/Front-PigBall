@@ -17,17 +17,18 @@ import {
 import { useMsal,useIsAuthenticated } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
 import {Friends} from "../../pages/friends/Friends";
+import { useUser } from "../../context/user/userContext";
+import { useAuth } from "../../context/auth/AuthContext";
 
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const navigation = useNavigate();
-    const { instance } = useMsal();
-    const isAuthenticated = useIsAuthenticated();
+    const {setPlayer} = useUser()
+    const {signOut} = useAuth()
     const handleLogout = async () => {
-      if (isAuthenticated) {
-        await instance.logoutPopup();
-        navigation("/")
-      }
+      signOut()
+      setPlayer(null)
+      navigation("/")
     };
     const handleGoHome = () => {
       navigation("/homepage");

@@ -17,6 +17,7 @@ import {
   styled,
   CardHeader,
   alpha,
+  AppBar,
 } from "@mui/material"
 import {
   CloudUpload,
@@ -36,6 +37,7 @@ import { useUser } from "../../context/user/userContext"
 import { useUserLogin } from "../../Modules/useUserLogin"
 import { useNavigate } from "react-router-dom"
 import { CustomizerUser } from "../user/CustomizerUser"
+import CancelIcon from '@mui/icons-material/Cancel';
 import PropTypes from 'prop-types';
 
 const VisuallyHiddenInput = styled("input")({
@@ -163,8 +165,11 @@ export default function CustomPlayer() {
     }
   }
   useEffect(() => {
-      setIsUsernameValid(username.length >= 3 && username.length <= 15)
+      setIsUsernameValid(playerName.length >= 3 && playerName.length <= 15)
     }, [playerName])
+    const cancelCustom = () =>{
+        navigate("/homepage")
+    }
     const update = (response) => {
         setPlayer(response)
         navigate("/homepage")
@@ -198,7 +203,6 @@ export default function CustomPlayer() {
                 justifyContent: "center",
                 zIndex: 1000,
                 backgroundColor: alpha("#000", 0.7),
-                backdropFilter: "blur(8px)",
                 p: 2,
               }}
             >
@@ -319,8 +323,11 @@ export default function CustomPlayer() {
                         </Button>
                     </Box>
 
-                    <Button variant="contained" color="primary" startIcon={<Download />} sx={{ mt: 3, color: "secondary.light" }} onClick={saveCharacter} fullWidth>
+                    <Button variant="contained" color="primary" startIcon={<Download />} sx={{ mt: 3}} onClick={saveCharacter} fullWidth>
                         Save Player
+                    </Button>
+                    <Button variant="contained" color="error" startIcon={<CancelIcon />} sx={{ mt: 3 }} onClick={cancelCustom} fullWidth>
+                        Cancel
                     </Button>
                     </CardContent>
                 </Card>
@@ -328,23 +335,23 @@ export default function CustomPlayer() {
 
                 {/* Opciones de personalización */}
                 <Grid item xs={12} md={8} >
-                <Box sx={{bgcolor:"transparent"}} >
-                    <Box sx={{ borderBottom: 1, borderColor: "divider"}}>
+                <Box sx={{bgcolor:alpha("#1b5e20", 0.3)}} >
+                    <AppBar position="static" sx={{color:"primary.light"}} enableColorOnDark>
                     <Tabs
                         value={tabValue}
                         onChange={handleTabChange}
                         variant="fullWidth"
-                        textColor="primary"
-                        indicatorColor="primary"
+                        textColor="secondary"
+                        indicatorColor="secondary"
                     >
-                        <Tab label="Basic" />
-                        <Tab label="Color" />
-                        <Tab label="Emblem" />
+                        <Tab label="Basic" sx={{color:"secondary.main"}}/>
+                        <Tab label="Color" sx={{color:"secondary.main"}}/>
+                        <Tab label="Emblem" sx={{color:"secondary.main"}}/>
                     </Tabs>
-                    </Box>
+                    </AppBar>
 
                     {/* Pestaña básica */}
-                    <TabPanel value={tabValue} index={0}>
+                    <TabPanel value={tabValue} index={0} >
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
                         <TextField
@@ -356,8 +363,28 @@ export default function CustomPlayer() {
                             helperText={
                             playerName ? (isUsernameValid ? "Valid name" : "The name must be between 3 and 15 characters long.") : ""
                             }
-                            error={playerName !== "" && !isUsernameValid}
-                            focused
+                            error={!playerName && !isUsernameValid}
+                            InputProps={{
+                            sx: {
+                                color: "white",
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "secondary.main",
+                                },
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "secondary.main",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "secondary.main",
+                                },
+                            },
+                            }}
+                            InputLabelProps={{
+                            sx: { color: "secondary.main" },
+                            }}
+                            FormHelperTextProps={{
+                            sx: { color: isUsernameValid ? "secondary.main" : "error.main" },
+                            }}
+                            autoFocus
                         />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -456,6 +483,7 @@ export default function CustomPlayer() {
                             value={playerColor}
                             onChange={(e) => setPlayerColor(e.target.value)}
                             variant="outlined"
+                            error={playerName !== "" && !isUsernameValid}
                             fullWidth
                             InputProps={{
                             startAdornment: (

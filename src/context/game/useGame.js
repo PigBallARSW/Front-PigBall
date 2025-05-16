@@ -51,6 +51,7 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
           destination: `/app/join/${id}`,
           body: JSON.stringify({ name: playerName, id: playerId }),
         });
+        
         const handlers = {
           players: handlePlayersMessage(setGameState, setGameStarted, setLoadingRoom),
           started: handleStartedMessage(setGameState, setGameStarted, setLoading),

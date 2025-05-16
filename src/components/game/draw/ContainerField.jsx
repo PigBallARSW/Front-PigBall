@@ -32,7 +32,7 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
     );
     const scale = Math.max(0.45, Math.min(baseScale, 1));
 
-    const EXTRA_MARGIN_FACTOR = 0.08; 
+    const EXTRA_MARGIN_FACTOR = 0.05; 
     const MAP_WIDTH = CANVAS_WIDTH * (1 + EXTRA_MARGIN_FACTOR);
     const MAP_HEIGHT = CANVAS_HEIGHT * (1 + EXTRA_MARGIN_FACTOR);
 

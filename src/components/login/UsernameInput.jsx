@@ -14,8 +14,8 @@ import { useMsal } from "@azure/msal-react";
 import { useUser } from "../../context/user/userContext";
 import { useNavigate } from "react-router-dom";
 export const UsernameInput = (showUsernameDialog=true) => {
-    const { accounts } = useMsal();
-    const {setPlayer} = useUser()
+    const { accounts } = useMsal()
+    const {setPlayer, setOpen} = useUser()
     const [isUsernameValid, setIsUsernameValid] = useState(false)
     const [username, setUsername] = useState("")
     const {createNewUser} = useUserLogin();
@@ -26,6 +26,8 @@ export const UsernameInput = (showUsernameDialog=true) => {
   const navigateToHome = (response) => {
     setPlayer(response)
     navigate("/homepage")
+    setOpen(false)
+
   }
     const handleUsernameSubmit = () => {
         if(isUsernameValid){
@@ -38,16 +40,23 @@ export const UsernameInput = (showUsernameDialog=true) => {
         open={showUsernameDialog}
         maxWidth="sm"
         fullWidth
-        PaperProps={{
+        slotProps={{
+        paper: {
+          component: 'form',
+          onSubmit: (e) => {
+            e.preventDefault();
+            handleUsernameSubmit();
+          },
           sx: {
             borderRadius: 3,
-            background: "rgba(0, 50, 0, 0.95)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
+            background: "linear-gradient(to bottom, rgba(26, 85, 26), rgba(21, 43, 23))",
+            border: "3px solid #4CAF50",
+            boxShadow: "0 0 20px rgba(60, 145, 63, 0.42)",
             color: "white",
-            padding: 2,
+            overflow: "hidden",
           },
-        }}
+        },
+      }}
       >
         <DialogTitle sx={{ textAlign: "center", fontWeight: "bold", fontSize: { xs: "1.5rem", md: "1.75rem" } }}>
           <SportsSoccerIcon sx={{ mr: 1, verticalAlign: "middle" }} />
@@ -96,16 +105,14 @@ export const UsernameInput = (showUsernameDialog=true) => {
 
         <DialogActions sx={{ justifyContent: "center", pb: 3, px: 3 }}>
           <Button
-            onClick={handleUsernameSubmit}
+            type="submit"
             variant="contained"
             disabled={!isUsernameValid}
             sx={{
               py: 1,
               px: 4,
-              borderRadius: "50px",
               background: "linear-gradient(45deg, #2e7d32 30%, #4caf50 90%)",
               boxShadow: "0 4px 8px rgba(46, 125, 50, 0.3)",
-              color: "white",
               textTransform: "none",
               fontWeight: "bold",
               width: { xs: "100%", sm: "auto" },

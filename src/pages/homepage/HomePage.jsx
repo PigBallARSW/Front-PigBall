@@ -13,6 +13,7 @@ import { LoadingPage } from "../../components/homepage/LoadingPage";
 
 export default function HomePage() {
   const {playerData} = useUser();
+  const user = playerData || sessionStorage.getItem("playerData")
   const navigation = useNavigate();
   const handleClick = () => {
     navigation("/homepage/lobby")
@@ -45,17 +46,17 @@ export default function HomePage() {
               Dominate the court with your skill!
             </Typography>
           </Box>
-            {!playerData ? <LoadingPage /> :
+            {!user ? <LoadingPage /> :
           <Grid container spacing={4}>
             {/* Player Character */}
-            <Character player={playerData} customPlayer={handleCustom}/>
+            <Character player={user} customPlayer={handleCustom}/>
 
             {/* Player Stats */}
-            <Statistic matchesPlayed = {playerData.gamesPlayed} 
-            matchesWon={playerData.gamesWon} 
-            matchesLost={playerData.lostGames} 
-            score={playerData.totalScore} 
-            winRate={playerData.winningPercentage} />
+            <Statistic matchesPlayed = {user.gamesPlayed} 
+            matchesWon={user.gamesWon} 
+            matchesLost={user.lostGames} 
+            score={user.totalScore} 
+            winRate={user.winningPercentage} />
           </Grid>
         }
           <Box sx={{ mt: 6, textAlign: "center" }}>

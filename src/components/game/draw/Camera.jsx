@@ -6,7 +6,7 @@ const lerp = (start, end, t = 0.03) => start + (end - start) * t;
 
 const getDynamicZoom = (playersCount, canvasWidth, canvasHeight, mapWidth, mapHeight) => {
   const maxZoom = Math.min(canvasWidth / mapWidth, canvasHeight / mapHeight) * 2; 
-  const minZoom = 0.9; 
+  const minZoom = 1.2; 
   const zoom = Math.min(maxZoom, minZoom + playersCount * 0.1);
   return Math.max(minZoom, zoom);
 };

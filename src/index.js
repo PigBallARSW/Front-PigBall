@@ -23,15 +23,17 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>     
         <MsalProvider instance={msalInstance}>
+            <AlertProvider>
         <AuthProvider>
-        <AlertProvider>
+        
             <BrowserRouter>
             <UserProvider>
             <App />
             </UserProvider>
             </BrowserRouter>
-        </AlertProvider>
+        
         </AuthProvider>
+        </AlertProvider>
         </MsalProvider>
     </React.StrictMode>
 );

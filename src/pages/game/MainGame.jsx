@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { WaitingRoom } from "../../components/lobby/WaitingRoom";
 import { useGame } from "../../context/game/useGame";
@@ -8,6 +8,7 @@ import { useGoalPlayer } from "../../context/game/useGoalPlayer";
 import {LoadResponse} from "../../components/Load/LoadResponse";
 import LoadingGame from "../../components/Load/LoadingGame";
 import { useAlert } from "../../context/alert/AlertContext";
+import { playSound } from "../../utils/sounds";
   
 export const MainGame = () => {
   const navigate = useNavigate()
@@ -29,14 +30,22 @@ export const MainGame = () => {
   const closePage = () => {
       navigate("/homepage/lobby")
   }
+  
+  useEffect(() => {
 
-  if(loadingRoom){
+    playSound("/sounds/stadium.mp3",0.01)
+  },[gameState?.players.length])
+
+  if(loading){
+    return <LoadingGame /> 
+  }
+
+  if(!gameState){
     return <LoadResponse open={true} message="Loading room..." onClose={closePage}/>
   }
 
+
   return (
-    <>
-    {loading ? <LoadingGame /> :
       gameStarted  ? (
         <>
         <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} fps={fps} fpsHistory={fpsHistory}/>
@@ -47,8 +56,6 @@ export const MainGame = () => {
       ) : (
         <WaitingRoom  onStartGame={startGame} leaveRoom={handleLeaveGame} roomData={gameState}/>
       )
-    }
-    </>
   );
 };
 
