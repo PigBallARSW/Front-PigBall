@@ -11,12 +11,13 @@ import {
     removeFriend } from "../APIServices/userAPI";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 
 export function useUserLogin() {
     const {showAlert} = useAlert();
     const { getToken } = useAuth(); 
-
+    const navigate = useNavigate()
     const createNewUser = useCallback(async (id, name, callback) => {
         try{
             const token = await getToken();
@@ -25,7 +26,11 @@ export function useUserLogin() {
             showAlert("Welcome "+name, "success");    
         }catch(error){
             console.error("Could not Loggin: ", error);
-            showAlert("Could not Loggin", "error");
+            if(error.response && error.response.status === 409){
+                showAlert(error.response.data.message,"error");
+            }else{
+                showAlert("Could not login","error");
+            }
         }
     },[getToken,showAlert]);
     
@@ -39,16 +44,19 @@ export function useUserLogin() {
         }
     },[getToken,showAlert]);
     
-    const getAUser = useCallback(async (id, callback) => {
+    const getAUser = useCallback(async (id, callback, setOpen) => {
         try{
             const token = await getToken();
             const response = await getUser(id,token);
             callback(response.data);
             showAlert("Welcome back! "+response.data.username, "success"); 
-            return true;
+            navigate("/homepage")
         }catch(error){
-            console.error("Could not get user: ", error);
-            return false;
+            if(error.response && error.response.status === 404){
+                setOpen(true)
+            }else{
+                console.error("Could not get user: ", error);
+            }
         }
         
     },[getToken,showAlert]);
@@ -61,7 +69,11 @@ export function useUserLogin() {
             showAlert("Character updated successfully!","success"); 
         }catch(error){
             console.error("Could not update character: ", error);
+            if(error.response && error.response.status === 409){
+                showAlert(error.response.data.message,"error");
+            }else{
             showAlert("Could not update character", "error");
+            }
         }
         
     },[getToken,showAlert]);

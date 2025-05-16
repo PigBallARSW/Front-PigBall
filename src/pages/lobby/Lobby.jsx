@@ -33,7 +33,6 @@ export const Lobby = () => {
   const {filteredRooms, searchTerm, setSearchTerm} = useLobby(rooms);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
-  const [loading, setLoading] = useState(false)
   function showForm() {
     setOpenCreateDialog(true);
   }
@@ -50,10 +49,7 @@ export const Lobby = () => {
     navigate("/homepage")
   }
   const joinARoom = (id) =>{
-    joinRoom(id, setLoading)
-  }
-  if(loading){
-    return <p>Loading...</p>
+    joinRoom(id)
   }
   if (isRefreshing) {
     return <LoadResponse open={true} message="Loading rooms..." onClose={closePage}/>

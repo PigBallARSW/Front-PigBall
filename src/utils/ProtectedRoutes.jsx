@@ -6,12 +6,12 @@ import { useUser } from "../context/user/userContext";
 const ProtectedRoutes = () => {
     const { inProgress } = useMsal(); 
     const isAuthenticated = useIsAuthenticated();
-    const { playerData } = useUser();
+    const { playerData, loading} = useUser();
     const closePage = () =>{
         return <Navigate to="/" />
     }
-    if (inProgress !== "none" || (isAuthenticated && !playerData)) {
-    return <LoadResponse open={true} message="Loading..." onClose={closePage}/>
+    if (loading) {
+        return <LoadResponse open={true} message="Loading..." onClose={closePage}/>
     }
 
 

@@ -19,6 +19,7 @@ import {PlayerSummary} from "./PlayerSummary"
 import {TopScorer} from "./TopScorer"
 import { SummaryStatistic } from "./SummaryStatistic"
 import { colors } from "../../context/color/teamCustom"
+import { playSound } from "../../utils/sounds"
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -80,9 +81,11 @@ export const Summary = ({ gameState, onExit }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowContent(true)
+      playSound("/sounds/end.mp3",0.03)
     }, 500)
 
     return () => clearTimeout(timer)
+      
   }, [])
 
 

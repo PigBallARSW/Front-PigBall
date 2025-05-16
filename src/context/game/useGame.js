@@ -47,6 +47,11 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
       brokerURL: brokerUrl,
       onConnect: () => {
       isConnected.current = true;
+      client.publish({
+          destination: `/app/join/${id}`,
+          body: JSON.stringify({ name: playerName, id: playerId }),
+        });
+        
         const handlers = {
           players: handlePlayersMessage(setGameState, setGameStarted, setLoadingRoom),
           started: handleStartedMessage(setGameState, setGameStarted, setLoading),
@@ -54,11 +59,6 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
           goal: handleGoalMessage(setGameState, addGoal),
         };
 
-        
-        client.publish({
-          destination: `/app/join/${id}`,
-          body: JSON.stringify({ name: playerName, id: playerId }),
-        });
 
         subscribeToTopics(client, id, handlers);
       },
