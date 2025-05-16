@@ -43,7 +43,6 @@ export function useLobbyService() {
                 showAlert("Joined successfully!", "success");
             }else{
                 showAlert("This room is no available", "error")
-                return;
             }
         }
        getAGame(func, id);

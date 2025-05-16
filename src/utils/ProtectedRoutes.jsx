@@ -1,10 +1,9 @@
-import { useMsal, useIsAuthenticated } from "@azure/msal-react";
+import { useIsAuthenticated } from "@azure/msal-react";
 import { Navigate, Outlet } from "react-router-dom";
 import { LoadResponse } from "../components/Load/LoadResponse";
 import { useUser } from "../context/user/userContext";
 
-const ProtectedRoutes = () => {
-    const { inProgress } = useMsal(); 
+const ProtectedRoutes = () => { 
     const isAuthenticated = useIsAuthenticated();
     const { playerData, loading} = useUser();
     const closePage = () =>{

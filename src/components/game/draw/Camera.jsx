@@ -20,6 +20,7 @@ const getDynamicZoom = (playersCount, canvasWidth, canvasHeight, mapWidth, mapHe
  * @param {number} props.CANVAS_HEIGHT - alto del mapa
  * @param {number} props.MAP_WIDTH - ancho del mapa con canchas
  * @param {number} props.MAP_HEIGHT - alto del mapa con canchas
+ * @param {Object} props.ball - balon del juego
  * @param {JSX.Element} props.children
  * @returns {JSX.Element} Camara que sigue al jugador
  */
@@ -95,6 +96,12 @@ Camera.propTypes = {
   CANVAS_HEIGHT: PropTypes.number.isRequired,
   MAP_WIDTH: PropTypes.number.isRequired,
   MAP_HEIGHT: PropTypes.number.isRequired,
+  ball: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    velocityX: PropTypes.number.isRequired,
+    velocityY: PropTypes.number.isRequired
+  }).isRequired,
   children: PropTypes.element.isRequired
 };
 
