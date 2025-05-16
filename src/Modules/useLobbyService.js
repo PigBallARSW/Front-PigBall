@@ -17,7 +17,6 @@ export function useLobbyService() {
             await sendStatsUser(response.data);
         } catch (error) {
             console.error("Could not send Stats: ", error);
-            showAlert("Could not send Stats", "error");
         }
     }, [getToken, sendStatsUser]);
     
