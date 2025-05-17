@@ -14,6 +14,7 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { LeaveDialog } from "../dialog/LeaveDialog";
 import PropTypes from 'prop-types';
 import { playSound } from "../../utils/sounds";
+import { useStyle } from "../../context/style/styleContext";
 
 /**
  * Componente de overlay de carga para solicitudes a la API
@@ -38,6 +39,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const fieldWrapperRef = useRef();
   const {onMoveStart,onMoveEnd, onActionStart, onActionEnd} = useMoveGame(movePlayer)
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
+  const{selectedStyle} = useStyle()
   const [muted, setMuted] = useState(false)
   const audioRef = useRef(null)
   const handleLeaveRoom = () => {
@@ -178,6 +180,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
         ball={ball}
         borderX={gameState.borderX}
         borderY={gameState.borderY}
+        style={selectedStyle}
       />
     </Box>
 

@@ -1,4 +1,3 @@
-"use client"
 import React, { useState } from "react"
 import {
   Box,
@@ -14,6 +13,12 @@ import {
   TextField as MuiTextField,
   Slider,
   FormHelperText,
+  RadioGroup,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Radio,
 } from "@mui/material"
 import {
   SportsSoccer,
@@ -26,6 +31,33 @@ import {
 import {useLobbyService } from "../../Modules/useLobbyService";
 import { useUser } from "../../context/user/userContext";
 import PropTypes from 'prop-types';
+import { motion } from "framer-motion";
+import backgroundAsset from '../../assets/images/tile2.png'; 
+import backgroundAsset2 from '../../assets/images/tile3.png';
+import backgroundAsset3 from '../../assets/images/tile4.png';
+import { useStyle } from "../../context/style/styleContext";
+const availableStyles = [
+  {
+    id: "classic",
+    name: "Classic",
+    description: "The traditional style of football.",
+    image: backgroundAsset,
+  },
+  {
+    id: "urban",
+    name: "Urban",
+    description: "Street courts and urban environments.",
+    image:
+     backgroundAsset2,
+  },
+  {
+    id: "dessert",
+    name: "Dessert",
+    description: "Dry and dusty terrain.",
+    image:
+      backgroundAsset3,
+  },
+]
 /**
  * Componente crear sala
  * @param {Object} props - Propiedades del componente
@@ -36,6 +68,8 @@ import PropTypes from 'prop-types';
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
   const {createNewRoom} = useLobbyService();
   const {playerData} = useUser();
+  const [style, setStyle] = useState("classic")
+  const { setSelectedStyle } = useStyle();
     const [newRoom, setNewRoom] = useState({
       name: "",
       isPrivate: false,
@@ -94,7 +128,11 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         return;
       }
       handleCloseCreateDialog();
+      setSelectedStyle(style)
       createNewRoom(newRoom, playerData.username);
+    }
+    const handleStyleChange = (e) => {
+      setStyle(e.target.value)
     }
 
   return (
@@ -216,37 +254,6 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
           </Box>
         </Box>
 
-        <MuiTextField
-          margin="dense"
-          label="Description (optional)"
-          type="text"
-          fullWidth
-          variant="outlined"
-          multiline
-          rows={3}
-          name="description"
-          value={newRoom.description}
-          onChange={handleRoomInputChange}
-          InputLabelProps={{
-            sx: { color: "rgba(255, 255, 255, 0.7)" },
-          }}
-          InputProps={{
-            sx: {
-              color: "white",
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "rgba(255, 255, 255, 0.3)",
-              },
-              "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "rgba(255, 255, 255, 0.5)",
-              },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#4CAF50",
-              },
-            },
-          }}
-          sx={{ mb: 3 }}
-        />
-
         <FormControlLabel
           control={
             <Switch
@@ -284,6 +291,96 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
             ? "Only players with the code will be able to join"
             : "Any player will be able to find and join this room"}
         </FormHelperText>
+        <Box sx={{mt: 3}}>
+         <Typography variant="h6" sx={{ color: "white", mb: 2, fontWeight: "bold" }}>
+                  Select an Style
+                </Typography>
+                <RadioGroup
+                  aria-label="style"
+                  name="style"
+                  value={style}
+                  onChange={handleStyleChange}
+                  sx={{ mb: 2 }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      width: "100%",
+                      flexDirection: { xs: "column", sm: "row" },
+                      justifyContent: "space-between",
+                      gap: 2,
+                    }}
+                  >
+                    {availableStyles.map((styleOption) => (
+                      <Card
+                        key={styleOption.id}
+                        component={motion.div}
+                        whileHover={{ scale: 1.03 }}
+                        sx={{
+                          bgcolor: "rgba(0, 0, 0, 0.7)",
+                          border: style === styleOption.id ? "2px solid #4CAF50" : "2px solid transparent",
+                          borderRadius: 2,
+                          overflow: "hidden",
+                          transition: "all 0.3s ease",
+                          boxShadow: style === styleOption.id ? "0 0 15px rgba(76, 175, 80, 0.7)" : "none",
+                          width: { xs: "100%", sm: "32%" },
+                        }}
+                      >
+                        <CardActionArea onClick={() => setStyle(styleOption.id)}>
+                          <CardMedia
+                            component="img"
+                            height="100"
+                            image={styleOption.image}
+                            alt={styleOption.name}
+                            sx={{
+                              opacity: style === styleOption.id ? 1 : 0.7,
+                              transition: "opacity 0.3s ease",
+                              objectFit: "cover",
+                            }}
+                          />
+                          <CardContent sx={{ p: 1.5 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
+                              <Radio
+                                checked={style === styleOption.id}
+                                value={styleOption.id}
+                                name="style-radio"
+                                sx={{
+                                  color: "rgba(255, 255, 255, 0.7)",
+                                  "&.Mui-checked": {
+                                    color: "#4CAF50",
+                                  },
+                                  p: 0.5,
+                                  mr: 0.5,
+                                }}
+                              />
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  fontWeight: "bold",
+                                  color: "white",
+                                  fontSize: "0.9rem",
+                                }}
+                              >
+                                {styleOption.name}
+                              </Typography>
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "rgba(255, 255, 255, 0.7)",
+                                fontSize: "0.75rem",
+                                ml: 3.5, // Alinear con el texto del título
+                              }}
+                            >
+                              {styleOption.description}
+                            </Typography>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    ))}
+                  </Box>
+                </RadioGroup>
+                </Box>
     </DialogContent>
     <DialogActions
       sx={{
