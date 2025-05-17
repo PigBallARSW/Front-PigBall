@@ -16,7 +16,7 @@ export const MainGame = () => {
   const [loading, setLoading] = useState(false)
   const{showAlert} = useAlert();
   const { goalAnimation, addGoal, closeGoalAnimation } = useGoalPlayer();
-  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal, setLoading);
+  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer, selectedStyle} = useGame(id, addGoal, setLoading);
   const startGame = () => {
     if (players.length > 1) {
       setLoading(true)
@@ -46,7 +46,7 @@ export const MainGame = () => {
   return (
       gameStarted  ? (
         <>
-        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} fps={fps} fpsHistory={fpsHistory}/>
+        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} fps={fps} fpsHistory={fpsHistory} selectedStyle={selectedStyle}/>
         {goalAnimation.show && (
           <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
         )}

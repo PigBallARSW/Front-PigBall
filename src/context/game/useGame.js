@@ -129,6 +129,7 @@ export function useGame(id, addGoal, setLoading) {
     handleStartGame,
     handleLeaveGame,
     handleMovePlayer,
+    selectedStyle: gameState?.style,
   };
 }
 

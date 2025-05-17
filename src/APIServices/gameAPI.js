@@ -8,11 +8,13 @@ const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL
 export async function createRoom(newRoom, playerName, token) {
     const creatorName = playerName || "default";
     const endpoint = `${API}/lobby`;
+    console.log(newRoom)
     const requestBody = {
         lobbyName: newRoom.name,
         creatorName: creatorName,
         maxPlayers: newRoom.maxPlayers,
-        privateLobby: newRoom.isPrivate
+        privateLobby: newRoom.isPrivate,
+        style: newRoom.style
     };
     const response = await axios.post(endpoint, requestBody, {
         headers: {

@@ -28,7 +28,7 @@ import { useStyle } from "../../context/style/styleContext";
  * @param {Array} props.fpsHistory - Array con la historia de las solicitudes enviadas
  * @returns {JSX.Element} Componente de overlay de carga
  */
-export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
+export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory, selectedStyle }) {
   const isTouch = useIsTouchDevice();
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
@@ -39,7 +39,6 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   const fieldWrapperRef = useRef();
   const {onMoveStart,onMoveEnd, onActionStart, onActionEnd} = useMoveGame(movePlayer)
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
-  const{selectedStyle} = useStyle()
   const [muted, setMuted] = useState(false)
   const audioRef = useRef(null)
   const handleLeaveRoom = () => {

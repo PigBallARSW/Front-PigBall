@@ -68,13 +68,12 @@ const availableStyles = [
 export const CreateRoom = ({OpenDialog,CloseDialog}) => {
   const {createNewRoom} = useLobbyService();
   const {playerData} = useUser();
-  const [style, setStyle] = useState("classic")
-  const { setSelectedStyle } = useStyle();
     const [newRoom, setNewRoom] = useState({
       name: "",
       isPrivate: false,
       maxPlayers: 2,
-      description: ""
+      description: "",
+      style: "classic"
     })
     const [formErrors, setFormErrors] = useState({
       name: false,
@@ -85,7 +84,8 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         name: "",
         isPrivate: false,
         maxPlayers: 2,
-        description: ""
+        description: "",
+        style: "classic"
       })
       setFormErrors({
         name: false,
@@ -128,11 +128,13 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
         return;
       }
       handleCloseCreateDialog();
-      setSelectedStyle(style)
       createNewRoom(newRoom, playerData.username);
     }
     const handleStyleChange = (e) => {
-      setStyle(e.target.value)
+      setNewRoom({
+        ...newRoom,
+        style: e.target.value,
+      })
     }
 
   return (
@@ -298,7 +300,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
                 <RadioGroup
                   aria-label="style"
                   name="style"
-                  value={style}
+                  value={newRoom.style}
                   onChange={handleStyleChange}
                   sx={{ mb: 2 }}
                 >
@@ -318,22 +320,23 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
                         whileHover={{ scale: 1.03 }}
                         sx={{
                           bgcolor: "rgba(0, 0, 0, 0.7)",
-                          border: style === styleOption.id ? "2px solid #4CAF50" : "2px solid transparent",
+                          border: newRoom.style === styleOption.id ? "2px solid #4CAF50" : "2px solid transparent",
                           borderRadius: 2,
                           overflow: "hidden",
                           transition: "all 0.3s ease",
-                          boxShadow: style === styleOption.id ? "0 0 15px rgba(76, 175, 80, 0.7)" : "none",
+                          boxShadow: newRoom.style === styleOption.id ? "0 0 15px rgba(76, 175, 80, 0.7)" : "none",
                           width: { xs: "100%", sm: "32%" },
                         }}
                       >
-                        <CardActionArea onClick={() => setStyle(styleOption.id)}>
+                        <CardActionArea onClick={() => handleStyleChange({ target: { value: styleOption.id } })}>
+
                           <CardMedia
                             component="img"
                             height="100"
                             image={styleOption.image}
                             alt={styleOption.name}
                             sx={{
-                              opacity: style === styleOption.id ? 1 : 0.7,
+                              opacity: newRoom.style === styleOption.id ? 1 : 0.7,
                               transition: "opacity 0.3s ease",
                               objectFit: "cover",
                             }}
@@ -341,7 +344,7 @@ export const CreateRoom = ({OpenDialog,CloseDialog}) => {
                           <CardContent sx={{ p: 1.5 }}>
                             <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
                               <Radio
-                                checked={style === styleOption.id}
+                                checked={newRoom.style === styleOption.id}
                                 value={styleOption.id}
                                 name="style-radio"
                                 sx={{
