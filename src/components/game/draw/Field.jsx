@@ -2,7 +2,6 @@ import { Stage } from "@pixi/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { ContainerField } from "./ContainerField";
 import PropTypes from 'prop-types';
-import { useStyle } from "../../../context/style/styleContext";
 import { MAPS } from "../../../utils/styles";
 
 /**
@@ -71,4 +70,5 @@ export const Field = ({ players, ball, borderX, borderY, wrapperRef, style }) =>
   wrapperRef: PropTypes.shape({                
     current: PropTypes.any
   }).isRequired,
+  style: PropTypes.string.isRequired
 };

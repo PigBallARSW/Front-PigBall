@@ -1,7 +1,6 @@
 import { TilingSprite } from '@pixi/react';
 import { Texture } from "@pixi/core";
-import React, { useMemo } from 'react';
-import backgroundAsset from '../../../assets/images/tile3.png'; 
+import React, { useMemo } from 'react'; 
 import PropTypes from 'prop-types';
 import { MAPS } from '../../../utils/styles';
 /**
@@ -29,5 +28,6 @@ export default React.memo(TileSpriteComponent);
 
 TileSpriteComponent.propTypes = {
   width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired
+  height: PropTypes.number.isRequired,
+  style: PropTypes.string.isRequired
 };
