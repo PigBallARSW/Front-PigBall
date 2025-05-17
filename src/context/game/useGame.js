@@ -12,7 +12,7 @@ import {
   subscribeToTopics
 } from "../../utils/gameBrokerHandlers"
 
-export function useGame(id, addGoal, setLoading,setLoadingRoom) {
+export function useGame(id, addGoal, setLoading) {
   const { showAlert } = useAlert();
   const { playerData } = useUser();
   const [players, setPlayers] = useState([]);
@@ -53,7 +53,7 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
         });
         
         const handlers = {
-          players: handlePlayersMessage(setGameState, setGameStarted, setLoadingRoom),
+          players: handlePlayersMessage(setGameState, setGameStarted),
           started: handleStartedMessage(setGameState, setGameStarted, setLoading),
           play: handlePlayMessage(setPlayers, setBall, messageCountRef, signalFramesReached, FRAME_RATE),
           goal: handleGoalMessage(setGameState, addGoal),

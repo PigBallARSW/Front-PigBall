@@ -1,10 +1,9 @@
 import _ from "lodash";
 
-export function handlePlayersMessage(setGameState, setGameStarted,setLoadingRoom) {
+export function handlePlayersMessage(setGameState, setGameStarted) {
   return (message) => {
     const body = JSON.parse(message.body);
     setGameState(body);
-    setLoadingRoom(false)
     if (body.startTime !== null) setGameStarted(true);
   };
 }

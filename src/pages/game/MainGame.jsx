@@ -14,10 +14,9 @@ export const MainGame = () => {
   const navigate = useNavigate()
   const { id } = useParams();
   const [loading, setLoading] = useState(false)
-  const [loadingRoom, setLoadingRoom] = useState(true)
   const{showAlert} = useAlert();
   const { goalAnimation, addGoal, closeGoalAnimation } = useGoalPlayer();
-  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal, setLoading,setLoadingRoom);
+  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal, setLoading);
   const startGame = () => {
     if (players.length > 1) {
       setLoading(true)
@@ -32,7 +31,6 @@ export const MainGame = () => {
   }
   
   useEffect(() => {
-
     playSound("/sounds/stadium.mp3",0.01)
   },[gameState?.players.length])
 

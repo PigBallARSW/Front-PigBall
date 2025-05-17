@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
  * @param {number} props.borderY - alto del mapa
  * @returns {JSX.Element} dibujo de la cancha
  */
-export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY,  players, ball}) {
+export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY,  players, ball, style}) {
     const MARGIN = 0;
     const GOAL_WIDTH = borderX * 0.03;
     const CANVAS_WIDTH = borderX + MARGIN * 2 + GOAL_WIDTH * 2;
@@ -40,8 +40,8 @@ export const ContainerField = React.memo(function ContainerField({canvasSize,bor
         <Container>
             <Camera players={players} canvasSize={canvasSize} CANVAS_WIDTH={CANVAS_WIDTH} CANVAS_HEIGHT={CANVAS_HEIGHT} MAP_WIDTH={MAP_WIDTH} MAP_HEIGHT={MAP_HEIGHT} scale={scale} ball={ball}>
                 <Container x={(MAP_WIDTH - borderX) / 2} y={(MAP_HEIGHT - borderY) / 2}>
-                    <TileSpriteComponent width={borderX} height={borderY} />
-                    <FieldDraw fieldWidth={borderX} fieldHeight={borderY} goalWidth={GOAL_WIDTH} />
+                    <TileSpriteComponent width={borderX} height={borderY} style={style}/>
+                    <FieldDraw fieldWidth={borderX} fieldHeight={borderY} goalWidth={GOAL_WIDTH} style={style}/>
                 <MoveContainer>
                 {players.map((player,i) => (
                     <>

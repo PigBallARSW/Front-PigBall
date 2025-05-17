@@ -2,8 +2,6 @@ import React from 'react';
 import {Court} from '../../components/game/Court';
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
 import MicrosoftLoginButton from '../../components/login/MicrosoftLoginButton';
-import { useMsal } from '@azure/msal-react';
-import { loginRequest } from '../../authConfig';
 import {
   Box,
   Typography,
@@ -11,7 +9,6 @@ import {
   Paper,
   Container
 } from "@mui/material"
-import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/user/userContext';
 import { UsernameInput } from '../../components/login/UsernameInput';
 import { useAuth } from '../../context/auth/AuthContext';

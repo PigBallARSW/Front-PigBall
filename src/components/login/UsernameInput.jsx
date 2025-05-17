@@ -77,7 +77,7 @@ export const UsernameInput = (showUsernameDialog=true) => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             helperText={
-              username ? (isUsernameValid ? "Valid name" : "The name must be between 3 and 15 characters long.") : ""
+              isUsernameValid ? "Valid name" : "The name must be between 3 and 15 characters long."
             }
             error={username !== "" && !isUsernameValid}
             InputProps={{

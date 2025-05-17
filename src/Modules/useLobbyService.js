@@ -17,7 +17,6 @@ export function useLobbyService() {
             await sendStatsUser(response.data);
         } catch (error) {
             console.error("Could not send Stats: ", error);
-            showAlert("Could not send Stats", "error");
         }
     }, [getToken, sendStatsUser]);
     
@@ -43,7 +42,6 @@ export function useLobbyService() {
                 showAlert("Joined successfully!", "success");
             }else{
                 showAlert("This room is no available", "error")
-                return;
             }
         }
        getAGame(func, id);
