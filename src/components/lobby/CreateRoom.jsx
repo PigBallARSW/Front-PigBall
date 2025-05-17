@@ -35,7 +35,6 @@ import { motion } from "framer-motion";
 import backgroundAsset from '../../assets/images/tile2.png'; 
 import backgroundAsset2 from '../../assets/images/tile3.png';
 import backgroundAsset3 from '../../assets/images/tile4.png';
-import { useStyle } from "../../context/style/styleContext";
 const availableStyles = [
   {
     id: "classic",

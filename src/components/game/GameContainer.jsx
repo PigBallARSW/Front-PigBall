@@ -14,7 +14,6 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { LeaveDialog } from "../dialog/LeaveDialog";
 import PropTypes from 'prop-types';
 import { playSound } from "../../utils/sounds";
-import { useStyle } from "../../context/style/styleContext";
 
 /**
  * Componente de overlay de carga para solicitudes a la API
@@ -26,6 +25,7 @@ import { useStyle } from "../../context/style/styleContext";
  * @param {function} props.leaveRoom - Función para abandonar juego
  * @param {number} props.fps - Valor del fps
  * @param {Array} props.fpsHistory - Array con la historia de las solicitudes enviadas
+ * @param {Array} props.string - Estilo de mapa seleccionado
  * @returns {JSX.Element} Componente de overlay de carga
  */
 export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory, selectedStyle }) {
@@ -258,5 +258,6 @@ GameContainer.propTypes = {
       fps: PropTypes.number.isRequired,
       target: PropTypes.number.isRequired
     })
-  ).isRequired
+  ).isRequired,
+  selectedStyle: PropTypes.string.isRequired
 };

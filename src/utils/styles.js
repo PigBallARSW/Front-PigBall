@@ -18,7 +18,7 @@ export const MAPS = {
   },
   dessert: {
     tileTexture: backgroundAsset3,
-    background: 0x705438,
+    background: 0xc2b26f,
     lineColor: 0x714a05,
     goalColor: 0x714a05,
     goalNetColor: 0x714a05,

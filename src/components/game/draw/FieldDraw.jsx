@@ -1,7 +1,6 @@
 import { Graphics } from "@pixi/react";
 import React, { useCallback } from "react";
 import PropTypes from 'prop-types';
-import { useStyle } from "../../../context/style/styleContext";
 import { MAPS } from "../../../utils/styles";
 
 /**
@@ -111,4 +110,5 @@ FieldDrawComponent.propTypes = {
   fieldWidth: PropTypes.number.isRequired,
   fieldHeight: PropTypes.number.isRequired,
   goalWidth: PropTypes.number.isRequired,
+  style: PropTypes.string.isRequired
 };
