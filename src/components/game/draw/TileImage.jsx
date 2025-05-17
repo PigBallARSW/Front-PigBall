@@ -1,17 +1,18 @@
 import { TilingSprite } from '@pixi/react';
 import { Texture } from "@pixi/core";
-import React, { useMemo } from 'react';
-import backgroundAsset from '../../../assets/images/tile2.png'; 
+import React, { useMemo } from 'react'; 
 import PropTypes from 'prop-types';
+import { MAPS } from '../../../utils/styles';
 /**
  * Componente para cargar el tile
  * @param {number} props.width - ancho de el mapa
  * @param {number} props.height - alto de el mapa
  * @returns {JSX.Element} fondo de la cancha
  */
-const TileSpriteComponent = ({ width, height }) => {
+const TileSpriteComponent = ({ width, height, style }) => {
   const tileScale = { x: 2, y: 2 }
-  const texture = useMemo(() => Texture.from(backgroundAsset), []);
+  const styles = MAPS[style].tileTexture
+  const texture = useMemo(() => Texture.from(styles), []);
 
   return (
     <TilingSprite
@@ -19,7 +20,6 @@ const TileSpriteComponent = ({ width, height }) => {
       width={width}
       height={height}
       tileScale={tileScale}
-      tint={0xbdebb0}
     />
   );
 };
@@ -28,5 +28,6 @@ export default React.memo(TileSpriteComponent);
 
 TileSpriteComponent.propTypes = {
   width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired
+  height: PropTypes.number.isRequired,
+  style: PropTypes.string.isRequired
 };

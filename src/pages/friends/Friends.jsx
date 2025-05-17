@@ -281,7 +281,7 @@ export const Friends = ({closeDialog}) => {
                     </ListItem>
                   ))
                 ) : (
-                  <Typography sx={{ p: 2, textAlign: "center", color: "text.disabled" }}>
+                  <Typography sx={{ p: 2, textAlign: "center", color: "white" }}>
                     You have no friends yet.
                   </Typography>
                 )}

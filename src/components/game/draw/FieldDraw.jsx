@@ -1,6 +1,7 @@
 import { Graphics } from "@pixi/react";
 import React, { useCallback } from "react";
 import PropTypes from 'prop-types';
+import { MAPS } from "../../../utils/styles";
 
 /**
  * Componente de dibujo
@@ -10,16 +11,16 @@ import PropTypes from 'prop-types';
  * @param {number} props.goalWidth - Ancho de la cancha
  * @returns {JSX.Element} dibujo de la cancha
  */
-const FieldDrawComponent = ({ fieldWidth, fieldHeight, goalWidth }) => {
+const FieldDrawComponent = ({ fieldWidth, fieldHeight, goalWidth, style }) => {
+    const styles = MAPS[style]
+    const lineColor = styles.lineColor
+    const goalColor = styles.goalColor
+    const goalNetColor = styles.goalNetColor
     const draw = useCallback((g) => {
         g.clear();
         const fieldX = 0; 
         const fieldY = 0;
-        const lineColor = 0xb4d6a8;
-        const goalColor = 0xFFFFFF;
-        const goalNetColor = 0xF5F5F5;
-
-
+     
         // Líneas del campo
         g.lineStyle(3, lineColor);
         g.drawRect(fieldX, fieldY, fieldWidth, fieldHeight);
@@ -109,4 +110,5 @@ FieldDrawComponent.propTypes = {
   fieldWidth: PropTypes.number.isRequired,
   fieldHeight: PropTypes.number.isRequired,
   goalWidth: PropTypes.number.isRequired,
+  style: PropTypes.string.isRequired
 };

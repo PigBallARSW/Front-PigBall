@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { WaitingRoom } from "../../components/lobby/WaitingRoom";
 import { useGame } from "../../context/game/useGame";
@@ -8,15 +8,15 @@ import { useGoalPlayer } from "../../context/game/useGoalPlayer";
 import {LoadResponse} from "../../components/Load/LoadResponse";
 import LoadingGame from "../../components/Load/LoadingGame";
 import { useAlert } from "../../context/alert/AlertContext";
+import { playSound } from "../../utils/sounds";
   
 export const MainGame = () => {
   const navigate = useNavigate()
   const { id } = useParams();
   const [loading, setLoading] = useState(false)
-  const [loadingRoom, setLoadingRoom] = useState(true)
   const{showAlert} = useAlert();
   const { goalAnimation, addGoal, closeGoalAnimation } = useGoalPlayer();
-  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer} = useGame(id, addGoal, setLoading,setLoadingRoom);
+  const {players, ball, gameStarted, gameState, fps, fpsHistory, handleStartGame, handleLeaveGame,handleMovePlayer, selectedStyle} = useGame(id, addGoal, setLoading);
   const startGame = () => {
     if (players.length > 1) {
       setLoading(true)
@@ -29,20 +29,24 @@ export const MainGame = () => {
   const closePage = () => {
       navigate("/homepage/lobby")
   }
+  
+  useEffect(() => {
+    playSound("/sounds/stadium.mp3",0.01)
+  },[gameState?.players.length])
 
   if(loading){
-    return <LoadingGame />
+    return <LoadingGame /> 
   }
 
-  if(loadingRoom){
+  if(!gameState){
     return <LoadResponse open={true} message="Loading room..." onClose={closePage}/>
   }
 
+
   return (
-    <>
-      {gameStarted ? (
+      gameStarted  ? (
         <>
-        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} fps={fps} fpsHistory={fpsHistory}/>
+        <GameContainer id={id} players={players} ball={ball} movePlayer ={handleMovePlayer} gameState={gameState} leaveRoom={handleLeaveGame} fps={fps} fpsHistory={fpsHistory} selectedStyle={selectedStyle}/>
         {goalAnimation.show && (
           <GoalAnimation player={goalAnimation.player} team={goalAnimation.team} onClose={closeGoalAnimation} goalState={goalAnimation.event}/>
         )}
@@ -50,8 +54,6 @@ export const MainGame = () => {
       ) : (
         <WaitingRoom  onStartGame={startGame} leaveRoom={handleLeaveGame} roomData={gameState}/>
       )
-    }
-    </>
   );
 };
 

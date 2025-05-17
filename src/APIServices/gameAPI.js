@@ -12,7 +12,8 @@ export async function createRoom(newRoom, playerName, token) {
         lobbyName: newRoom.name,
         creatorName: creatorName,
         maxPlayers: newRoom.maxPlayers,
-        privateLobby: newRoom.isPrivate
+        privateLobby: newRoom.isPrivate,
+        style: newRoom.style
     };
     const response = await axios.post(endpoint, requestBody, {
         headers: {

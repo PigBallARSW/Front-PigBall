@@ -12,7 +12,7 @@ import {
   subscribeToTopics
 } from "../../utils/gameBrokerHandlers"
 
-export function useGame(id, addGoal, setLoading,setLoadingRoom) {
+export function useGame(id, addGoal, setLoading) {
   const { showAlert } = useAlert();
   const { playerData } = useUser();
   const [players, setPlayers] = useState([]);
@@ -47,18 +47,18 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
       brokerURL: brokerUrl,
       onConnect: () => {
       isConnected.current = true;
+      client.publish({
+          destination: `/app/join/${id}`,
+          body: JSON.stringify({ name: playerName, id: playerId }),
+        });
+        
         const handlers = {
-          players: handlePlayersMessage(setGameState, setGameStarted, setLoadingRoom),
+          players: handlePlayersMessage(setGameState, setGameStarted),
           started: handleStartedMessage(setGameState, setGameStarted, setLoading),
           play: handlePlayMessage(setPlayers, setBall, messageCountRef, signalFramesReached, FRAME_RATE),
           goal: handleGoalMessage(setGameState, addGoal),
         };
 
-        
-        client.publish({
-          destination: `/app/join/${id}`,
-          body: JSON.stringify({ name: playerName, id: playerId }),
-        });
 
         subscribeToTopics(client, id, handlers);
       },
@@ -129,6 +129,7 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
     handleStartGame,
     handleLeaveGame,
     handleMovePlayer,
+    selectedStyle: gameState?.style,
   };
 }
 

@@ -2,6 +2,7 @@ import { Stage } from "@pixi/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { ContainerField } from "./ContainerField";
 import PropTypes from 'prop-types';
+import { MAPS } from "../../../utils/styles";
 
 /**
  * Componente de dibujo
@@ -13,9 +14,10 @@ import PropTypes from 'prop-types';
  * * @param {any} props.wrapperRef - tamaño del contenedor del juego
  * @returns {JSX.Element} dibujo de la cancha
  */
-export const Field = ({ players, ball, borderX, borderY, wrapperRef }) => {
+export const Field = ({ players, ball, borderX, borderY, wrapperRef, style }) => {
+  const background = MAPS[style].background
     const calculateCanvasSize = useCallback(() => {
-      const options = { backgroundColor: 0x477339, antialias: true };
+      const options = { backgroundColor: background, antialias: true };
       if (!wrapperRef.current) return { width: window.innerWidth, height: window.innerHeight, options: options };
       const { width, height } = wrapperRef.current.getBoundingClientRect();
       return { width, height, options };
@@ -40,6 +42,7 @@ export const Field = ({ players, ball, borderX, borderY, wrapperRef }) => {
           borderY={borderY}
           players={players}
           ball={ball}
+          style ={style}
         />
       </Stage>
     );
@@ -67,4 +70,5 @@ export const Field = ({ players, ball, borderX, borderY, wrapperRef }) => {
   wrapperRef: PropTypes.shape({                
     current: PropTypes.any
   }).isRequired,
+  style: PropTypes.string.isRequired
 };

@@ -17,7 +17,6 @@ export function useLobbyService() {
             await sendStatsUser(response.data);
         } catch (error) {
             console.error("Could not send Stats: ", error);
-            showAlert("Could not send Stats", "error");
         }
     }, [getToken, sendStatsUser]);
     
@@ -35,19 +34,17 @@ export function useLobbyService() {
             showAlert("Could not create", "error");
         }
     }
-    const joinRoom = (id, setLoading) => {
+    const joinRoom = (id) => {
         const func = (response) => {
-            setLoading(false)
             const id = response.id;
             if(response.status !== "ABANDONED" || response.status !== "FINISHED"){
                 navigate(`/game/${id}`);
                 showAlert("Joined successfully!", "success");
             }else{
                 showAlert("This room is no available", "error")
-                return;
             }
         }
-       getAGame(func, id, setLoading);
+       getAGame(func, id);
     }
     const getAllRooms = useCallback(async (callback) => {
         try{
@@ -60,9 +57,8 @@ export function useLobbyService() {
         }
         
     },[getToken,showAlert]);
-    const getAGame = useCallback(async (callback, id, setLoading) => {
+    const getAGame = useCallback(async (callback, id) => {
         try{
-            setLoading(true)
             const token = await getToken();
             const response = await getGame(id, token);
             callback(response.data);

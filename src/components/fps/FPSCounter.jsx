@@ -20,7 +20,7 @@ export const FPSCounter = ({ fps, fpsHistory, showGraph }) => {
       elevation={3}
       sx={{
         border: "2px solid rgba(255, 255, 255, 0.1)",
-        bgcolor: alpha("#254626", 0.95),
+        bgcolor: alpha("#202a21", 0.95),
         width: 200,            
         px: 1.5,                          
         py: 1,                           

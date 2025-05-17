@@ -10,8 +10,10 @@ import { useIsTouchDevice } from "../../context/game/useIsTouchDevice";
 import {MobileControls} from "./MobileControls";
 import { ExitToApp } from "@mui/icons-material";
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { LeaveDialog } from "../dialog/LeaveDialog";
 import PropTypes from 'prop-types';
+import { playSound } from "../../utils/sounds";
 
 /**
  * Componente de overlay de carga para solicitudes a la API
@@ -23,19 +25,22 @@ import PropTypes from 'prop-types';
  * @param {function} props.leaveRoom - Función para abandonar juego
  * @param {number} props.fps - Valor del fps
  * @param {Array} props.fpsHistory - Array con la historia de las solicitudes enviadas
+ * @param {Array} props.string - Estilo de mapa seleccionado
  * @returns {JSX.Element} Componente de overlay de carga
  */
-export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
+export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory, selectedStyle }) {
   const isTouch = useIsTouchDevice();
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
   const [hasFinished, setHasFinished] = useState(false);
   const [showGameOver, setShowGameOver] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
   const fieldWrapperRef = useRef();
-  const {onMoveStart,onMoveEnd, onActionStart, onActionEnd} = useMoveGame(movePlayer);
-  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+  const {onMoveStart,onMoveEnd, onActionStart, onActionEnd} = useMoveGame(movePlayer)
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
+  const [muted, setMuted] = useState(false)
+  const audioRef = useRef(null)
   const handleLeaveRoom = () => {
     setIsLeaveDialogOpen(false);
     leaveRoom();
@@ -47,6 +52,9 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
   useEffect(() => {
     if (!gameState?.creationTime) return
     if (!gameState?.creationTime || hasFinished) return;
+    const audio = playSound("/sounds/stadium.mp3",0.01)
+    audio.loop = true;
+    audioRef.current = audio
     const startTime = new Date(gameState.startTime)
     const interval = setInterval(() => {
       const now = Date.now()
@@ -54,15 +62,27 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
       setElapsedTime(diff);
       if (diff >= 300) { 
         setElapsedTime(300); 
-        clearInterval(interval); 
+        audio.pause()
+        audioRef.current = null
+        clearInterval(interval);
         setShowGameOver(true);
         setHasFinished(true);
       } else {
         setElapsedTime(diff);
       }
     }, 1000);
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      audio.pause();
+      audio.currentTime = 0;
+    }
   }, [gameState?.creationTime, gameState?.startTime,id,hasFinished,finishRoom]);
+  
+  useEffect(() => {
+      if (audioRef.current) {
+        audioRef.current.volume = muted ? 0 : 0.8;
+      }
+    }, [muted])
 
   const formatGameTime = () => {
     const minutes = Math.floor(elapsedTime / 60)
@@ -116,22 +136,17 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
           }}>
             <ExitToApp />
           </Fab>
-          <Fab color="success"
+          <Fab
+          color="success"
+          onClick={() => setMuted(prev => !prev)}
           sx={{
-            width: {
-              xs: 40,   
-              sm: 48,   
-              md: 56,   
-            },
-            height: {
-              xs: 40,
-              sm: 48,
-              md: 56,
-            },
-            minHeight: "unset", 
-          }}>
-            <VolumeOffIcon />
-          </Fab>
+            width: { xs: 40, sm: 48, md: 56 },
+            height: { xs: 40, sm: 48, md: 56 },
+            minHeight: "unset",
+          }}
+        >
+          {muted ? <VolumeOffIcon /> : <VolumeUpIcon />}
+        </Fab>
         </Box>
 
     {!isMobile && 
@@ -164,6 +179,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
         ball={ball}
         borderX={gameState.borderX}
         borderY={gameState.borderY}
+        style={selectedStyle}
       />
     </Box>
 
@@ -242,5 +258,6 @@ GameContainer.propTypes = {
       fps: PropTypes.number.isRequired,
       target: PropTypes.number.isRequired
     })
-  ).isRequired
+  ).isRequired,
+  selectedStyle: PropTypes.string.isRequired
 };

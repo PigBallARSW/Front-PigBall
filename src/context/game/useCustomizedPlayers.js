@@ -1,10 +1,8 @@
 import { useCallback } from "react";
-import {useUser} from "../user/userContext"
 import { useUserLogin } from "../../Modules/useUserLogin";
 
 export function useCustomizedPlayers(gameState) {
   const { usersCharacters } = useUserLogin();
-  const { playerData } = useUser();
 
   const getCustomizedPlayers = useCallback(async () => {
     const players = gameState?.players ?? [];
