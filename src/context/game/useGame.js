@@ -12,7 +12,7 @@ import {
   subscribeToTopics
 } from "../../utils/gameBrokerHandlers"
 
-export function useGame(id, addGoal, setLoading,setLoadingRoom) {
+export function useGame(id, addGoal, setLoading) {
   const { showAlert } = useAlert();
   const { playerData } = useUser();
   const [players, setPlayers] = useState([]);
@@ -41,7 +41,7 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
     const brokerUrl =
       process.env.REACT_APP_API_GAME_URL ||
       process.env.REACT_APP_API_GAME_URL_LOCAL ||
-      "wss://piggame.duckdns.org:8080/pigball";
+      "wss://www.eci-pigball.online/pigball";
 
     const client = new Client({
       brokerURL: brokerUrl,
@@ -53,7 +53,7 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
         });
         
         const handlers = {
-          players: handlePlayersMessage(setGameState, setGameStarted, setLoadingRoom),
+          players: handlePlayersMessage(setGameState, setGameStarted),
           started: handleStartedMessage(setGameState, setGameStarted, setLoading),
           play: handlePlayMessage(setPlayers, setBall, messageCountRef, signalFramesReached, FRAME_RATE),
           goal: handleGoalMessage(setGameState, addGoal),
@@ -129,6 +129,7 @@ export function useGame(id, addGoal, setLoading,setLoadingRoom) {
     handleStartGame,
     handleLeaveGame,
     handleMovePlayer,
+    selectedStyle: gameState?.style,
   };
 }
 

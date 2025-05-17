@@ -24,12 +24,13 @@ root.render(
     <React.StrictMode>     
         <MsalProvider instance={msalInstance}>
             <AlertProvider>
-        <AuthProvider>
+            <AuthProvider>
         
             <BrowserRouter>
             <UserProvider>
             <App />
             </UserProvider>
+            
             </BrowserRouter>
         
         </AuthProvider>

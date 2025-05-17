@@ -361,7 +361,7 @@ export default function CustomPlayer() {
                             variant="outlined"
                             label="Player Name" color="secondary"
                             helperText={
-                            playerName ? (isUsernameValid ? "Valid name" : "The name must be between 3 and 15 characters long.") : ""
+                            isUsernameValid ? "Valid name" : "The name must be between 3 and 15 characters long."
                             }
                             error={!playerName && !isUsernameValid}
                             InputProps={{

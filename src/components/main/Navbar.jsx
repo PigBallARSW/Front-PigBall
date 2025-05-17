@@ -14,7 +14,6 @@ import {
   Logout,
   PersonAdd,
 } from "@mui/icons-material"
-import { useMsal,useIsAuthenticated } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
 import {Friends} from "../../pages/friends/Friends";
 import { useUser } from "../../context/user/userContext";

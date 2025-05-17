@@ -25,9 +25,10 @@ import { playSound } from "../../utils/sounds";
  * @param {function} props.leaveRoom - Función para abandonar juego
  * @param {number} props.fps - Valor del fps
  * @param {Array} props.fpsHistory - Array con la historia de las solicitudes enviadas
+ * @param {Array} props.string - Estilo de mapa seleccionado
  * @returns {JSX.Element} Componente de overlay de carga
  */
-export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory }) {
+export const GameContainer = React.memo(function GameContainer({ id, players, ball, movePlayer, gameState, leaveRoom, fps, fpsHistory, selectedStyle }) {
   const isTouch = useIsTouchDevice();
   const [elapsedTime, setElapsedTime] = useState(0)
   const {finishRoom} = useLobbyService();
@@ -178,6 +179,7 @@ export const GameContainer = React.memo(function GameContainer({ id, players, ba
         ball={ball}
         borderX={gameState.borderX}
         borderY={gameState.borderY}
+        style={selectedStyle}
       />
     </Box>
 
@@ -256,5 +258,6 @@ GameContainer.propTypes = {
       fps: PropTypes.number.isRequired,
       target: PropTypes.number.isRequired
     })
-  ).isRequired
+  ).isRequired,
+  selectedStyle: PropTypes.string.isRequired
 };
