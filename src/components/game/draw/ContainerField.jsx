@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
  * @param {Object} props.canvasSize - tamaño del canvas
  * @param {number} props.borderX - ancho del mapa
  * @param {number} props.borderY - alto del mapa
+ * @param {number} props.style - Tipo de mapa
  * @returns {JSX.Element} dibujo de la cancha
  */
 export const ContainerField = React.memo(function ContainerField({canvasSize,borderX, borderY,  players, ball, style}) {
@@ -80,5 +81,6 @@ ContainerField.propTypes = {
     height: PropTypes.number.isRequired
   }).isRequired,
   borderX: PropTypes.number.isRequired,
-  borderY: PropTypes.number.isRequired
+  borderY: PropTypes.number.isRequired,
+  style: PropTypes.string.isRequired
 };
