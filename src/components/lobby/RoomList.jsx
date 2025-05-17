@@ -28,6 +28,7 @@ import PropTypes from 'prop-types';
  * Componente que muestra la lista de jugadores
  * @param {Object} props - Propiedades del componente
  * @param {Array} props.gameRooms - Lista delas salas
+ * @param {func} props.joinRoom
  * @returns {JSX.Element} Lista de jugadores
  */
 
@@ -204,6 +205,7 @@ export const RoomList = ({ gameRooms, joinRoom }) => {
   )
 }
 RoomList.propTypes = {
-  gameRooms: PropTypes.array.isRequired
+  gameRooms: PropTypes.array.isRequired,
+  joinRoom: PropTypes.func
 };
 

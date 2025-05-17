@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { useUserLogin } from '../../Modules/useUserLogin';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 
 const UserContext = createContext();
 /**Guardar informacion del usuario
