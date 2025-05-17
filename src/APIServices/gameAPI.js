@@ -3,7 +3,7 @@ import axios from "axios";
 
 
 // Leer variables de entorno
-const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL || "https://piglobby.duckdns.org:8081";
+const API = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL_LOCAL || "https://www.eci-pigball.online";
 
 export async function createRoom(newRoom, playerName, token) {
     const creatorName = playerName || "default";

@@ -41,7 +41,7 @@ export function useGame(id, addGoal, setLoading) {
     const brokerUrl =
       process.env.REACT_APP_API_GAME_URL ||
       process.env.REACT_APP_API_GAME_URL_LOCAL ||
-      "wss://piggame.duckdns.org:8080/pigball";
+      "wss://www.eci-pigball.online/pigball";
 
     const client = new Client({
       brokerURL: brokerUrl,
